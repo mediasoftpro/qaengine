@@ -1,0 +1,45 @@
+﻿@inject Jugnoon.Framework.ApplicationDbContext _context
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Features> featureSettings
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Registration> registrationSettings
+@model Jugnoon.qa.Models.qaListViewModel
+@using Jugnoon.qa;
+@using Jugnoon.qa.Models;
+@*
+    Generate List of Questions (Only Links) based on Query => QaEntity (Params)
+*@
+@if (featureSettings.Value.enable_qa)
+{
+    <!-- Contents Section Started -->
+    var _list = await QABLL.LoadItems(_context, Model.QueryOptions);
+    if (_list.Count > 0)
+    {
+        var PartialPath = "~/Views/qa/partials";
+        var listObject = new ListItems()
+        {
+            ListType = ListType.Links
+        };
+    <div class="m-b-5 vertical-menu-light">
+        <ul>
+            @foreach (var Item in _list)
+            {
+
+                <li class="m-b-5 truncate">
+                    @await Html.PartialAsync(PartialPath + "/item/Item.cshtml", new qaItemViewModel()
+                    {
+                        Data = Item,
+                        ListObject = listObject,
+                        AuthorUrl = UserUrlConfig.ProfileUrl(Item.author, registrationSettings.Value.uniqueFieldOption),
+                        ProfileUrl =  QAUrls.Prepare_QA_Url(Item, "")
+                    })
+                </li>
+            }
+
+        </ul>
+            @if (Model.BrowseText != "" && _list.Count >= Model.QueryOptions.pagesize)
+            {                
+                <p class="m-b-10"><a class="m-b-5 text-right" href="@Model.BrowseUrl">@Model.BrowseText</a></p>
+            }
+        
+    </div>
+    }
+}

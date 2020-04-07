@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="edit_answer_01" xml:space="preserve">
+    <value>Selected answer can't be edited!", "Closed Answer!</value>
+  </data>
+  <data name="Flagasinappropriate" xml:space="preserve">
+    <value>Flag as Inappropriate</value>
+  </data>
+  <data name="Markasanswer" xml:space="preserve">
+    <value>Mark as Answer</value>
+  </data>
+  <data name="Markasbestanswer" xml:space="preserve">
+    <value>Mark as best Answer</value>
+  </data>
+  <data name="meta_category_closed_qa" xml:space="preserve">
+    <value>{MAT1} - Closed Questions{PG}</value>
+  </data>
+  <data name="meta_category_closed_qa_month" xml:space="preserve">
+    <value>{MAT1} - Closed Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_category_closed_qa_today" xml:space="preserve">
+    <value>{MAT1} - Closed Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_category_closed_qa_week" xml:space="preserve">
+    <value>{MAT1} - Closed Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_category_featured_qa" xml:space="preserve">
+    <value>{MAT1} - Featured Questions{PG}</value>
+  </data>
+  <data name="meta_category_featured_qa_month" xml:space="preserve">
+    <value>{MAT1} - Featured Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_category_featured_qa_today" xml:space="preserve">
+    <value>{MAT1} - Featured Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_category_featured_qa_week" xml:space="preserve">
+    <value>{MAT1} - Featured Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_category_rec_qa" xml:space="preserve">
+    <value>{MAT1} Questions{PG}</value>
+  </data>
+  <data name="meta_category_rec_qa_month" xml:space="preserve">
+    <value>{MAT1} Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_category_rec_qa_today" xml:space="preserve">
+    <value>{MAT1} Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_category_rec_qa_week" xml:space="preserve">
+    <value>{MAT1} Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_category_resolved_qa" xml:space="preserve">
+    <value>Resolved Questions in {MAT1}{PG}</value>
+  </data>
+  <data name="meta_category_resolved_qa_month" xml:space="preserve">
+    <value>Resolved Questions in {MAT1} - Added This Month{PG}</value>
+  </data>
+  <data name="meta_category_resolved_qa_today" xml:space="preserve">
+    <value>Resolved Questions in {MAT1} - Added Today{PG}</value>
+  </data>
+  <data name="meta_category_resolved_qa_week" xml:space="preserve">
+    <value>Resolved Questions in {MAT1} - Added This Week{PG}</value>
+  </data>
+  <data name="meta_category_voted_qa" xml:space="preserve">
+    <value>Top Voted Questions{PG}</value>
+  </data>
+  <data name="meta_category_voted_qa_month" xml:space="preserve">
+    <value>Top Voted Questions in {MAT1} - Added This Month{PG}</value>
+  </data>
+  <data name="meta_category_voted_qa_today" xml:space="preserve">
+    <value>Top Voted Questions in {MAT1} - Added Today{PG}</value>
+  </data>
+  <data name="meta_category_voted_qa_week" xml:space="preserve">
+    <value>Top Voted Questions in {MAT1} - Added This Week{PG}</value>
+  </data>
+  <data name="meta_closed_qa" xml:space="preserve">
+    <value>Closed Questions{PG}</value>
+  </data>
+  <data name="meta_closed_qa_month" xml:space="preserve">
+    <value>Closed Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_closed_qa_today" xml:space="preserve">
+    <value>Closed Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_closed_qa_week" xml:space="preserve">
+    <value>Closed Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_featured_qa" xml:space="preserve">
+    <value>Featured Questions{PG}</value>
+  </data>
+  <data name="meta_featured_qa_month" xml:space="preserve">
+    <value>Featured Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_featured_qa_today" xml:space="preserve">
+    <value>Featured Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_featured_qa_week" xml:space="preserve">
+    <value>Featured Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_label_closed_qa" xml:space="preserve">
+    <value>{MAT1} - Closed Questions{PG}</value>
+  </data>
+  <data name="meta_label_closed_qa_month" xml:space="preserve">
+    <value>{MAT1} - Closed Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_label_closed_qa_today" xml:space="preserve">
+    <value>{MAT1} - Closed Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_label_closed_qa_week" xml:space="preserve">
+    <value>{MAT1} - Closed Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_label_featured_qa" xml:space="preserve">
+    <value>{MAT1} - Featured Questions{PG}</value>
+  </data>
+  <data name="meta_label_featured_qa_month" xml:space="preserve">
+    <value>{MAT1} - Featured Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_label_featured_qa_today" xml:space="preserve">
+    <value>{MAT1} - Featured Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_label_featured_qa_week" xml:space="preserve">
+    <value>{MAT1} - Featured Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_label_rec_qa" xml:space="preserve">
+    <value>{MAT1} Questions{PG}</value>
+  </data>
+  <data name="meta_label_rec_qa_month" xml:space="preserve">
+    <value>{MAT1} Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_label_rec_qa_today" xml:space="preserve">
+    <value>{MAT1} Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_label_rec_qa_week" xml:space="preserve">
+    <value>{MAT1} Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_label_resolved_qa" xml:space="preserve">
+    <value>Resolved Questions in {MAT1}{PG}</value>
+  </data>
+  <data name="meta_label_resolved_qa_month" xml:space="preserve">
+    <value>Resolved Questions in {MAT1} - Added This Month{PG}</value>
+  </data>
+  <data name="meta_label_resolved_qa_today" xml:space="preserve">
+    <value>Resolved Questions in {MAT1} - Added Today{PG}</value>
+  </data>
+  <data name="meta_label_resolved_qa_week" xml:space="preserve">
+    <value>Resolved Questions in {MAT1} - Added This Week{PG}</value>
+  </data>
+  <data name="meta_label_voted_qa" xml:space="preserve">
+    <value>Top Voted Questions{PG}</value>
+  </data>
+  <data name="meta_label_voted_qa_month" xml:space="preserve">
+    <value>Top Voted Questions in {MAT1} - Added This Month{PG}</value>
+  </data>
+  <data name="meta_label_voted_qa_today" xml:space="preserve">
+    <value>Top Voted Questions in {MAT1} - Added Today{PG}</value>
+  </data>
+  <data name="meta_label_voted_qa_week" xml:space="preserve">
+    <value>Top Voted Questions in {MAT1} - Added This Week{PG}</value>
+  </data>
+  <data name="meta_qa_archive" xml:space="preserve">
+    <value>Questions Asked in {MAT1} {MAT2}{PG}</value>
+  </data>
+  <data name="meta_qa_archive_list" xml:space="preserve">
+    <value>Questions Archive List</value>
+  </data>
+  <data name="meta_qa_categories" xml:space="preserve">
+    <value>List of QA Categories{PG}</value>
+  </data>
+  <data name="meta_qa_label_list" xml:space="preserve">
+    <value>QA Labels List{PG}</value>
+  </data>
+  <data name="meta_qa_label_list_search" xml:space="preserve">
+    <value>QA Labels Search by {MAT1}{PG}</value>
+  </data>
+  <data name="meta_qa_search" xml:space="preserve">
+    <value>'{MAT1}' search {PG}</value>
+  </data>
+  <data name="meta_rec_qa" xml:space="preserve">
+    <value>Recently Asked Questions{PG}</value>
+  </data>
+  <data name="meta_rec_qa_month" xml:space="preserve">
+    <value>Recent Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_rec_qa_today" xml:space="preserve">
+    <value>Recent Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_rec_qa_week" xml:space="preserve">
+    <value>Recent Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_resolved_qa" xml:space="preserve">
+    <value>Resolved Questions{PG}</value>
+  </data>
+  <data name="meta_resolved_qa_month" xml:space="preserve">
+    <value>Resolved Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_resolved_qa_today" xml:space="preserve">
+    <value>Resolved Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_resolved_qa_week" xml:space="preserve">
+    <value>Resolved Questions - Added This Week{PG}</value>
+  </data>
+  <data name="meta_voted_qa" xml:space="preserve">
+    <value>Top Voted Questions{PG}</value>
+  </data>
+  <data name="meta_voted_qa_month" xml:space="preserve">
+    <value>Top Voted Questions - Added This Month{PG}</value>
+  </data>
+  <data name="meta_voted_qa_today" xml:space="preserve">
+    <value>Top Voted Questions - Added Today{PG}</value>
+  </data>
+  <data name="meta_voted_qa_week" xml:space="preserve">
+    <value>Top Voted Questions - Added This Week{PG}</value>
+  </data>
+  <data name="no_questions" xml:space="preserve">
+    <value>No Questions Asked Yet!</value>
+  </data>
+  <data name="Postanswer" xml:space="preserve">
+    <value>Post Answer</value>
+  </data>
+  <data name="qa_validation_msg" xml:space="preserve">
+    <value>You can't select best answer for this question</value>
+  </data>
+  <data name="qa_validation_msg_02" xml:space="preserve">
+    <value>You already add this question to your</value>
+  </data>
+  <data name="qa_validation_msg_03" xml:space="preserve">
+    <value>You can't remove selected answer</value>
+  </data>
+  <data name="qa_validation_msg_04" xml:space="preserve">
+    <value>Selected answer has been marked as best answer</value>
+  </data>
+  <data name="qa_validation_msg_05" xml:space="preserve">
+    <value>Selected answer has been unmarked as best answer</value>
+  </data>
+  <data name="question_msg_01" xml:space="preserve">
+    <value>Answer has been posted successfully on this question</value>
+  </data>
+  <data name="question_msg_02" xml:space="preserve">
+    <value>Answer has been posted but pending for moderator review</value>
+  </data>
+  <data name="question_msg_03" xml:space="preserve">
+    <value>Please write your answer</value>
+  </data>
+  <data name="question_msg_04" xml:space="preserve">
+    <value>Your answer has been updated successfully</value>
+  </data>
+  <data name="question_msg_05" xml:space="preserve">
+    <value>Selected Gallery Approval Pending - Wait For Side Administrator to Review Before Appear to Public.</value>
+  </data>
+  <data name="question_msg_06" xml:space="preserve">
+    <value>Question has been blocked or closed of administrator</value>
+  </data>
+  <data name="Tagsmessage01" xml:space="preserve">
+    <value>Enter tags separated by comma</value>
+  </data>
+  <data name="Writeanswerhere" xml:space="preserve">
+    <value>Write answer here</value>
+  </data>
+  <data name="_add_to_favorites" xml:space="preserve">
+    <value>Addtofavorites</value>
+  </data>
+  <data name="_answered" xml:space="preserve">
+    <value>Answered</value>
+  </data>
+  <data name="_answers" xml:space="preserve">
+    <value>Answers</value>
+  </data>
+  <data name="_ask" xml:space="preserve">
+    <value>Ask</value>
+  </data>
+  <data name="_asked_question_desc" xml:space="preserve">
+    <value>Put some detail here...</value>
+  </data>
+  <data name="_asked_question_title" xml:space="preserve">
+    <value>What's your question? be Specific</value>
+  </data>
+  <data name="_best_answer" xml:space="preserve">
+    <value>Best Answer</value>
+  </data>
+  <data name="_delete_answer" xml:space="preserve">
+    <value>Delete Answer</value>
+  </data>
+  <data name="_delete_question" xml:space="preserve">
+    <value>Delete Question</value>
+  </data>
+  <data name="_edit_answer" xml:space="preserve">
+    <value>Edit Answer</value>
+  </data>
+  <data name="_edit_question" xml:space="preserve">
+    <value>Edit Question</value>
+  </data>
+  <data name="_more_questions" xml:space="preserve">
+    <value>More Questions</value>
+  </data>
+  <data name="_post_answer" xml:space="preserve">
+    <value>Post Answer</value>
+  </data>
+  <data name="_qa_post_msg_01" xml:space="preserve">
+    <value>Title must be atleast 10 characters long</value>
+  </data>
+  <data name="_qa_status_blocked" xml:space="preserve">
+    <value>Question is blocked or not found!</value>
+  </data>
+  <data name="_qa_status_pending" xml:space="preserve">
+    <value>Question Pending Approval. </value>
+  </data>
+  <data name="_questions" xml:space="preserve">
+    <value>Questions</value>
+  </data>
+  <data name="_recent_questions" xml:space="preserve">
+    <value>Recent Questions</value>
+  </data>
+  <data name="_votes" xml:space="preserve">
+    <value>Votes</value>
+  </data>
+  <data name="_vote_down" xml:space="preserve">
+    <value>Vote Down</value>
+  </data>
+  <data name="_vote_up" xml:space="preserve">
+    <value>Vote Up</value>
+  </data>
+</root>

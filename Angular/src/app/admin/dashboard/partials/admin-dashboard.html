@@ -1,0 +1,17 @@
+<div class="row m-t-10 m-t-20" style="min-height: 500px;">
+  <div class="col-md-6 col-sm-12">
+    <div *ngIf="(configs$ | async).general.features.enable_videos">
+     
+      <div *ngIf="(configs$ | async).general.features.enable_qa">
+        <app-smqa-list
+          [pagesize]="4"
+          [type]="0"
+          [isAdmin]="isAdmin"
+          [title]="'Recent Questions'"
+          [rout_url]="'/qa'"
+          [browse_url]="'/qa'"
+        ></app-smqa-list>
+      </div>
+  
+  </div>
+</div>

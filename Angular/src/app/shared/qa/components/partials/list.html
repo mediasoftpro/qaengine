@@ -1,0 +1,91 @@
+<alert></alert>
+<app-loader *ngIf="loading$ | async"></app-loader>
+<div *ngIf="!(loading$ | async)">
+  <div *ngIf="(Data$ | async).length > 0">
+    <div class="videolist">
+      <div
+        class="m-b-20"
+        *ngFor="let item of Data$ | async; trackBy: getKey; let i = index"
+      >
+        <div class="m-b-5">
+          <div class="checkbox m-r-10 float-left" *ngIf="!PublicView">
+            <input
+              [(ngModel)]="item.Selected"
+              id="{{ item.id }}"
+              (ngModelChange)="checkChange()"
+              type="checkbox"
+            />
+            <label for="{{ item.id }}"></label>
+          </div>
+          <a
+            *ngIf="!isAdmin || PublicView"
+            class="lg-title float-left"
+            href="{{ item.url }}"
+            >{{ item.title }}</a
+          >
+          <a
+            *ngIf="!PublicView && isAdmin"
+            class="lg-title float-left"
+            [routerLink]="[route_path + 'profile/' + item.enc_id]"
+            >{{ item.title }}</a
+          >
+        </div>
+        <div class="clearfix"></div>
+
+        <p class="light-item">
+          Asked <span class="light" href>{{ item.customize_date }}</span>
+          <span *ngIf="item.author.firstname !== ''">
+            by
+            <a
+              *ngIf="isAdmin && !PublicView"
+              class="text-muted"
+              [routerLink]="[route_path + 'user/' + item.userid]"
+              >{{ item.author.firstname }} {{ item.author.firstname }}</a
+            >
+            <a
+              *ngIf="!isAdmin || PublicView"
+              class="text-muted"
+              href="{{ item.author_url }}"
+              >{{ item.author.firstname }} {{ item.author.firstname }}</a
+            >,
+          </span>
+          <a class="bold" href> {{ item.answers | number:'.2' }} answers</a>,
+          <a class="bold" href> {{ item.votes | number:'.2' }} votes</a>
+          <a
+            *ngIf="showReportLink && !PublicView"
+            [routerLink]="['/reports/abuse/' + AbuseContentType + '/' + item.enc_id]"
+            class="m-l-5"
+            ><i class="fa fa-flag" aria-hidden="true"></i
+          ></a>
+          <a
+            class="m-l-5"
+            *ngIf="type === 0 && !PublicView"
+            (click)="editRecord(item, $event); (false)"
+            href="#"
+          >
+            <i class="fa fa-pencil text-inverse m-r-10"></i>
+          </a>
+          <a
+            *ngIf="!PublicView"
+            class="m-l-5"
+            (click)="delete(item, i, $event); (false)"
+            href="#"
+          >
+            <i class="fa fa-close text-danger"></i>
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <app-norecord *ngIf="(Data$ | async).length === 0"></app-norecord>
+</div>
+
+<div class="text-center content-group-lg pt-20">
+  <pagination
+    [currentPage]="(pagination$ | async).currentPage"
+    [totalRecords]="(pagination$ | async).totalRecords"
+    [pageSize]="(pagination$ | async).pageSize"
+    (OnSelection)="PaginationChange($event)"
+  >
+  </pagination>
+</div>

@@ -1,0 +1,93 @@
+﻿@model Jugnoon.qa.Models.AccountqaModelView
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject IStringLocalizer<qaResource> qaResource
+@using  Jugnoon.qa
+@{
+    // activate qa tabs
+    ViewBag.qaTabCss = "active";
+    // setup search with qa
+    ViewBag.SearchType = 4;
+
+    var _bModel = new List<BreadItem>();
+    _bModel.Add(new BreadItem()
+    {
+        title = GeneralResource["_home"].Value,
+        url = Config.GetUrl()
+    });
+    _bModel.Add(new BreadItem()
+    {
+        title = qaResource["_questions"].Value,
+        url = Config.GetUrl("qa")
+    });
+
+    if (Model.Title != null)
+    {
+        var _title = Model.Title;
+        if (_title.Length > 50)
+        {
+            _title = _title.Substring(0, 50) + "...";
+        }
+
+        _bModel.Add(new BreadItem()
+        {
+            title = Model.Title,
+            url = QAUrls.Prepare_QA_Url(Model.Qid, Model.Title, "")
+        });
+    }
+
+    _bModel.Add(new BreadItem()
+    {
+        title = qaResource["_edit_answer"].Value,
+        isActive = true
+    });
+    var BreadCrumbViewModel = new BreadViewModel()
+    {
+        BreadItems = _bModel
+    };
+}
+<partial name="~/Views/Shared/_BreadCrumb.cshtml" model="BreadCrumbViewModel" />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            @await Html.PartialAsync("~/Views/question/partials/_editans.cshtml")
+        </div>
+        <div class="col-md-4">
+            @await Html.PartialAsync("~/Views/qa/partials/_Nav.cshtml", new Jugnoon.qa.Models.qaNavViewModel()
+           {
+               hideAds = false,
+               hideSearch = false,
+               hideArchives = true,
+               hideCategories = false,
+               hideTags = false,
+               searchTitle = GeneralResource["_search"].Value,
+               searchAction = "/qa/queryresult",
+               searchPlaceHolder = GeneralResource["_search"].Value,
+               Path = "qa/"
+           })
+        </div>
+    </div>
+</div>
+
+
+@section Styles {
+    @await Html.PartialAsync("~/views/shared/styles/wysibb.cshtml")
+}
+
+@section Scripts {
+    @await Html.PartialAsync("~/views/shared/scripts/wysibb.cshtml")
+    <script>
+        $(function () {
+
+            var textarea = document.getElementById('editor1');
+            sceditor.create(textarea, {
+                format: 'bbcode',
+                toolbar: 'bold,italic,underline|font,size,color|bulletlist,orderedlist,quote|code,link,image',
+            });
+
+        });
+
+    </script>
+
+}
+

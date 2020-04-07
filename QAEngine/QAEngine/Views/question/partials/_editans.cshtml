@@ -1,0 +1,42 @@
+﻿@model Jugnoon.qa.Models.AccountqaModelView
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject IStringLocalizer<qaResource> qaResource
+@using  Jugnoon.qa
+@if (Model.Message != null && Model.Message != "")
+{
+    @Html.Raw(Alerts.Prepare(Model.Message, Model.AlertType));
+}
+
+@if (Model.isAllowed)
+{
+    if (Model.isClosed == 0)
+    {
+        <h2 class="m-b-10">@qaResource["_edit_answer"].Value</h2>
+        <p class="m-b-10">
+            Question: <a href="@QAUrls.Prepare_QA_Url(Model.Qid, Model.Title, "")">@Model.Title</a>
+        </p>
+
+        using (Html.BeginForm("editanswer", "question", FormMethod.Post, new { }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.UserName)
+            @Html.HiddenFor(m => m.Qid)
+            @Html.HiddenFor(m => m.Aid)
+            @Html.HiddenFor(m => m.Answers)
+            @Html.HiddenFor(m => m.Title)
+            <div class="form-group">
+                @Html.TextAreaFor(model => model.Content, new { @id = "editor1", @class = "form-control", @rows = "8", placeholder = qaResource["Writeanswerhere"] })
+                @Html.ValidationMessageFor(m => m.Content)
+            </div>
+
+            <button class="btn btn-primary">
+                @GeneralResource["_submit"]
+            </button>
+        }
+    }
+    else
+    {
+        @await Html.PartialAsync("~/Views/partials/utility/_norecord.cshtml", new NoRecordModelView() { Message = Model.DetailMessage })
+    }
+}
+

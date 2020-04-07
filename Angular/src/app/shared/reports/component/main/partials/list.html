@@ -1,0 +1,49 @@
+<alert></alert>
+<app-loader *ngIf="loading$ | async"></app-loader>
+<div *ngIf="!(loading$ | async)">
+  <div *ngIf="(Data$ | async).length > 0">
+    <div class="videolist">
+      <div
+        class="m-b-20"
+        *ngFor="let item of Data$ | async; trackBy: getKey; let i = index"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <p class="lg-title m-b-5">
+              {{ item.reason }}
+            </p>
+            <p class="light-item m-b-5">
+                Submitted by
+                <a class="text-muted" href="{{ item.author_url }}"
+                  >{{ item.author.firstname }} {{ item.author.lastname }}</a
+                > at {{item.created_at | date: "fullDate"}}
+            </p>
+            <p class="light-item">
+              <button class="btn btn-primary" (click)="action()">
+                  Action
+              </button>
+              <a
+                class="m-l-5"
+                (click)="delete(item, i, $event); (false)"
+                href="#"
+              >
+                <i class="fa fa-close text-danger"></i>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-norecord *ngIf="(Data$ | async).length === 0"></app-norecord>
+</div>
+
+<div class="text-center content-group-lg pt-20">
+  <pagination
+    [currentPage]="(pagination$ | async).currentPage"
+    [totalRecords]="(pagination$ | async).totalRecords"
+    [pageSize]="(pagination$ | async).pageSize"
+    (OnSelection)="PaginationChange($event)"
+  >
+  </pagination>
+</div>

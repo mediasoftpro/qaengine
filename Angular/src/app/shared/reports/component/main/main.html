@@ -1,0 +1,20 @@
+
+<div class="card">
+  <div *ngIf="!isAccessGranted">
+    <h2 class="m-b-40 m-t-40 text-center">Access Denied</h2>
+  </div>
+  <div *ngIf="isAccessGranted">
+    <div class="row">
+      
+      <div class="col-md-12">
+       
+        <div class="card-body">
+          <app-abusereport-list
+            [route_path] = "route_path"
+            [isActionGranded]="isActionGranded"
+          ></app-abusereport-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

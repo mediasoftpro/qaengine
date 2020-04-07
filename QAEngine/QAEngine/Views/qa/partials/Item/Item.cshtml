@@ -1,0 +1,40 @@
+﻿@model Jugnoon.qa.Models.qaItemViewModel
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject IStringLocalizer<qaResource> qaResource
+@*
+    Core qa Item Design
+*@
+
+@{
+    string _answers = "0";
+    if (Model.Data.answers > 0)
+    {
+        _answers = string.Format("{0:#,###}", Model.Data.answers);
+    }
+
+    string _votes = "0";
+    if (Model.Data.votes > 0)
+    {
+        _votes = string.Format("{0:#,###}", Model.Data.votes);
+    }
+}
+@if (Model.ListObject.ListType == Jugnoon.Scripts.ListType.Links)
+{
+    // Questions Links Only
+    <a href="@Model.ProfileUrl" title="@Model.Data.title">@Model.Data.title</a>
+}
+else
+{
+    <div class="col-md-12 qa-item">
+        <a href="@Model.ProfileUrl" title="@Model.Data.title" class="title">@Model.Data.title</a>
+        <div>
+            @GeneralResource["_asked"] @Jugnoon.Utility.UtilityBLL.Generate_Date(Model.Data.created_at, Model.ListObject.DateFormat) by
+            <a class="light" href="@Model.AuthorUrl">@UserBLL.prepareUserName(Model.Data.author)</a>.
+
+            <span class="highlight">@_answers @qaResource["_answers"]</span>, <span class="highlight">@_votes @qaResource["_votes"]</span>
+        </div>
+    </div>
+
+}
+
+

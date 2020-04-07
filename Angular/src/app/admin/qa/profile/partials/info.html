@@ -1,0 +1,144 @@
+<div class="card">
+  <div class="card-body">
+    <h3>{{ Info.title }}</h3>
+    <p>
+      Asked: <span class="text-muted"><i class="fa fa-clock-o"></i></span>
+      {{ Info.created_at | date: "fullDate" }}
+    </p>
+    <p class="light">
+      <span class="badge badge-info m-r-5"
+        >{{ Info.answers | number:'.2' }} answers</span
+      >
+      <span class="badge badge-info m-r-5">{{ Info.votes | number:'.2' }} votes</span>
+      <span class="badge badge-info m-r-5">{{ Info.views | number:'.2' }} views </span>
+      <!--<span class="badge badge-info">{{Info.liked | number:0}} liked</span>-->
+      <span class="badge badge-info m-r-5"
+        >{{ Info.favorites | number:'.2' }} favorites</span
+      >
+    </p>
+
+    <div class="m-t-10 row">
+      <div class="col-md-10">
+        <div [innerHTML]="Info.description"></div>
+
+        <hr />
+        <div *ngIf="Info.category_list.length > 0">
+          <div class="m-b-10">
+            Categories
+          </div>
+          <div class="m-b-10">
+            <span *ngFor="let item of Info.category_list">
+              <a
+                class="btn btn-info  m-r-5"
+                [routerLink]="['/blogs/category/' + item.category.term]"
+                >{{ item.category.title }}</a
+              >
+            </span>
+          </div>
+          <hr />
+        </div>
+        <div *ngIf="Info.tags_arr.length > 0">
+          <div class="m-b-10">
+            Tags:
+          </div>
+          <span *ngFor="let tag of Info.tags_arr">
+            <a
+              class="btn btn-danger  m-r-5"
+              [routerLink]="['/qa/tag/' + tag.slug]"
+              >{{ tag.title }}</a
+            >
+          </span>
+        </div>
+        <hr />
+
+        <a class="btn btn-primary" [routerLink]="['/qa/user/' + Info.userid]"
+          >User Asked Questions</a
+        >
+
+        <hr />
+        <h4>Status</h4>
+        <div>
+          <span class="badge badge-danger  m-r-5" *ngIf="Info.isenabled == 0"
+            >Blocked</span
+          >
+          <span class="badge badge-success  m-r-5" *ngIf="Info.isenabled == 1"
+            >Active</span
+          >
+          <span class="badge badge-info  m-r-5" *ngIf="Info.isapproved == 1"
+            >Approved</span
+          >
+          <span class="badge badge-warning  m-r-5" *ngIf="Info.isapproved == 0"
+            >Under Review</span
+          >
+          <span class="badge badge-primary  m-r-5" *ngIf="Info.isfeatured == 1"
+            >Featured</span
+          >
+          <span class="badge badge-danger  m-r-5" *ngIf="Info.isadult == 1"
+            >Adult</span
+          >
+          <span class="badge badge-danger  m-r-5" *ngIf="Info.isresolved == 1"
+            >Resolved</span
+          >
+        </div>
+      </div>
+      <div class="col-md-2 text-center">
+        <a class="m-b-10" [routerLink]="['/users/profile/' + Info.author.id]">
+          <img
+            class="img-thumbnail"
+            src="{{ Info.author.img_url }}"
+            alt="{{ Author_FullName }}"
+          />
+        </a>
+        <a
+          [routerLink]="['/users/profile/' + Info.author.id]"
+          class="card-title"
+          >{{ Author_FullName }}</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr />
+<h2>{{ Info.qa_answers.length }} Answers</h2>
+<div *ngIf="Info.qa_answers.length > 0">
+  <div class="card" *ngFor="let answer of Info.qa_answers; let i = index">
+    <div class="card-body">
+      <div class="row">
+          <div class="col-md-10">
+
+          </div>
+          <div class="col-md-2">
+              <a
+              class="m-l-5"
+              (click)="editAnswer(answer, $event); (false)"
+              href="#"
+            >
+              <i class="fa fa-pencil text-inverse m-r-10"></i>
+            </a>
+            <a
+              class="m-l-5"
+              (click)="delete(answer, i, $event); (false)"
+              href="#"
+            >
+              <i class="fa fa-close text-danger"></i>
+            </a>
+          </div>
+      </div>
+      <div [innerHTML]="answer.description"></div>
+      <hr />
+      Posted
+      <a class="light" href>{{ answer.customize_date }}</a> by
+      <a *ngIf="answer.author && answer.author.firstname !== ''" [routerLink]="['/users/profile/' + answer.userid]"
+        >{{ answer.author.firstname }} {{answer.author.lastname }}</a
+      >
+      <span class="badge badge-info m-l-5"> {{ answer.votes | number:'.2' }} votes</span>
+
+    </div>
+  </div>
+</div>
+
+<hr />
+<div class="m-b-10 m-t-10">
+  <button (click)="PostAnswer()" class="btn btn-primary">Post Answer</button>
+</div>

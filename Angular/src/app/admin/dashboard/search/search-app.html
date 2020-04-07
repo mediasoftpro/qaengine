@@ -1,0 +1,8 @@
+<div [ngSwitch]="config.getGlobalVar('searchparams').type">
+ 
+  <div *ngSwitchCase="'qa'">
+    <app-qa-search></app-qa-search>
+  </div>
+  
+
+</div>

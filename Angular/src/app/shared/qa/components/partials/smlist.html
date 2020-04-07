@@ -1,0 +1,44 @@
+<app-loader *ngIf="loaddata"></app-loader>
+<div class="card m-b-10" *ngIf="!loaddata && Data.length > 0">
+  <div class="card-body">
+    <h4 class="card-title">
+      {{title}} <span *ngIf="stats > 0">({{stats}})</span>
+    </h4>
+    <div class="row m-b-10" *ngIf="Data.length > 0">
+      <div class="col-md-12 videolist" *ngFor="let item of Data; let i = index">
+        <div class="m-b-5">
+          <a
+            *ngIf="isAdmin"
+            class="lg-title"
+            href="{{ item.url }}"
+            >{{ item.title }}</a
+          >
+          <a
+            *ngIf="!isAdmin"
+            class="lg-title"
+            [routerLink]="['/qa/profile/' + item.enc_id]"
+            >{{ item.title }}</a
+          >
+        </div>
+        <p class="light-item">
+          Asked <span class="light" href>{{ item.customize_date }}</span>
+          <a class="bold" href> {{ item.answers | number:'.2' }} answers</a>,
+          <a class="bold" href> {{ item.votes | number:'.2' }} votes</a>
+          <a
+            class="m-l-5"
+            *ngIf="type === 0"
+            [routerLink]="[rout_url +'/process/' + item.enc_id]"
+            href="#"
+          >
+            <i class="fa fa-pencil text-inverse m-r-10"></i>
+          </a>
+          <a class="m-l-5" (click)="delete(item, i, $event); (false)" href="#">
+            <i class="fa fa-close text-danger"></i>
+          </a>
+        </p>
+      </div>
+    </div>
+    <a [routerLink]="[browse_url]" class="card-link pull-right">View All</a>
+    <div class="clearfix"></div>
+  </div>
+</div>

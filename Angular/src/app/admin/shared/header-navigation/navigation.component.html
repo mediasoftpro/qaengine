@@ -1,0 +1,344 @@
+<div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+  <div class="container">
+    <a routerLink="" class="navbar-brand">{{ config.getGlobalVar("title") }}</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarResponsive"
+      aria-controls="navbarResponsive"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/users"
+            >Users</a
+          >
+        </li>
+        <li
+          class="nav-item"
+          *ngIf="(configs$ | async).general.features.enable_videos"
+        >
+          <a
+            class="nav-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/videos"
+            >Videos</a
+          >
+        </li>
+        <li
+          class="nav-item"
+          *ngIf="(configs$ | async).general.features.enable_photos"
+        >
+          <a
+            class="nav-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/photos"
+            >Photos</a
+          >
+        </li>
+        <li
+          class="nav-item"
+          *ngIf="(configs$ | async).general.features.enable_artist"
+        >
+          <a
+            class="nav-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/artists"
+            >Artists</a
+          >
+        </li>
+        <li
+          class="nav-item dropdown"
+          *ngIf="(configs$ | async).general.features.enable_forums"
+        >
+          <a
+            class="nav-link dropdown-toggle"
+            data-toggle="dropdown"
+            href="#"
+            id="download"
+            >Forums <span class="caret"></span
+          ></a>
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/forumtopics"
+              >Topics</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/forums"
+              >Forums</a
+            >
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          *ngIf="(configs$ | async).general.features.enable_qa"
+        >
+          <a
+            class="nav-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/qa"
+            >QA</a
+          >
+        </li>
+        <li
+          class="nav-item"
+          *ngIf="(configs$ | async).general.features.enable_polls"
+        >
+          <a
+            class="nav-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/polls"
+            >Polls</a
+          >
+        </li>
+        <li
+        class="nav-item dropdown"
+        *ngIf="(configs$ | async).general.features.enable_products"
+      >
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+          >Products <span class="caret"></span
+        ></a>
+        <div class="dropdown-menu">
+          <a
+            class="dropdown-item"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/products/items"
+            >Products</a
+          >
+          <a
+            class="dropdown-item"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/products/brands"
+            >Brands</a
+          >
+          <a
+            class="dropdown-item"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/products/vouchers"
+            >Vouchers</a
+          >
+          <a
+            class="dropdown-item"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/products/orders"
+            >Orders</a
+          >
+          <a
+            class="dropdown-item"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/products/reports"
+            >Reports</a
+          >
+
+        </div>
+      </li>
+        <li
+          class="nav-item dropdown"
+          *ngIf="(configs$ | async).general.features.enable_classified"
+        >
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+            >Classified <span class="caret"></span
+          ></a>
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/classified/ads"
+              >Ad Listings</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/classified/agencies"
+              >Agencies</a
+            >
+          </div>
+        </li>
+        <li
+          class="nav-item"
+          *ngIf="(configs$ | async).general.features.enable_blogs"
+        >
+          <a
+            class="nav-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/blogs"
+            >Blogs</a
+          >
+        </li>
+        <li
+          class="nav-item"
+          *ngIf="(configs$ | async).general.features.enable_wiki_glossary"
+        >
+          <a
+            class="nav-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            routerLink="/wiki"
+            >Wiki</a
+          > <!-- {{ "_MENU._WIKI" | translate: param }} -->
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            data-toggle="dropdown"
+            href="#"
+            id="settings"
+            >Settings
+            <span class="caret"></span
+          ></a>
+          <div class="dropdown-menu" aria-labelledby="settings">
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/categories"
+              >Categories</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/locations"
+              >Locations</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/tags"
+              >Tags</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/configurations"
+              >Configurations</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/gamify"
+              >Gamify</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/advertisements"
+              >Advertisement</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/blockip"
+              >Block IP</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/dictionary"
+              >Dictionary</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/language"
+              >Language</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/log"
+              >Log</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/mailtemplates"
+              >Mail Templates</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/roles"
+              >Roles</a
+            >
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/settings/packages"
+              >Packages</a
+            >
+          </div>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav ml-auto">
+        <!--<partial name="_Language" />-->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            data-toggle="dropdown"
+            href="#"
+            id="download"
+            >Account <span class="caret"></span
+          ></a>
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="active"
+              routerLink="/users/profile/{{ (auth$ | async).User.id }}"
+              >My Profile</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item"
+              href="/signout"
+            >
+              Sign Out</a
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

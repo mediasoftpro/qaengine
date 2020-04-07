@@ -1,0 +1,170 @@
+﻿@model Jugnoon.qa.Models.AnswerActionViewModel
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject IStringLocalizer<qaResource> qaResource
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{
+    string voteup_css = " likeactv2";
+    string votedown_css = " dislikeactv2";
+    string flag_css = " flagactv2";
+    string mans_css = " bansact";
+    string Current_UserName = "";
+    if (!User.Identity.IsAuthenticated)
+    {
+        //if (Config.isLoginRequired_Rating())
+        //{
+        // admin can toggle on | off login required option
+        voteup_css = " nologincss";
+        votedown_css = " nologincss";
+        //}
+        flag_css = " nologincss";
+        mans_css = " nologincss";
+    }
+    else
+    {
+        Model.Current_UserName = UserManager.GetUserId(User);
+    }
+
+    string _rootpath = Config.GetUrl();
+
+    string btn_size_css = "";
+    switch (Model.ToolbarSize)
+    {
+        case 0:
+            btn_size_css = "btn-sm";
+            break;
+        case 1:
+            btn_size_css = "";
+            break;
+        case 2:
+            btn_size_css = "btn-lg";
+            break;
+    }
+
+    string btn_theme_css = "btn btn-secondary";
+    if (Model.ToolbarTheme > 0)
+    {
+
+        switch (Model.ToolbarTheme)
+        {
+            case 1:
+                btn_theme_css = "btn btn-secondary";
+                break;
+            case 2:
+                btn_theme_css = "btn-warning ";
+                break;
+            case 3:
+                btn_theme_css = "btn-danger ";
+                break;
+            case 4:
+                btn_theme_css = "btn-info ";
+                break;
+            case 5:
+                btn_theme_css = "btn-inverse ";
+                break;
+            case 6:
+                btn_theme_css = "btn-success ";
+                break;
+        }
+    }
+    var rating_handler_path = "";
+    var rating_parameters = "";
+    // if rating enabled for selected content
+    rating_handler_path = _rootpath + "question/votes";
+    int _type = 1; // 0: question 1: answer
+    int _rtype = 13; // 12: question, 13: answer
+    rating_parameters = "t=" + _type + "&usr=" + Current_UserName + "&rt=" + _rtype;
+}
+<div class="m-t-10 m-b-40 btn-toolbar actionbar">
+
+    <div class="btn-group">
+        <button id="lk_0" class="btn @btn_theme_css @btn_size_css @voteup_css ilike" data-destination="action_box_@Model.ContentID"
+                data-path="@rating_handler_path" data-param="@rating_parameters" title="@qaResource["_vote_up"].Value">
+            <i class="fa fa-chevron-up"></i>
+        </button>
+        @{
+            string btnvotetheme = "btn-success";
+            if (Model.Votes < 0)
+            {
+                btnvotetheme = "btn-danger";
+            }
+            else if (Model.Votes == 0)
+            {
+                btnvotetheme = "btn-info";
+            }
+
+        }
+        <button id="lk_2" class="btn @btnvotetheme @btn_size_css" title="@Model.Votes @qaResource["_votes"].Value" disabled>@Model.Votes</button>
+        <button id="lk_1" class="btn @btn_theme_css @btn_size_css @votedown_css m-r-5 idislike" data-destination="action_box_@Model.ContentID" data-path="@rating_handler_path" data-param="@rating_parameters"
+                title="@qaResource["_votes_down"]">
+            <i class="fa fa-chevron-down"></i>
+        </button>
+
+    </div>
+    @if (Current_UserName == Model.Author_UserName) // author of question, can mark answer as best answer
+    {
+        // question is not resolved yet
+        <div class="btn-group">
+            @{
+                string bans_handler_path = _rootpath + "question/bans";
+                string bans_handler_params = "res=" + Model.isResolved + "&usr=" + Current_UserName + "&id=" + Model.Qid + "&id=" + Model.ContentID + "&ausr=" + Model.UserName;
+
+                // only owner of answer can see Model button
+                string _btn_them_css = btn_theme_css;
+                string _best_answer_css = mans_css;
+
+                if (Model.isAnswer == 1)
+                {
+                    _best_answer_css = " ubansact";
+                    _btn_them_css = " btn-success ";
+                }
+                if (Model.isAnswer == 1)
+                {
+                    // reset class themes
+                    _best_answer_css = mans_css;
+                    _btn_them_css = btn_theme_css;
+                }
+
+            }
+            <button class="btn @_btn_them_css @btn_size_css @_best_answer_css m-r-5" title="@qaResource["Markasbestanswer"].Value"
+                    data-destination="action_box_@Model.ContentID" data-path="@bans_handler_path" data-param="@bans_handler_params">
+                <i class="fa fa-check"></i> @qaResource["Markasanswer"].Value
+            </button>
+        </div>
+    }
+
+    @if (Current_UserName == Model.UserName) // author of answer -> can edit / delete answer
+    {
+        // edit / delete link
+        <div class="btn-group">
+            <a href="@Config.GetUrl("question/editanswer/" + Model.ContentID + "/" + Model.Qid)" title="@qaResource["_edit_answer"].Value"
+               class="btn @btn_theme_css @btn_size_css">@GeneralResource["_edit"]</a>
+            @{
+                var delete_handler_path = _rootpath + "question/remove";
+                var delete_handler_parms = "usr=" + Current_UserName + "&id=" + Model.Qid + "&ans=" + Model.Answers + "&id=" + Model.ContentID + "&ausr=" + Model.UserName;
+            }
+            <button title=" @qaResource["_delete_answer"]" class="btn btn-danger @btn_size_css m-r-5 dans"
+                    data-destination="action_box_@Model.ContentID" data-path="@delete_handler_path" data-param="@delete_handler_parms">
+                @GeneralResource["_delete"]
+                </button>
+            </div>
+        }
+    @if (Model.isFlag)
+    {
+        var flag_post_path = _rootpath + "handler/flag";
+        int _atype = 11; //10 question, 11: answer
+                         // answer
+        var flag_post_parameters = "t=" + _atype + "&usr=" + Current_UserName + "&ctp=answer&id=" + Model.ContentID;
+
+        <div class="btn-group">
+            <button class="btn @btn_theme_css @btn_size_css @flag_css m-r-5" data-destination="action_box_@Model.ContentID"
+                    data-path="@flag_post_path" data-param="@flag_post_parameters" title="@qaResource["Flagasinappropriate"].Value">
+                <i class="fa fa-flag"></i>
+            </button>
+        </div>
+    }
+</div>
+<div id="action_box_@Model.ContentID">
+
+</div>
+

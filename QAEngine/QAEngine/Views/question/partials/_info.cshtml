@@ -1,0 +1,81 @@
+﻿@using  Jugnoon.qa
+@model Jugnoon.qa.Models.InfoModelView
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Registration> registrationSettings
+@{
+    var PostUrl = QAUrls.Prepare_QA_Url(Model.qid, Model.title, "");
+    <div class="">
+
+        <div class="row">
+            @{
+                //var image_src = PhotoUrlConfig.PreparePhotoUrl(Model.UserName, Model.PictureName, 0, 0);
+                // question description
+                string _desc = "";
+                if (Model.description.Length > 0)
+                {
+                    _desc = UGeneral.Prepare_Description(Model.description, 0);
+                }
+                else
+                {
+                    _desc = "no question description";
+                }
+            }
+
+            <div class="col-md-12">
+                <h2 class="m-t-10 m-b-20">@Model.title</h2>
+                <div class="m-b-5">
+                    @Html.Raw(_desc)<br />
+
+                    <span class="m-b-5">@GeneralResource["_asked"].Value: <strong>@UtilityBLL.Generate_Date(Model.created_at, 2)</strong></span>
+                    by <a href="@UserUrlConfig.ProfileUrl(Model.author, registrationSettings.Value.uniqueFieldOption)">@UserBLL.prepareUserName(Model.author)</a>
+                </div>
+
+                @{
+                    var counter = 0;
+                }
+                @if (Model.category.Count > 0)
+                {
+                    @GeneralResource["_categories"].Value
+                    <p class="m-b-5">
+
+                        @foreach (var category in Model.category)
+                        {
+                            if (counter > 0)
+                            {
+                                @Html.Raw(", ")
+                            }
+                            <a href="@CategoryUrlConfig.PrepareUrl(category.category.term, "/qa")"
+                               title="@category.category.title">@category.category.title</a>
+                            counter++;
+                        }
+                    </p>
+                }
+
+                @if (Model.tags != "")
+                {
+                    <p class="m-b-5">
+                        @GeneralResource["_tags"].Value
+                        @{
+                            counter = 0;
+                            var tag_list = Model.tags.ToString().Split(char.Parse(","));
+                            foreach (var tag in tag_list)
+                            {
+                                if (counter > 0)
+                                {
+                                    @Html.Raw(", ")
+                                }
+                                <a href="@TagUrlConfig.PrepareUrl(tag, "/qa")" title="@tag">@tag</a>
+                                counter++;
+                            }
+                        }
+                    </p>
+                }
+
+
+            </div>
+
+        </div>
+    </div>
+
+}
+

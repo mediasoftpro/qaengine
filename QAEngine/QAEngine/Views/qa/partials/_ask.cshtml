@@ -1,0 +1,75 @@
+﻿@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject IStringLocalizer<qaResource> qaResource
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.General> generalSettings
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Features> featureSettings
+@model Jugnoon.qa.Models.AskModelView
+
+@if (Model.Message != null && Model.Message != "")
+{
+    @Html.Raw(Alerts.Prepare(Model.Message, Model.AlertType));
+}
+@if (Model.PostAccess)
+{
+    <form asp-controller="qa" asp-action="ask" method="post">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.UserName)
+        @Html.HiddenFor(m => m.isAdmin)
+        @Html.HiddenFor(m => m.Qid)
+        @Html.HiddenFor(m => m.PostAccess)
+        <div class="box">
+            @if (Model.HeadingTitle != "")
+            {
+                <h2 class="m-b-20">@Model.HeadingTitle</h2>
+            }
+            <div class="form-group">
+                <label for="@Model.Title">
+                    @GeneralResource["_title"].Value:
+                </label>
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = qaResource["_asked_question_title"].Value })
+                @Html.ValidationMessageFor(m => m.Title)
+            </div>
+            <div class="form-group">
+                <label class="sr-only">
+                    @GeneralResource["_detail"] :
+                </label>
+                @Html.TextAreaFor(model => model.Description, new { @id = "editor1", @class = "form-control", @rows = "8", placeholder = qaResource["_asked_question_desc"].Value })
+            </div>
+
+            @if (featureSettings.Value.enable_tags)
+            {
+                <div class="form-group">
+                    <label for="@Model.Tags">
+                        @GeneralResource["_labels"].Value:
+                    </label>
+                    @Html.TextBoxFor(m => m.Tags, new { @class = "form-control", placeholder = qaResource["Tagsmessage01"].Value })
+                </div>
+            }
+
+
+            @if (featureSettings.Value.enable_categories)
+            {
+                // multi select category listing
+                <div class="form-group">
+                    <label>
+                        @GeneralResource["_select"]:
+                    </label>
+                    @Html.ListBoxFor(m => m.Categories, new SelectList(Model.CategoryList, "term", "title"),
+                                        new { @class = "form-control form-control-chosen", multiple = "multiple", size = 8 }
+                                        )
+                </div>
+            }
+
+
+            <button class="btn btn-primary">@GeneralResource["_submit"].Value</button>
+        </div>
+    </form>
+
+}
+else
+{
+    @await Html.PartialAsync("~/Views/partials/utility/_norecord.cshtml", new NoRecordModelView() { Message = Model.PostMessage })
+}
+
+
+
+

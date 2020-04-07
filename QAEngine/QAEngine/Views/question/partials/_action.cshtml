@@ -1,0 +1,195 @@
+﻿@model Jugnoon.qa.Models.qaActionViewModel
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject IStringLocalizer<qaResource> qaResource
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+<div id="vsk_action_mod">
+    <div id="widget">
+        @{
+            string voteup_css = " likeactv2";
+            string votedown_css = " dislikeactv2";
+            string fav_css = " favactv2";
+            string flag_css = " flagactv2";
+            string Current_UserName = "";
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                //if (Config.isLoginRequired_Rating())
+                //{
+                // admin can toggle on | off login required option
+                voteup_css = " nologincss";
+                votedown_css = " nologincss";
+                //}
+                fav_css = " nologincss";
+                flag_css = " nologincss";
+            }
+            else
+            {
+                Model.Current_UserName = UserManager.GetUserId(User);
+            }
+            string _rootpath = Config.GetUrl();
+
+            string btn_size_css = "";
+            switch (Model.ToolbarSize)
+            {
+                case 0:
+                    btn_size_css = "btn-sm";
+                    break;
+                case 1:
+                    btn_size_css = "";
+                    break;
+                case 2:
+                    btn_size_css = "btn-lg";
+                    break;
+            }
+            string btn_theme_css = "btn btn-secondary";
+            if (Model.ToolbarTheme > 0)
+            {
+
+                switch (Model.ToolbarTheme)
+                {
+                    case 1:
+                        btn_theme_css = "btn btn-secondary";
+                        break;
+                    case 2:
+                        btn_theme_css = "btn-warning ";
+                        break;
+                    case 3:
+                        btn_theme_css = "btn-danger ";
+                        break;
+                    case 4:
+                        btn_theme_css = "btn-info ";
+                        break;
+                    case 5:
+                        btn_theme_css = "btn-inverse ";
+                        break;
+                    case 6:
+                        btn_theme_css = "btn-success ";
+                        break;
+                }
+            }
+        }
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="m-t-10 m-b-10 btn-toolbar actionbar">
+
+                    @{
+                        string _disabled = "";
+                        if (Model.isRating == 0)
+                        {
+                            _disabled = " disabled";
+                        }
+
+                        var rating_handler_path = _rootpath + "question/votes";
+                        var rating_parameters = "t=" + Model.Type + "&id=" + Model.ContentID + "&usr=" + Model.Current_UserName + "&vt=" + Model.Votes + "&ausr=" + Model.UserName;
+
+                    }
+
+                    <div class="btn-group">
+                        <button id="lk_0" class="btn @btn_theme_css @btn_size_css @voteup_css ilike" data-destination="action_box" data-path="@rating_handler_path" data-param="@rating_parameters" title="@qaResource["_vote_up"].Value @_disabled"><i class="fa fa-chevron-up"></i></button>
+                        @{
+                            string btnvotetheme = "btn-success";
+                            if (Model.Votes < 0)
+                            {
+                                btnvotetheme = "btn-danger";
+                            }
+                            else if (Model.Votes == 0)
+                            {
+                                btnvotetheme = "btn-info";
+                            }
+
+                        }
+
+                        <button id="lk_2" class="btn @btnvotetheme @btn_size_css" title="@Model.Votes Votes @_disabled">@Model.Votes</button>
+                        <button id="lk_1" class="btn @btn_theme_css @btn_size_css @votedown_css m-r-5 idislike" data-destination="action_box" data-path="@rating_handler_path" data-param="@rating_parameters" title="@qaResource["_vote_down"].Value @_disabled"><i class="fa fa-chevron-down"></i></button>
+
+                    </div>
+
+                    @if (Model.Current_UserName == Model.UserName) // author of question, can mark answer as best answer
+                    {
+                        // edit / delete link
+                        <div class="btn-group">
+                            <a href="@Config.GetUrl("qa/ask/" + Model.ContentID)" title="@qaResource["_edit_question"].Value" class="btn @btn_theme_css @btn_size_css">@GeneralResource["_edit"]</a>
+                            @{
+                                var delete_handler_path = _rootpath + "qa/remove";
+                                var delete_handler_parms = "usr=" + Current_UserName + "&id=" + Model.ContentID;
+                            }
+                            <button title=" @qaResource["_delete_question"].Value" class="btn btn-danger @btn_size_css m-r-5 dans" data-destination="action_box" data-path="@delete_handler_path" data-param="@delete_handler_parms">@GeneralResource["_delete"].Value</button>
+                        </div>
+                    }
+
+                    @if (Model.isFavorites)
+                    {
+                        var favorite_handler_path = _rootpath + "question/fav";
+                        var favorite_parameters = "id=" + Model.ContentID + "&usr=" + Model.Current_UserName + "&ausr=" + Model.UserName + "&favt=" + Model.Favorites;
+
+                        <div class="btn-group">
+                            <div class="dropdown">
+                                <button class="btn @btn_theme_css @btn_size_css dropdown-toggle m-r-5" id="addtofaoritedrp" data-toggle="dropdown" title="Add to favorites">Add to <span class="caret"></span></button>
+                                <div class="dropdown-menu" aria-labelledby="addtofaoritedrp">
+                                    @if (Model.isFavorites)
+                                    {
+                                        <a class="dropdown-item @fav_css" data-destination="action_box" data-path="@favorite_handler_path" data-param="@favorite_parameters" href="#">
+                                            @qaResource["_add_to_favorites"].Value
+                                        </a>
+
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.isShare)
+                    {
+                        var share_path = _rootpath + "handler/share";
+                        var share_parameters = "tp=question";
+                        <div class="btn-group">
+                            <button class="btn @btn_theme_css @btn_size_css m-r-5 ishare" data-destination="action_box" data-path="@share_path" data-param="@share_parameters" title="@GeneralResource["_share_this"]">@GeneralResource["_share"]</button>
+                        </div>
+                    }
+
+                    @if (Model.isFlag)
+                    {
+                        var flag_post_path = _rootpath + "handler/flag";
+                        var flag_post_parameters = "";
+                        if (Model.Type == 0)
+                        {
+                            // question
+                            flag_post_parameters = "t=10&id=" + Model.ContentID + "&usr=" + Model.Current_UserName + "&ctp=question";
+                        }
+                        else
+                        {
+                            // answer
+                            flag_post_parameters = "t=10&id=" + Model.ContentID + "&usr=" + Model.Current_UserName + "&ctp=answer";
+                        }
+                        <div class="btn-group">
+                            <button class="btn @btn_theme_css @btn_size_css @flag_css m-r-5" title="@qaResource["Flagasinappropriate"].Value" data-destination="action_box" data-path="@flag_post_path" data-param="@flag_post_parameters"><i class="fa fa-flag"></i></button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                @if (Model.isViews)
+                {
+                    string _views = "0";
+                    if (Model.Views > 0)
+                    {
+                        _views = string.Format("{0:#,###}", Model.Views);
+                    }
+
+                    <div class="float-right m-t-5">
+                        <span style="font-size:18px;" class="text-right">@_views @GeneralResource["_views"]</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+    <div id="action_box" class="m-t-10">
+    </div>
+</div>
+
+

@@ -1,0 +1,45 @@
+﻿@model Jugnoon.qa.Models.AccountqaModelView
+@inject IStringLocalizer<qaResource> qaResource
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@{
+    if (Model.EditMode)
+    {
+        ViewBag.Title = qaResource["_edit_question"].Value;
+    }
+
+}
+
+@if (Model.Message != null && Model.Message != "")
+{
+    @Html.Raw(Alerts.Prepare(Model.Message, Model.AlertType));
+}
+
+@if (Model.isAllowed)
+{
+    if (Model.isClosed == 0)
+    {
+        <h2 class="mb-sm mt-md"> @Model.HeadingTitle</h2>
+
+        using (Html.BeginForm("post", "question", FormMethod.Post, new { }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.UserName)
+            @Html.HiddenFor(m => m.AuthorUserName)
+            @Html.HiddenFor(m => m.Answers)
+            @Html.HiddenFor(m => m.Aid)
+            @Html.HiddenFor(m => m.Qid)
+            @Html.HiddenFor(m => m.EditMode)
+            @Html.HiddenFor(m => m.Title)
+            <div class="form-group">
+                @Html.TextAreaFor(model => model.Content, new { @id = "editor1", @class = "form-control", @rows = "8", placeholder = qaResource["Writeanswerhere"] })
+                @Html.ValidationMessageFor(m => m.Content)
+            </div>
+
+            <button class="btn btn-primary">
+                @GeneralResource["_submit"].Value
+            </button>
+        }
+    }
+}
+
+
