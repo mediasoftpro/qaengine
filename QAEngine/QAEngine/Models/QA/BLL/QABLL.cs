@@ -410,24 +410,7 @@ namespace Jugnoon.qa
         public static IQueryable<QAQueryEntity> processOptionalConditions(IQueryable<QAQueryEntity> collectionQuery, QAEntity query)
         {
             if (query.order != "")
-            {
-                var orderlist = query.order.Split(char.Parse(","));
-                foreach (var orderItem in orderlist)
-                {
-                    if (orderItem.Contains("asc") || orderItem.Contains("desc"))
-                    {
-                        var ordersplit = query.order.Split(char.Parse(" "));
-                        if (ordersplit.Length > 1)
-                        {
-                            collectionQuery = AddSortOption(collectionQuery, ordersplit[0], ordersplit[1]);
-                        }
-                    }
-                    else
-                    {
-                        collectionQuery = AddSortOption(collectionQuery, orderItem, "");
-                    }
-                }
-            }
+                collectionQuery = (IQueryable<QAQueryEntity>)collectionQuery.Sort(query.order);
 
             if (query.id == 0)
             {
@@ -444,15 +427,6 @@ namespace Jugnoon.qa
             return collectionQuery;
         }
 
-        private static IQueryable<QAQueryEntity> AddSortOption(IQueryable<QAQueryEntity> collectionQuery, string field, string direction)
-        {
-            var reverse = false;
-            if (direction == "desc")
-                reverse = true;
-
-            return (IQueryable<QAQueryEntity>)collectionQuery.Sort(field, reverse);
-
-        }
         public static System.Linq.Expressions.Expression<Func<QAQueryEntity, bool>> returnWhereClause(QAEntity entity)
         {
             var where_clause = PredicateBuilder.New<QAQueryEntity>(true);

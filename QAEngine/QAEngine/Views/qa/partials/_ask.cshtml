@@ -51,7 +51,7 @@
                 // multi select category listing
                 <div class="form-group">
                     <label>
-                        @GeneralResource["_select"]:
+                        @GeneralResource["_select"].Value:
                     </label>
                     @Html.ListBoxFor(m => m.Categories, new SelectList(Model.CategoryList, "term", "title"),
                                         new { @class = "form-control form-control-chosen", multiple = "multiple", size = 8 }

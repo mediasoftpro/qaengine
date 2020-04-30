@@ -42,6 +42,10 @@ namespace Jugnoon.Attributes
                 variable_type = entity.variable_type,
                 min = entity.min,
                 max = entity.max,
+                postfix = UtilityBLL.processNull(entity.postfix, 0),
+                prefix = UtilityBLL.processNull(entity.prefix, 0),
+                tooltip = UtilityBLL.processNull(entity.tooltip, 0),
+                url = UtilityBLL.processNull(entity.url, 0),
                 helpblock = UtilityBLL.processNull(entity.helpblock, 0),
                 icon = entity.icon
             };
@@ -72,6 +76,10 @@ namespace Jugnoon.Attributes
                     item.icon = entity.icon;
                     item.min = entity.min;
                     item.max = entity.max;
+                    item.postfix = UtilityBLL.processNull(entity.postfix, 0);
+                    item.prefix = UtilityBLL.processNull(entity.prefix, 0);
+                    item.tooltip = UtilityBLL.processNull(entity.tooltip, 0);
+                    item.url = UtilityBLL.processNull(entity.url, 0);
                     item.helpblock = UtilityBLL.processNull(entity.helpblock, 0);
                     context.Entry(item).State = EntityState.Modified;
                     await context.SaveChangesAsync();
@@ -193,6 +201,10 @@ namespace Jugnoon.Attributes
                 helpblock = p.helpblock,
                 min = p.min,
                 max = p.max,
+                postfix = p.postfix,
+                prefix = p.prefix,
+                tooltip = p.tooltip,
+                url = p.url,
                 icon = p.icon
             }).ToListAsync();
         }
@@ -200,25 +212,7 @@ namespace Jugnoon.Attributes
         private static IQueryable<JGN_Attr_Attributes> processOptionalConditions(IQueryable<JGN_Attr_Attributes> collectionQuery, AttrAttributeEntity query)
         {
             if (query.order != "")
-            {
-                var orderlist = query.order.Split(char.Parse(","));
-                foreach (var orderItem in orderlist)
-                {
-                    if (orderItem.Contains("asc") || orderItem.Contains("desc"))
-                    {
-                        var ordersplit = query.order.Split(char.Parse(" "));
-                        if (ordersplit.Length > 1)
-                        {
-                            collectionQuery = AddSortOption(collectionQuery, ordersplit[0], ordersplit[1]);
-                        }
-                    }
-                    else
-                    {
-                        collectionQuery = AddSortOption(collectionQuery, orderItem, "");
-                    }
-                }
-
-            }
+                collectionQuery = (IQueryable<JGN_Attr_Attributes>)collectionQuery.Sort(query.order);
 
             // skip logic (page size filter not required in dynamic values)
             //if (query.pagenumber > 1)
@@ -229,15 +223,6 @@ namespace Jugnoon.Attributes
 
 
             return collectionQuery;
-        }
-
-        private static IQueryable<JGN_Attr_Attributes> AddSortOption(IQueryable<JGN_Attr_Attributes> collectionQuery, string field, string direction)
-        {
-            var reverse = false;
-            if (direction == "desc")
-                reverse = true;
-
-            return (IQueryable<JGN_Attr_Attributes>)collectionQuery.Sort(field, reverse);
         }
 
         private static System.Linq.Expressions.Expression<Func<JGN_Attr_Attributes, bool>> returnWhereClause(AttrAttributeEntity entity)

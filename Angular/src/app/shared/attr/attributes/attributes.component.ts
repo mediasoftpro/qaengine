@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
+/*                          Product Name: ClassifiedEngine                    */
 /*                            Author: Mediasoftpro                            */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
@@ -72,6 +72,10 @@ export class DynamicAttributesComponent implements OnInit {
         variable_type: 0, // 0: string, 1: number
         min: 0,
         max: 0,
+        postfix: '',
+        prefix: '',
+        tooltip: '',
+        url: '',
         icon: ""
       },
       2, // 0: add template, 1: add section, 2: add attribute
@@ -80,6 +84,7 @@ export class DynamicAttributesComponent implements OnInit {
   }
 
   EditAttribute(obj: any, event: any) {
+    console.log(obj);
     this._processTemplate(
       obj,
       2, // 0: add template, 1: add section, 2: add attribute
