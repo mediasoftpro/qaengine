@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -9,6 +9,7 @@
 export interface IAPIOptions {
   load: string;
   load_reports: string;
+  generate_report: string;
   getinfo: string;
   getinfo_auth: string;
   action: string;
@@ -22,6 +23,9 @@ export interface IAPIOptions {
   updaterole: string;
   updateavator: string;
   archive: string;
+  count_notifs: string;
+  fetch_notifs: string;
+  mark_as_read: string;
 }
 
 export interface LOGINENTITY {

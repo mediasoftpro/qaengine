@@ -1,0 +1,16 @@
+﻿@model NewsLetterViewModel
+@inject IStringLocalizer<GeneralResource> GeneralResource
+<div class="newsletters">
+    <h3>Newsletters</h3>
+    <p>Sign Up for Our Newsletter to get Latest Updates and Offers. Subscribe to receive news in your inbox.</p>
+</div>
+<form class="bloq-email mailchimp form-inline" method="post" asp-controller="Home" asp-action="newsletter">
+    <input type="hidden" asp-for="page" value="@ViewData["Page"]">
+    <label for="subscribeEmail" class="error"></label>
+    <div class="m-b-10">
+        <input type="email" class="form-control" id="subscribeEmail" asp-for="EmailAddress" placeholder="@GeneralResource["_enter_email"].Value">
+        <input type="submit" value="Subscribe">
+        <p class="subscription-success"></p>
+    </div>
+   
+</form>

@@ -1,0 +1,27 @@
+import { IAppState } from "../../store/model";
+export const stats = (state: IAppState) => state.dashboard.stats;
+export const qa = (state: IAppState) => state.dashboard.qa;
+export const blogs = (state: IAppState) => state.dashboard.blogs;
+export const users = (state: IAppState) => state.dashboard.users;
+export const qa_report = (state: IAppState) => state.dashboard.qa_report;
+export const blog_report = (state: IAppState) => state.dashboard.blog_report;
+export const user_report = (state: IAppState) => state.dashboard.user_report;
+export const stats_loading = (state: IAppState) => state.dashboard.stats_loading;
+export const qa_loading = (state: IAppState) => state.dashboard.qa_loading;
+export const blog_loading = (state: IAppState) => state.dashboard.blog_loading;
+export const user_loading = (state: IAppState) => state.dashboard.user_loading;
+export const qa_report_loading = (state: IAppState) => state.dashboard.qa_report_loading;
+export const blog_report_loading = (state: IAppState) => state.dashboard.blog_report_loading;
+export const user_report_loading = (state: IAppState) => state.dashboard.user_report_loading;
+export const stats_error = (state: IAppState) => state.dashboard.stats_error;
+export const qa_error = (state: IAppState) => state.dashboard.qa_error;
+export const blog_error = (state: IAppState) => state.dashboard.blog_error;
+export const user_error = (state: IAppState) => state.dashboard.user_error;
+export const qa_report_error = (state: IAppState) => state.dashboard.qa_report_error;
+export const blog_report_error = (state: IAppState) => state.dashboard.blog_report_error;
+export const user_report_error = (state: IAppState) => state.dashboard.user_report_error;
+export const isloaded = (state: IAppState) => state.dashboard.isloaded;
+export const is_qa_report_loaded = (state: IAppState) => state.dashboard.is_qa_report_loaded;
+export const is_blog_report_loaded = (state: IAppState) => state.dashboard.is_blog_report_loaded;
+export const is_user_report_loaded = (state: IAppState) => state.dashboard.is_user_report_loaded;
+

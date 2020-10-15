@@ -24,6 +24,27 @@ namespace Jugnoon.BLL
             }
         }
 
+        public static async Task<bool> Update_Listing_Stats(ApplicationDbContext context, JGN_User_Stats stats, string userid)
+        {
+            if (userid != null && userid != "")
+            {
+                var item = context.JGN_User_Stats
+                     .Where(p => p.userid == userid)
+                     .FirstOrDefault();
+
+                if (item != null)
+                {
+                    item.stat_qa = stats.stat_qa;
+                    //item.stat_qaanswers = stats.stat_qaanswers;
+                    //item.stat_qa_fav = stats.stat_qa_fav;
+
+                    context.Entry(item).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                }
+            }
+            return true;
+        }
+
         public static async Task Delete(ApplicationDbContext context, string userid)
         {
             var itemsToDelete = context.JGN_User_Stats.Where(x => x.userid == userid);
@@ -55,14 +76,14 @@ namespace Jugnoon.BLL
             return true;
         }
 
-        public static string Get_Field_Value(ApplicationDbContext context, string userid, string field_name)
+        public static async Task<string> Get_Field_Value(ApplicationDbContext context, string userid, string field_name)
         {
             string Value = "";
             if (userid != null && userid != "")
             {
-                var item = context.JGN_User_Stats
+                var item = await context.JGN_User_Stats
                  .Where(p => p.userid == userid)
-                 .FirstOrDefault();
+                 .FirstOrDefaultAsync();
 
                 if (item != null)
                 {

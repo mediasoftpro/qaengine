@@ -1,0 +1,10 @@
+import { IAppState } from "../../store/model";
+export const posts = (state: IAppState) => state.dictionary.posts;
+export const records = (state: IAppState) => state.dictionary.records;
+export const loading = (state: IAppState) => state.dictionary.loading;
+export const error = (state: IAppState) => state.dictionary.error;
+export const isloaded = (state: IAppState) => state.dictionary.isloaded;
+export const pagination = (state: IAppState) => state.dictionary.pagination;
+export const filteroptions = (state: IAppState) => state.dictionary.filteroptions;
+export const selectall = (state: IAppState) => state.dictionary.selectall;
+export const itemsselected = (state: IAppState) => state.dictionary.itemsselected;

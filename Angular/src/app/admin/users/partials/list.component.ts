@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -14,12 +14,16 @@ import {
   animate,
   keyframes
 } from "@angular/animations";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
-import { UserAPIActions } from "../../../reducers/users/actions";
+
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
+import * as selectors from "../../../reducers/users/selectors";
+import { applyFilter, updatePaginationCurrentPage, selectAll} from "../../../reducers/users/actions";
+import { Notify } from "../../../reducers/core/actions";
+
 import { DataService } from "../services/data.service";
 import { Router } from "@angular/router";
-import { CoreAPIActions } from "../../../reducers/core/actions";
+
 
 @Component({
   selector: "app-userlist",
@@ -42,9 +46,8 @@ import { CoreAPIActions } from "../../../reducers/core/actions";
 })
 export class UListComponent implements OnInit {
   constructor(
-    private actions: UserAPIActions,
+    private _store: Store<IAppState>,
     private dataService: DataService,
-    private coreActions: CoreAPIActions,
     private router: Router
   ) {}
 
@@ -54,24 +57,27 @@ export class UListComponent implements OnInit {
   @Input() route_path = "/users/";
   @Input() NoRecordText = "No Users Registered Yet!";
 
-  @select(["users", "posts"])
-  readonly Data$: Observable<any>;
-
-  @select(["users", "loading"])
-  readonly loading$: Observable<boolean>;
-
-  @select(["users", "pagination"])
-  readonly pagination$: Observable<any>;
-
-  @select(["users", "selectall"])
-  readonly selectAll$: Observable<any>;
+  
+  readonly Data$ = this._store.pipe(select(selectors.posts));
+  readonly loading$ = this._store.pipe(select(selectors.loading));
+  readonly pagination$ = this._store.pipe(select(selectors.pagination));
+  readonly selectAll$ = this._store.pipe(select(selectors.selectall));
+ 
 
   @Output() View = new EventEmitter<any>();
   @Output() SelectedItems = new EventEmitter<any>();
 
   selectall = false;
-
+ 
+  Data: any = [];
   ngOnInit() {
+
+    this.Data$.subscribe((data: any) => {
+      this.Data = data.map(item => {
+        return Object.assign({}, item);
+      });
+    });
+
     this.selectAll$.subscribe((selectall: boolean) => {
       this.selectall = selectall;
       this.checkChange();
@@ -88,20 +94,18 @@ export class UListComponent implements OnInit {
   /* pagination click event */
   PaginationChange(value: number) {
     // update filter option to query database
-    this.actions.applyFilter({ attr: "pagenumber", value: value });
+    this._store.dispatch(new applyFilter({ attr: "pagenumber", value: value }));
     // update pagination current page (to hightlight selected page)
-    this.actions.updatePaginationCurrentPage({ currentpage: value });
+    this._store.dispatch(new updatePaginationCurrentPage({ currentpage: value }));
   }
 
   checkChange() {
-    this.Data$.subscribe(items => {
-      const _items = [];
-      for (const item of items) {
+    const _items = [];
+      for (const item of this.Data) {
         if (item.Selected) {
           _items.push(item);
         }
       }
       this.SelectedItems.emit(_items);
-    });
   }
 }

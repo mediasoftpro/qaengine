@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -15,11 +15,14 @@ import {
   animate,
   keyframes
 } from "@angular/animations";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
-import { MailTemplatesAPIActions } from "../../../../reducers/settings/mailtemplates/actions";
+
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+import * as mailtemplatesSelectors from "../../../../reducers/settings/mailtemplates/selectors";
+import { applyFilter, updatePaginationCurrentPage, selectAll} from "../../../../reducers/settings/mailtemplates/actions";
+import { Notify } from "../../../../reducers/core/actions";
 import { DataService } from "../services/data.service";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
+
 
 @Component({
   selector: "app-list",
@@ -42,36 +45,30 @@ import { CoreAPIActions } from "../../../../reducers/core/actions";
 })
 export class ListComponent implements OnInit {
   constructor(
-    private actions: MailTemplatesAPIActions,
-    private coreActions: CoreAPIActions,
+    private _store: Store<IAppState>,
     private dataService: DataService
   ) {}
 
   @Input() isActionGranded = false;
   @Input() MailTypes: any = [];
   
-  @select(["mailtemplates", "posts"])
-  readonly Data$: Observable<any>;
-
-  @select(["mailtemplates", "loading"])
-  readonly loading$: Observable<boolean>;
-
-  @select(["mailtemplates", "pagination"])
-  readonly pagination$: Observable<any>;
-
-  @select(["mailtemplates", "selectall"])
-  readonly selectAll$: Observable<any>;
+  readonly Data$ = this._store.pipe(select(mailtemplatesSelectors.posts));
+  readonly loading$ = this._store.pipe(select(mailtemplatesSelectors.loading));
+  readonly pagination$ = this._store.pipe(select(mailtemplatesSelectors.pagination));
+  readonly selectAll$ = this._store.pipe(select(mailtemplatesSelectors.selectall));
 
   @Output() SelectedItems = new EventEmitter<any>();
 
   selectall = false;
-  fieldstates = {
-    templatekey: false,
-    description: false,
-    type: false
-  };
-
+ 
+  Data: any = [];
   ngOnInit() {
+
+    this.Data$.subscribe((data: any) => {
+      this.Data = data.map(item => {
+        return Object.assign({}, item);
+      });
+    });
     this.selectAll$.subscribe((selectall: boolean) => {
       this.selectall = selectall;
       this.checkChange();
@@ -87,11 +84,11 @@ export class ListComponent implements OnInit {
 
   delete(item: any, index: number, event) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     const r = confirm("Are you sure you want to delete selected record?");
@@ -107,24 +104,22 @@ export class ListComponent implements OnInit {
   /* pagination click event */
   PaginationChange(value: number) {
     // update filter option to query database
-    this.actions.applyFilter({ attr: "pagenumber", value: value });
+    this._store.dispatch(new applyFilter({ attr: "pagenumber", value: value }));
     // update pagination current page (to hightlight selected page)
-    this.actions.updatePaginationCurrentPage({ currentpage: value });
+    this._store.dispatch(new updatePaginationCurrentPage({ currentpage: value }));
   }
 
   processChange() {
-    this.actions.selectAll(this.selectall);
+   this._store.dispatch(new selectAll(this.selectall));
   }
 
   checkChange() {
-    this.Data$.subscribe(items => {
-      const _items = [];
-      for (const item of items) {
+    const _items = [];
+      for (const item of this.Data) {
         if (item.Selected) {
           _items.push(item);
         }
       }
       this.SelectedItems.emit(_items);
-    });
   }
 }

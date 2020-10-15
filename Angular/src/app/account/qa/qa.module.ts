@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -32,7 +32,7 @@ const routes: Routes = [
   {
     path: "",
     data: {
-      topmenuIndex: NavigationMenuIndex.TOPMENU_QA_INDEX,
+      topmenuIndex: NavigationMenuIndex.QA_MY_INDEX,
       leftmenuIndex: NavigationMenuIndex.QA_MY_INDEX,
       title: "My Account",
       urls: [{ title: "My Account", url: "/" }, { title: "Manage QA" }]
@@ -42,7 +42,7 @@ const routes: Routes = [
   {
     path: "process/:id",
     data: {
-      topmenuIndex: NavigationMenuIndex.TOPMENU_QA_INDEX,
+      topmenuIndex: NavigationMenuIndex.QA_MY_INDEX,
       leftmenuIndex: NavigationMenuIndex.QA_MY_INDEX,
       title: "My Account",
       urls: [
@@ -56,7 +56,7 @@ const routes: Routes = [
   {
     path: "favorites",
     data: {
-      topmenuIndex: NavigationMenuIndex.TOPMENU_QA_INDEX,
+      topmenuIndex: NavigationMenuIndex.QA_MY_INDEX,
       leftmenuIndex: NavigationMenuIndex.QA_FAVORITED_INDEX,
       title: "My Account",
       urls: [
@@ -70,7 +70,7 @@ const routes: Routes = [
   {
     path: "answered",
     data: {
-      topmenuIndex: NavigationMenuIndex.TOPMENU_QA_INDEX,
+      topmenuIndex: NavigationMenuIndex.QA_MY_INDEX,
       leftmenuIndex: NavigationMenuIndex.QA_ANSWERED_INDEX,
       title: "My Account",
       urls: [
@@ -84,7 +84,7 @@ const routes: Routes = [
   {
     path: "liked",
     data: {
-      topmenuIndex: NavigationMenuIndex.TOPMENU_QA_INDEX,
+      topmenuIndex: NavigationMenuIndex.QA_MY_INDEX,
       leftmenuIndex: NavigationMenuIndex.QA_LIKED_INDEX,
       title: "My Account",
       urls: [

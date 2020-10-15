@@ -180,6 +180,8 @@ namespace Jugnoon.BLL
                 if (!query.loadall)
                     collectionQuery = collectionQuery.Take(query.pagesize);
             }
+           
+
 
             return collectionQuery;
         }

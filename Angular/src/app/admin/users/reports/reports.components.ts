@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,8 +8,8 @@
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../../../admin/users/services/settings.service";
@@ -18,15 +18,27 @@ import { FormService } from "../../../admin/users/services/form.service";
 
 // shared services
 import { CoreService } from "../../core/coreService";
-import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../reducers/core/actions";
+
 
 // reducer actions
-import { UserAPIActions } from "../../../reducers/users/actions";
+import * as selectors from "../../../reducers/users/selectors";
+import {
+  applyFilter,
+  updateItemsSelectionStatus,
+  selectAll,
+  updateFilterOptions,
+  refresh_pagination,
+} from "../../../reducers/users/actions";
+
+import { Notify, refreshListStats } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+import * as configSelectors from "../../../reducers/configs/selectors";
+// reducer actions
+//import { UserAPIActions } from "../../../reducers/users/actions";
 import { fadeInAnimation } from "../../../animations/core";
-
 import { PermissionService } from "../../../admin/users/services/permission.service";
-
-import { GoogleChartInterface } from "ng2-google-charts/google-charts-interfaces";
+// import { GoogleChartInterface } from "ng2-google-charts/google-charts-interfaces";
 
 @Component({
   templateUrl: "./reports.html",
@@ -36,11 +48,10 @@ import { GoogleChartInterface } from "ng2-google-charts/google-charts-interfaces
 })
 export class UserReportsComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: UserAPIActions,
     private route: ActivatedRoute,
     private formService: FormService,
     private permission: PermissionService,
@@ -56,17 +67,20 @@ export class UserReportsComponent implements OnInit {
   ChartType = "ColumnChart";
   message = "Please select report type to generate!";
 
-  @select(["users", "filteroptions"])
+  readonly filteroptions$ = this._store.pipe(
+    select(selectors.filteroptions)
+  );
+  /*@select(["users", "filteroptions"])
   readonly filteroptions$: Observable<any>;
+  */
 
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+ readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
   isActionGranded = false; // Grand action on resources like add / edit /delete
 
-  public tooltipChart: GoogleChartInterface = {
+  public tooltipChart: any = {
     chartType: "ColumnChart",
     dataTable: [],
     options: {
@@ -100,7 +114,7 @@ export class UserReportsComponent implements OnInit {
     });
 
     this.filteroptions$.subscribe(options => {
-      this.FilterOptions = options;
+      this.FilterOptions = Object.assign({}, options);
     });
 
     this.ToolbarOptions = this.settingService.getToolbarOptions();
@@ -192,11 +206,11 @@ export class UserReportsComponent implements OnInit {
 
   toolbaraction(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     switch (selection.action) {

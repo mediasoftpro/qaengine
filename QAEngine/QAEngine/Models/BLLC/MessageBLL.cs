@@ -62,18 +62,18 @@ namespace Jugnoon.BLL
             }
         }
 
-        public static void ReadMessage(ApplicationDbContext context, long id)
+        public static async Task ReadMessage(ApplicationDbContext context, long message_id)
         {
-            var item = context.JGN_Messages_Recipents
-                 .Where(p => p.id == id)
-                 .FirstOrDefault();
+            var item = await context.JGN_Messages_Recipents
+                 .Where(p => p.messageid == message_id)
+                 .FirstOrDefaultAsync();
 
             if (item != null)
             {
                 item.msg_read = DateTime.Now;
 
                 context.Entry(item).State = EntityState.Modified;
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 
@@ -113,11 +113,13 @@ namespace Jugnoon.BLL
         {
             var collectionQuery = prepareQuery(context, entity);
             collectionQuery = processOptionalConditions(collectionQuery, entity);
+            if (entity.loadReceiverUserList)
+                return await LoadReceiverList(collectionQuery);
             if (entity.loadUserList)
                 return await LoadUserList(collectionQuery);
-            else 
+            else
                 return await LoadCompleteList(collectionQuery);
-           
+
         }
 
         public static async Task<int> Count(ApplicationDbContext context, MessageEntity entity)
@@ -194,7 +196,7 @@ namespace Jugnoon.BLL
                 }
             }).ToListAsync();
         }
-     
+
         private static Task<List<JGN_Messages_Recipents>> LoadUserList(IQueryable<UserMessageEntity> query)
         {
             return query.Select(p => new JGN_Messages_Recipents
@@ -216,26 +218,87 @@ namespace Jugnoon.BLL
             }).ToListAsync();
         }
 
+        private static Task<List<JGN_Messages_Recipents>> LoadReceiverList(IQueryable<UserMessageEntity> query)
+        {
+            return query.Select(p => new JGN_Messages_Recipents
+            {
+                id = p.recipent.id,
+                to_uid = p.recipent.to_uid,
+                user = new ApplicationUser()
+                {
+                    Id = p.from.Id,
+                    firstname = p.from.firstname,
+                    lastname = p.from.lastname,
+                    picturename = p.from.picturename
+                },
+                message = new JGN_Messages()
+                {
+                    id = p.message.id,
+                    subject = p.message.subject
+                }
+            }).ToListAsync();
+        }
+
         private static IQueryable<UserMessageEntity> prepareQuery(ApplicationDbContext context, MessageEntity entity)
         {
-            return context.JGN_Messages
-             .Join(context.AspNetusers,
-                 message => message.from_uid,
-                 from => from.Id, (message, from) => new { message, from })
-             .Join(context.JGN_Messages_Recipents,
-                 message => message.message.id,
-                 recipent => recipent.messageid, (message, recipent) => new { message, recipent })
-             .Join(context.AspNetusers,
-                 recipent => recipent.recipent.to_uid,
-                 to => to.Id, (recipent, to) =>
-                 new UserMessageEntity
-                 {
-                     message = recipent.message.message,
-                     recipent = recipent.recipent,
-                     from = recipent.message.from,
-                     to = to
-                 })
-             .Where(returnWhereClause(entity));
+            if (entity.loadReceiverUserList)
+            {
+                // receiver list (from list)
+                return context.JGN_Messages
+                  .Join(context.JGN_Messages_Recipents,
+                      message => message.id,
+                      recipent => recipent.messageid, (message, recipent) => new { message, recipent })
+                  .Join(context.AspNetusers,
+                      recipent => recipent.message.from_uid,
+                      from => from.Id, (recipent, from) =>
+                      new UserMessageEntity
+                      {
+                          message = recipent.message,
+                          recipent = recipent.recipent,
+                          from = from
+                      })
+                  .Where(returnWhereClause(entity));
+            }
+            else if (entity.loadUserList)
+            {
+                // sender list (to list)
+                return context.JGN_Messages
+                   .Join(context.JGN_Messages_Recipents,
+                       message => message.id,
+                       recipent => recipent.messageid, (message, recipent) => new { message, recipent })
+                   .Join(context.AspNetusers,
+                       recipent => recipent.recipent.to_uid,
+                       to => to.Id, (recipent, to) =>
+                       new UserMessageEntity
+                       {
+                           message = recipent.message,
+                           recipent = recipent.recipent,
+                           to = to
+                       })
+                   .Where(returnWhereClause(entity));
+            }
+            else
+            {
+                return context.JGN_Messages
+                   .Join(context.AspNetusers,
+                       message => message.from_uid,
+                       from => from.Id, (message, from) => new { message, from })
+                   .Join(context.JGN_Messages_Recipents,
+                       message => message.message.id,
+                       recipent => recipent.messageid, (message, recipent) => new { message, recipent })
+                   .Join(context.AspNetusers,
+                       recipent => recipent.recipent.to_uid,
+                       to => to.Id, (recipent, to) =>
+                       new UserMessageEntity
+                       {
+                           message = recipent.message.message,
+                           recipent = recipent.recipent,
+                           from = recipent.message.from,
+                           to = to
+                       })
+                   .Where(returnWhereClause(entity));
+            }
+
         }
 
         public static IQueryable<UserMessageEntity> processOptionalConditions(IQueryable<UserMessageEntity> collectionQuery, MessageEntity query)
@@ -263,28 +326,43 @@ namespace Jugnoon.BLL
             // load message + all replies (threads)
             if (entity.id > 0)
                 where_clause = where_clause.And(p => p.message.id == entity.id || p.message.reply_id == entity.id);
-
-
-            if (entity.To != "")
-                where_clause = where_clause.And(p => p.to.Id == entity.To);
-
-            if (entity.From != "")
-                where_clause = where_clause.And(p => p.from.Id == entity.From);
-
-            if (entity.reply_id > 0)
-                where_clause = where_clause.And(p => p.message.reply_id == entity.reply_id);
-
-            if (entity.isDeleted)
-                where_clause = where_clause.And(p => p.recipent.msg_deleted != null);
             else
-                where_clause = where_clause.And(p => p.recipent.msg_deleted == null);
+            {
+                if (entity.loadUserList || entity.loadReceiverUserList)
+                {
+                    if (entity.From != null && entity.From != "")
+                        where_clause = where_clause.And(p => p.message.from_uid == entity.From || p.recipent.to_uid == entity.From);
+                }
+                else
+                {
+                    if (entity.To != null && entity.To != "")
+                        where_clause = where_clause.And(p => p.recipent.to_uid == entity.To);
 
-            if (entity.isRead)
-                where_clause = where_clause.And(p => p.recipent.msg_read != null);
+                    if (entity.From != null && entity.From != "")
+                        where_clause = where_clause.And(p => p.message.from_uid == entity.From);
+                }
 
-            if (entity.term != "")
-                where_clause = where_clause.And(p => p.message.subject.Contains(entity.term)
-                || p.message.body.Contains(entity.term));
+
+                //if (entity.reply_id > 0)
+                if (entity.loadReply)
+                    where_clause = where_clause.And(p => p.message.reply_id == entity.reply_id);
+
+                if (entity.isDeleted)
+                    where_clause = where_clause.And(p => p.recipent.msg_deleted != null);
+                else
+                    where_clause = where_clause.And(p => p.recipent.msg_deleted == null);
+
+                if (entity.isRead)
+                    where_clause = where_clause.And(p => p.recipent.msg_read != null);
+                else
+                    where_clause = where_clause.And(p => p.recipent.msg_read == null);
+
+                if (entity.term != "")
+                    where_clause = where_clause.And(p => p.message.subject.Contains(entity.term)
+                    || p.message.body.Contains(entity.term));
+            }
+
+
 
             return where_clause;
         }
@@ -302,7 +380,7 @@ namespace Jugnoon.BLL
 /*
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.md', which is part of this source code package.
- * Copyright 2007 - 2020 MediaSoftPro
- * For more information email at support@mediasoftpro.com
+ * Copyright WorkScene
+ * For more information email at mweb@workscene.com
  */
 

@@ -5,6 +5,7 @@
     /// </summary>
     public class ActionViewModel
     {
+        public bool enableRating = true;
         public bool isAuthenticated { get; set; } = false;
         public int ToolbarSize { get; set; } = 1; // 0: mini, 1: normal, 2: large
         public int ToolbarTheme { get; set; } = 0; // 0: default, 1: primary, 2: warning,3: danger, 4: info, 5: inverse, 5: success

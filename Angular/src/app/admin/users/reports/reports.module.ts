@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -19,7 +19,7 @@ import { DataService } from "../../../admin/users/services/data.service";
 import { FormService } from "../../../admin/users/services/form.service";
 
 /* actions */
-import { UserAPIActions } from "../../../reducers/users/actions";
+//import { UserAPIActions } from "../../../reducers/users/actions";
 import { PartialModule } from "../../../partials/shared.module";
 
 import { Ng2GoogleChartsModule } from "ng2-google-charts";
@@ -34,6 +34,6 @@ import { Ng2GoogleChartsModule } from "ng2-google-charts";
   ],
   declarations: [UserReportsComponent],
   exports: [UserReportsComponent],
-  providers: [SettingsService, DataService, FormService, UserAPIActions]
+  providers: [SettingsService, DataService, FormService]
 })
 export class UserReportModule {}

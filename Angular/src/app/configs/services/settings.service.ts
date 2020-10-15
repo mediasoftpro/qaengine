@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -19,7 +19,8 @@ export class ConfigSettingsService {
   constructor(private coreService: CoreService, public config: AppConfig) {
     const APIURL = config.getConfig("host");
     this.apiOptions = {
-      load: APIURL + "api/configuration/load_settings"
+      load: APIURL + "api/configuration/load_settings",
+      load_admin: APIURL + "api/configuration/load_settings_admin",
     };
   }
 

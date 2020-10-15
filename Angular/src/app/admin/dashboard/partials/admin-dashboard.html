@@ -1,17 +1,161 @@
-<div class="row m-t-10 m-t-20" style="min-height: 500px;">
-  <div class="col-md-6 col-sm-12">
-    <div *ngIf="(configs$ | async).general.features.enable_videos">
-     
-      <div *ngIf="(configs$ | async).general.features.enable_qa">
-        <app-smqa-list
-          [pagesize]="4"
-          [type]="0"
-          [isAdmin]="isAdmin"
-          [title]="'Recent Questions'"
-          [rout_url]="'/qa'"
-          [browse_url]="'/qa'"
-        ></app-smqa-list>
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+  <!--<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+    ><i class="fa fa-download fa-sm text-white-50"></i> Generate Report</a
+  >-->
+</div>
+
+<!-- Content Row -->
+<app-loader *ngIf="stats_loading$ | async"></app-loader>
+<div class="row" *ngIf="!(stats_loading$ | async)">
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div
+              class="text-xs font-weight-bold text-primary text-uppercase mb-1"
+            >
+              QA
+            </div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">
+              {{(stats$ | async).qa}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="fa fa-calendar fa-2x text-gray-300"></i>
+          </div>
+        </div>
       </div>
-  
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-success shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div
+              class="text-xs font-weight-bold text-success text-uppercase mb-1"
+            >
+              Featured
+            </div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">
+              {{(stats$ | async).featured}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="fa fa-calendar fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-info shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div
+              class="text-xs font-weight-bold text-success text-uppercase mb-1"
+            >
+              Blogs
+            </div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">
+              {{(stats$ | async).blogs}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="fa fa-calendar fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-warning shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div
+              class="text-xs font-weight-bold text-warning text-uppercase mb-1"
+            >
+              Users
+            </div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">
+              {{(stats$ | async).users}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="fa fa-comments fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Content Row -->
+
+<div class="row">
+  <div class="col-md-12">
+    <app-smqa-list-admin
+      [row_class]="'col-md-4 col-sm-6 col-xs-12'"
+      [pagesize]="3"
+      [type]="0"
+      [isAdmin]="isAdmin"
+      [title]="'Recent Topics!'"
+      [NoRecordText]="'No topics found!'"
+      [rout_url]="'/forumtopics'"
+      [browse_url]="'/forumtopics'"
+    ></app-smqa-list-admin>
+
+    <app-smqa-report-admin
+      [isAdmin]="isAdmin"
+      [title]="'Topics Report [This Year]!'"
+      [NoRecordText]="'No data found!'"
+    ></app-smqa-report-admin>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-xl-6 col-lg-6">
+   <app-smblogs-list-admin
+      [row_class]="'col-md-4 col-sm-6 col-xs-12'"
+      [pagesize]="3"
+      [type]="0"
+      [isAdmin]="isAdmin"
+      [title]="'Recent Blogs!'"
+      [NoRecordText]="'No posts found!'"
+      [rout_url]="'/classified/agencies'"
+      [browse_url]="'/classified/agencies'"
+    ></app-smblogs-list-admin>
+    <app-smblogs-report-admin
+      [isAdmin]="isAdmin"
+      [title]="'Blog Posting Report [This Year]!'"
+      [NoRecordText]="'No data found!'"
+    ></app-smblogs-report-admin>
+  </div>
+
+  <div class="col-xl-6 col-lg-6">
+    <app-smuser-list-admin
+      [row_class]="'col-md-3 col-sm-6 col-xs-12'"
+      [pagesize]="4"
+      [type]="0"
+      [isAdmin]="isAdmin"
+      [title]="'Recent Users!'"
+      [NoRecordText]="'No users found!'"
+      [rout_url]="'/users'"
+      [browse_url]="'/users'"
+    ></app-smuser-list-admin>
+    <app-smuser-report-admin
+      [isAdmin]="isAdmin"
+      [title]="'User Report [This Year]!'"
+      [NoRecordText]="'No data found!'"
+    ></app-smuser-report-admin>
   </div>
 </div>

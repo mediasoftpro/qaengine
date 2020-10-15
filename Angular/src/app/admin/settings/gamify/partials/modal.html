@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ title }}</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<dynamic-modal-form
+  *ngIf="ViewType == 1"
+  [controls]="controls"
+  [showLoader]="showLoader"
+  (OnSubmit)="SubmitForm($event)"
+  (OnClose)="close()"
+></dynamic-modal-form>
+
+<div *ngIf="ViewType == 0" class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <p>Description: {{ Info.data.description }}</p>
+      <p>
+        Paste the code below within your custom event where you want to award
+        selected item
+      </p>
+      <hr />
+
+      <pre class="prettyprint">
+      // code to trigger gamify event for selected item
+      ga_core_bll.Trigger_Item(userID, {{ Info.data.id }});
+      </pre>
+    </div>
+  </div>
+</div>

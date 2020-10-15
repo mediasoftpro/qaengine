@@ -23,6 +23,7 @@ namespace Jugnoon.BLL
         {
             All = 100,
             General = 5,
+            Blogs = 4,
             QA = 11
         };
 

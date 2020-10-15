@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: VideoEngine                         */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -27,7 +27,9 @@ export class AppConfig {
     apptype: "",
     setuptype: "",
     searchparams: {},
-    img_directory: ""
+    img_directory: "",
+    usertype: 0,
+    theme: ""
   };
 
   private env: any = null;
@@ -54,6 +56,12 @@ export class AppConfig {
     if (window["AppType"] !== undefined) {
        this.global_vars.apptype = window["AppType"];
     }
+
+    if (window["UserType"] !== undefined) {
+      this.global_vars.usertype = window["UserType"];
+   }
+
+    
     if (window["setupType"] !== undefined) {
        this.global_vars.setuptype = window["setupType"];
     }
@@ -73,6 +81,11 @@ export class AppConfig {
           this.config.host = this.config.host + '/';
         }
     }
+
+    if (window["themeName"] !== undefined) {
+      this.global_vars.theme = window["themeName"];
+    }
+    
   }
 
   /**

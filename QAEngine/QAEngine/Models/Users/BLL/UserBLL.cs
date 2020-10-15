@@ -19,7 +19,12 @@ namespace Jugnoon.BLL
 {
     public class UserBLL
     {
-             
+        public enum Types
+        {
+            NormalUser = 0,
+            Agency = 2
+        };
+
         #region Data Manipulation
 
         public static async Task<ApplicationUser> Update_User_Profile(ApplicationDbContext context, ApplicationUser entity, bool isAdmin = true)
@@ -42,16 +47,17 @@ namespace Jugnoon.BLL
             {
                 user.firstname = UtilityBLL.processNull(entity.firstname, 0);
                 user.lastname = UtilityBLL.processNull(entity.lastname, 0);
-              
+                user.mobile = UtilityBLL.processNull(entity.mobile, 0);
+                user.PhoneNumber = UtilityBLL.processNull(entity.PhoneNumber, 0);
                 context.Entry(user).State = EntityState.Modified;
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 if ( isAdmin )
                 {
                     // update settings
                     entity.settings.userid = entity.Id;
                     await UserSettingsBLL.Update(context, entity.settings);
-                   
+                    
                 }
                
             }
@@ -318,13 +324,13 @@ namespace Jugnoon.BLL
             return LoadSummaryList(collectionQuery);
         }
 
-        public static int Count(ApplicationDbContext context,MemberEntity entity)
+        public static async Task<int> Count(ApplicationDbContext context,MemberEntity entity)
         {
             if (!entity.iscache 
                 || Configs.GeneralSettings.cache_duration == 0  
                 || entity.pagenumber > Configs.GeneralSettings.max_cache_pages)
             {
-                return CountRecords(context,entity);
+                return await CountRecords(context,entity);
             }
             else
             {
@@ -332,7 +338,7 @@ namespace Jugnoon.BLL
                 int records = 0;
                 if (!SiteConfig.Cache.TryGetValue(key, out records))
                 {
-                    records = CountRecords(context,entity);
+                    records = await CountRecords(context,entity);
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         // Keep in cache for this time, reset time if accessed.
@@ -349,9 +355,9 @@ namespace Jugnoon.BLL
             }
         }
 
-        private static int CountRecords(ApplicationDbContext context,MemberEntity entity)
+        private static Task<int> CountRecords(ApplicationDbContext context,MemberEntity entity)
         {
-            return context.AspNetusers.Where(returnWhereClause(entity)).Count();
+            return context.AspNetusers.Where(returnWhereClause(entity)).CountAsync();
         }
 
         private static string GenerateKey(string key, MemberEntity entity)
@@ -375,6 +381,9 @@ namespace Jugnoon.BLL
                 LockoutEnabled = p.LockoutEnabled,
                 firstname = p.firstname,
                 lastname =  p.lastname,
+                PhoneNumber = p.PhoneNumber,
+                mobile = p.mobile,
+                type = p.type
             }).ToListAsync();
         }
   
@@ -399,13 +408,22 @@ namespace Jugnoon.BLL
             return collectionQuery;
         }
 
-        private static System.Linq.Expressions.Expression<Func<ApplicationUser, bool>> returnWhereClause(MemberEntity entity)
+        private static IQueryable<ApplicationUser> AddSortOption(IQueryable<ApplicationUser> collectionQuery, string field, string direction)
+        {
+            var reverse = false;
+            if (direction == "desc")
+                reverse = true;
+
+            return (IQueryable<ApplicationUser>)collectionQuery.Sort(field, reverse);
+
+        }
+        public static System.Linq.Expressions.Expression<Func<ApplicationUser, bool>> returnWhereClause(MemberEntity entity)
         {
             var where_clause = PredicateBuilder.New<ApplicationUser>(true);
 
             where_clause = where_clause.And(p => p.isenabled != 3);
 
-            if (entity.id != "")
+            if (entity.id != null && entity.id != "")
                 where_clause = where_clause.And(p => p.Id == entity.id);
 
             if (entity.username != "" && entity.username != null)
@@ -466,6 +484,37 @@ namespace Jugnoon.BLL
                         case DateFilter.ThisMonth:
                             // this month record
                             where_clause = where_clause.And(p => p.created_at >= DateTime.Now.AddDays(-31));
+                            break;
+                    }
+                }
+
+                if (entity.reporttype != DefaultReportTypes.None)
+                {
+                    switch (entity.reporttype)
+                    {
+                        case DefaultReportTypes.Today:
+                            where_clause = where_clause.And(p => p.created_at.Date == DateTime.Now.Date);
+                            break;
+                        case DefaultReportTypes.Yesterday:
+                            where_clause = where_clause.And(p => p.created_at.Date == DateTime.Now.Date.AddDays(-1));
+                            break;
+                        case DefaultReportTypes.TodayYesterday:
+                            where_clause = where_clause.And(p => p.created_at.Date == DateTime.Now.Date || p.created_at == DateTime.Now.Date.AddDays(-1));
+                            break;
+                        case DefaultReportTypes.Week:
+                            where_clause = where_clause.And(p => p.created_at >= DateTime.Now.AddDays(-7));
+                            break;
+                        case DefaultReportTypes.LastWeek:
+                            where_clause = where_clause.And(p => p.created_at.Date >= DateTime.Now.Date.AddDays(-14) && p.created_at.Date <= DateTime.Now.Date.AddDays(-7));
+                            break;
+                        case DefaultReportTypes.Month:
+                            where_clause = where_clause.And(p => p.created_at >= DateTime.Now.AddDays(-31));
+                            break;
+                        case DefaultReportTypes.LastMonth:
+                            where_clause = where_clause.And(p => p.created_at.Date >= DateTime.Now.Date.AddMonths(-2) && p.created_at.Date <= DateTime.Now.Date.AddMonths(-1));
+                            break;
+                        case DefaultReportTypes.Year:
+                            where_clause = where_clause.And(p => p.created_at >= DateTime.Now.AddYears(-1));
                             break;
                     }
                 }

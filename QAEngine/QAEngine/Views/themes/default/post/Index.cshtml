@@ -1,0 +1,194 @@
+﻿@using Jugnoon.Blogs
+@using Jugnoon.Blogs.Models
+@using Microsoft.AspNetCore.Identity
+@model Jugnoon.Blogs.Models.PostViewModel
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Comments> commentSettings
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Registration> registrationSettings
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Blogs.Settings.General> blogSettings
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    // setup search with articles
+    ViewBag.SearchType = 6;
+
+    var _bModel = new List<BreadItem>();
+
+    _bModel.Add(new BreadItem()
+    {
+        title = GeneralResource["_home"].Value,
+        url = Config.GetUrl()
+    });
+
+    _bModel.Add(new BreadItem()
+    {
+        title = GeneralResource["_posts"].Value,
+        url = Config.GetUrl("blogs/")
+    });
+
+    if ( Model.Post != null)
+    {
+         _bModel.Add(new BreadItem()
+        {
+            title = Model.Post.title,
+            isActive = true
+        });
+    }
+
+}
+<partial name="~/Views/Shared/_BreadCrumb.cshtml" model="new BreadViewModel() { BreadItems = _bModel }" />
+
+
+<div class="row">
+
+    <div class="col-md-8">
+
+        @if (Model.isExist)
+        {
+
+            if (Model.Post.isapproved == 0)
+            {
+                <div class="alert alert-dismissible alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>Notice!</strong> This post is under review process and will be available soon.
+                </div>
+            }
+
+            // Blog Post
+            var PartialPath = "~/Views/themes/default/blogs/partials";
+
+            @await Html.PartialAsync(PartialPath + "/item/Item.cshtml", new BlogItemViewModel()
+            {
+                Data = Model.Post,
+                ListObject = new ListItems()
+                {
+                    showDetail = true
+                },
+                AuthorUrl = UserUrlConfig.ProfileUrl(Model.Post.author, registrationSettings.Value.uniqueFieldOption),
+                ProfileUrl = BlogUrlConfig.Generate_Post_Url(Model.Post)
+            });
+
+            // Related Posts
+
+            if (blogSettings.Value.isRelated)
+            {
+                var RelatedViewPath = "~/Views/themes/default/blogs/partials/_List_SM_01.cshtml";
+                var RelatedMedia = new BlogListViewModel()
+                {
+                    HeadingTitle = GeneralResource["_related"].Value + " " + GeneralResource["_posts"].Value,
+                    ListObject = new Jugnoon.Scripts.ListItems()
+                    {
+                        ListType = ListType.Links
+                    },
+                    QueryOptions = new BlogEntity()
+                    {
+                        order = "blog.created_at desc",
+                        ispublic = true,
+                        pagesize = blogSettings.Value.showRelatedPosts,
+                        excludedid = Model.Post.id,
+                        iscache = false,
+                        isfeatured = FeaturedTypes.All
+                    }
+                };
+                if (Model.Post.tags != null)
+                {
+                    RelatedMedia.QueryOptions.tags = Model.Post.tags;
+                }
+                else
+                {
+                    RelatedMedia.QueryOptions.categoryname = string.Join(",", Model.Post.categories);
+                }
+
+                @await Html.PartialAsync(RelatedViewPath, RelatedMedia)
+            }
+
+
+            @* Comment Application *@
+            @await Html.PartialAsync("~/Views/partials/modules/_comment.cshtml", new CommentViewModel()
+           {
+              ContentID = Model.Post.id,
+              Url = Jugnoon.Blogs.BlogUrlConfig.Generate_Post_Url(Model.Post),
+              isComment = Model.Post.iscomments,
+              Author = Model.Post.author
+           })
+        }
+        else
+        {
+            <div class="card">
+                <h4 class="m-b-20 m-t-20">@GeneralResource["_no_records"].Value</h4>
+            </div>
+        }
+
+    </div>
+
+    <div class="col-md-4">
+
+        @await Html.PartialAsync("~/Views/themes/default/post/partials/_Nav.cshtml", new BlogNavViewModel()
+        {
+           hideAds = false,
+           hideSearch = false,
+           hideArchives = true,
+           hideCategories = false,
+           hideTags = false,
+           Path = "blogs/"
+        })
+    </div>
+</div>
+
+@section Styles {
+    @await Html.PartialAsync("~/views/shared/styles/light_slider.cshtml")
+    @if (commentSettings.Value.enable && Model.Post.iscomments == 1 && commentSettings.Value.comment_option == 0)
+    {
+        <link href="~/app/comment/css/default.css" rel="stylesheet" type="text/css" />
+    }
+}
+
+@section Scripts {
+    @await Html.PartialAsync("~/views/shared/scripts/light_slider.cshtml")
+    @*
+        // Own comment system not fully integrated in this version.
+        @if (commentSettings.Value.enable && Model.Post.iscomments == 1 && commentSettings.Value.comment_option == 0)
+        {
+            var info = await UserManager.GetUserAsync(User);
+            // Add Comment Initializer Js
+            <script>
+                var isAuth = true;
+                   var loginMsg = 'Please <a class="red bold underline" href="#">sign in</a> or <a class="red bold underline" href="#">sign up</a> to post comment';
+                   $('#jugnooncmt').jComment({
+                    showAvator: true,
+                    width: 750,
+                    contentID: "@Model.Post.id",
+                    contentType: 0,
+                    userName: "@info.Id",
+                    avatorWith: 65,
+                    dirPath: "jcomments",
+                    avatorUrl: "",
+                    defaultAvator: "",
+                    avatorPictureName: "@info.picturename",
+                    thumbDirectoryPath: "",
+                    avatorCss: "img-responsive img-rounded",
+                    isMemberDirectory: true,
+                    profileUrl: "",
+                    isAuth: isAuth,
+                    loginMsg: loginMsg,
+                    autoCount: true,
+                    requiredMsg: "Please enter few words to post comment",
+                    rootUrl: "",
+                    enableEnter: true,
+                    autoApproved: false,
+                    enablePostBtn: false,
+                    pageSize: 10,
+                    paginationType: 1,
+                    showReply: true,
+                    replyLevel: 4,
+                    showLike: true,
+                    showDislike: true,
+                    showFlag: true,
+                    likeStyle: 0
+               });
+            </script>
+        }*@
+}
+
+

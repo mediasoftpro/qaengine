@@ -169,14 +169,22 @@ namespace Jugnoon.Entity
         ///  Handle type of report to be generated
         ///  Usage case: Basic Reports
         /// </summary>
-        public DefaultReportTypes reporttype { get; set; } = DefaultReportTypes.Yearly;
+        public DefaultReportTypes reporttype { get; set; } = DefaultReportTypes.None;
 
         /// <summary>
         ///  Type of chart when generating report
         /// </summary>
         public ChartTypes chartType { get; set; } = ChartTypes.ColumnChart;
 
-        
+        /// <summary>
+        ///  Set Group By 
+        /// </summary>
+        public ChartGroupBy groupbyType { get; set; } = ChartGroupBy.None;
+
+        /// <summary>
+        ///  If user is authorized, this will enable fetching additional users favorited content data along with actual listing data
+        /// </summary>
+        public bool loadUserFavoritedData { get; set; } = false;
 
     }
 }

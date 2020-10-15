@@ -4,25 +4,31 @@
 @inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.General> generalSettings
 @inject IStringLocalizer<GeneralResource> GeneralResource
 @{
+    // <body> css 
+    ViewBag.bodyCss = "maxw1600 m0a dashboard-bd";
+
     var info = await UserManager.GetUserAsync(User);
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
 }
 
 <script>
-              var URL = '@Context.Request.Scheme://@Context.Request.Host/'; // API URL
-            // var URL = '@SiteConfiguration.URL'; // API URL
-            var Ang_UID = '@info.Id';
-            var Ang_Culture = '@requestCulture.RequestCulture.UICulture.Name'
-            var Ang_VideoUploaderOption = 0;
-            var AppType = 'account';
-            var setupType = 0;
-            var ImageDirectory = '/images/';
-            var AppTitle = '@generalSettings.Value.website_title';
-            var SearchParams = {
-                term: '',
-                type: ''
-            };
-            var SerachContentType = 0;
+    var URL = '@Context.Request.Scheme://@Context.Request.Host/'; // API URL
+    // var URL = '@SiteConfiguration.URL'; // API URL
+
+    var Ang_UID = '@info.Id';
+    var UserType = 0; // 0: normal user
+    var themeName = '@SiteConfiguration.Theme'; // add multi themplate support
+    var Ang_Culture = '@requestCulture.RequestCulture.UICulture.Name'
+    var Ang_VideoUploaderOption = 0;
+    var AppType = 'account';
+    var setupType = 0;
+    var ImageDirectory = '/images/';
+    var AppTitle = '@generalSettings.Value.website_title';
+    var SearchParams = {
+        term: '',
+        type: ''
+    };
+    var SerachContentType = 0;
 </script>
 <div class="m-t-10 m-b-20" style="min-height: 500px;">
     <app-root>
@@ -45,11 +51,8 @@
 }
 
 @section Scripts {
-    <script src="/app/angular/runtime-es2015.js" type="module"></script>
-    <script src="/app/angular/runtime-es5.js" nomodule defer></script>
-    <script src="/app/angular/polyfills-es5.js" nomodule defer></script>
-    <script src="/app/angular/polyfills-es2015.js" type="module"></script>
-    <script src="/app/angular/scripts.js" defer></script>
-    <script src="/app/angular/main-es2015.js" type="module"></script>
-    <script src="/app/angular/main-es5.js" nomodule defer></script>
+    <script src="/app/@SiteConfiguration.Theme/runtime.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/polyfills.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/scripts.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/main.js" defer></script>
 }

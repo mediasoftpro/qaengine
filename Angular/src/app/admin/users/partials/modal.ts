@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -11,9 +11,13 @@ import { FormService } from "../services/form.service";
 import { DataService } from "../services/data.service";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Router } from "@angular/router";
-import { CoreAPIActions } from "../../../reducers/core/actions";
-import { UserAPIActions } from "../../../reducers/users/actions";
-
+//import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { UserAPIActions } from "../../../reducers/users/actions";
+import { CoreService } from "../../../admin/core/coreService";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
+import { addRecord } from "../../../reducers/users/actions";
+import { Notify } from "../../../reducers/core/actions";
 @Component({
   selector: "viewmodal",
   templateUrl: "./modal.html",
@@ -30,12 +34,12 @@ export class ViewComponent implements OnInit {
 
   list: any[] = [];
   constructor(
+    private _store: Store<IAppState>,
     public activeModal: NgbActiveModal,
     private service: FormService,
     private dataService: DataService,
-    private coreActions: CoreAPIActions,
     private router: Router,
-    private actions: UserAPIActions
+    private coreService: CoreService
   ) {}
 
   ngOnInit() {
@@ -48,22 +52,22 @@ export class ViewComponent implements OnInit {
     // permission check
     if (this.Info.isActionGranded !== undefined) {
       if (!this.Info.isActionGranded) {
-        this.coreActions.Notify({
-          title: "Permission Denied",
-          text: "",
-          css: "bg-danger"
-        });
+        this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
         return;
       }
     }
     // custom validation
     if (this.Info.viewType === 1 || this.Info.viewType === 4) {
       if (payload.password !== payload.cpassword) {
-        this.coreActions.Notify({
-          title: "Password Not Matched",
+        this._store.dispatch(new Notify({
+          title:  "Password not matched",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     }
 
@@ -78,23 +82,30 @@ export class ViewComponent implements OnInit {
         }
       }
     }
+
+    /*this.Info.data.attr_values = this.coreService.processDynamicControlsData(
+      payload,
+      this.Info.data
+    );*/
+  
+    console.log(this.Info.data);
     this.dataService.AddRecord(this.Info.data).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: data.message,
             text: "",
             css: "bg-danger"
-          });
+          }));
         } else {
           let message = "Account Created Successfully";
-          this.actions.addRecord(data.record);
-
-          this.coreActions.Notify({
+          
+          this._store.dispatch(new addRecord(data.record));
+           this._store.dispatch(new Notify({
             title: message,
             text: "",
             css: "bg-success"
-          });
+          }));
 
           if (this.Info.viewType === 1) {
             this.router.navigate(["/users/profile/" + data.record.id]);
@@ -109,11 +120,11 @@ export class ViewComponent implements OnInit {
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

@@ -15,6 +15,7 @@ namespace Jugnoon.BLL
     {
         public enum Types
         {
+            Blogs = 4,
             QA = 3
         };
 

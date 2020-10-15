@@ -25,7 +25,7 @@ namespace Jugnoon.BLL
     };
     public class NotificationBLL
     {
-       
+
         public static async Task<JGN_Notifications> postNotification(ApplicationDbContext context, JGN_Notifications entity)
         {
             // save message
@@ -48,35 +48,35 @@ namespace Jugnoon.BLL
             return entity;
         }
 
-        public static void ReadMessage(ApplicationDbContext context, long id)
+        public static async Task ReadMessage(ApplicationDbContext context, long id)
         {
-            var item = context.JGN_Notifications
+            var item = await context.JGN_Notifications
                  .Where(p => p.id == id)
-                 .FirstOrDefault();
+                 .FirstOrDefaultAsync();
 
             if (item != null)
             {
                 item.is_unread = 0;
 
                 context.Entry(item).State = EntityState.Modified;
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 
-        public static void HideMessage(ApplicationDbContext context, long id)
-        {
-            var item = context.JGN_Notifications
-                 .Where(p => p.id == id)
-                 .FirstOrDefault();
+        /* public static void HideMessage(ApplicationDbContext context, long id)
+         {
+             var item = context.JGN_Notifications
+                  .Where(p => p.id == id)
+                  .FirstOrDefault();
 
-            if (item != null)
-            {
-                item.is_hidden = 0;
+             if (item != null)
+             {
+                 item.is_hidden = 0;
 
-                context.Entry(item).State = EntityState.Modified;
-                context.SaveChanges();
-            }
-        }
+                 context.Entry(item).State = EntityState.Modified;
+                 context.SaveChanges();
+             }
+         }*/
 
         public static async Task<List<JGN_Notifications>> LoadItems(ApplicationDbContext context, NotificationEntity entity)
         {
@@ -88,7 +88,7 @@ namespace Jugnoon.BLL
             }
             else
             {
-                string key = GenerateKey("ld_location", entity);
+                string key = GenerateKey("ld_notifs", entity);
                 var data = new List<JGN_Notifications>();
                 if (!SiteConfig.Cache.TryGetValue(key, out data))
                 {
@@ -128,7 +128,7 @@ namespace Jugnoon.BLL
             }
             else
             {
-                string key = GenerateKey("cnt_message", entity);
+                string key = GenerateKey("cnt_notifs", entity);
                 int records = 0;
                 if (!SiteConfig.Cache.TryGetValue(key, out records))
                 {
@@ -227,7 +227,10 @@ namespace Jugnoon.BLL
                 where_clause = where_clause.And(p => p.notification.recipient_id == entity.RecipentID);
 
             // load unread
-            where_clause = where_clause.And(p => p.notification.is_unread == 0);
+            if (!entity.isRead)
+                where_clause = where_clause.And(p => p.notification.is_unread == 1);
+            //else
+            //    where_clause = where_clause.And(p => p.notification.is_unread == 0);*/
 
             // load visible notifications
             where_clause = where_clause.And(p => p.notification.is_hidden == 0);
@@ -246,7 +249,7 @@ namespace Jugnoon.BLL
 /*
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.md', which is part of this source code package.
- * Copyright 2007 - 2020 MediaSoftPro
- * For more information email at support@mediasoftpro.com
+ * Copyright WorkScene
+ * For more information email at mweb@workscene.com
  */
 

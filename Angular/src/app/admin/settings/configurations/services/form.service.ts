@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -11,9 +11,13 @@ import { Injectable } from "@angular/core";
 import * as Controls from "../../../../partials/components/dynamicform/model/elements";
 import { FormBase } from "../../../../partials/components/dynamicform/model/base";
 import { NormalRegex } from "../../../../configs/settings";
+import { CoreService } from "../../../../admin/core/coreService";
 
 @Injectable()
 export class FormService {
+
+  constructor(private coreService: CoreService) {}
+
   getControls(entity: any, prop: string, child_prop: string, iswizard = false) {
     switch (prop) {
       case "general":
@@ -24,6 +28,8 @@ export class FormService {
             return this.prepareDatabaseUserSettingControls(entity);
           case "general":
             return this.prepareGeneralSettingControls(entity, iswizard);
+          case "comment":
+              return this.prepareCommentSettingControls(entity, iswizard);
           case "media":
             return this.prepareMediaSettingControls(entity, iswizard);
           case "features":
@@ -45,23 +51,667 @@ export class FormService {
          
           case "rechapcha":
             return this.prepareRechapchaSettingControls(entity, iswizard);
+         
+          case "zendesk":
+             return this.prepareZendeskControls(entity, iswizard);
+          case "elasticsearch":
+             return this.prepareElasticSearchControls(entity, iswizard);
+          case "activecompaign":
+             return this.prepareActiveCompaignControls(entity, iswizard);
           default:
             return [];
         }
         break;
-      
-      case "qa":
+     
+        case "blogs":
         switch (child_prop) {
           case "general":
-            return this.prepareQAGeneralControls(entity);
+            return this.prepareBlogGeneralControls(entity);
+          case "aws":
+            return this.prepareBlogAwsControls(entity);
           default:
             return [];
         }
-        break;
-      
+     
       default:
         return [];
     }
+  }
+
+  prepareActiveCompaignControls(entity: any, iswizard: boolean) {
+
+    const controls: FormBase<any>[] = [];
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "enable",
+        label: "Enable",
+        value: entity.enable,
+        checked: entity.enable,
+        helpblock:
+          "Toggle On | Off Active Compaign",
+        order: 0
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "baseUri",
+        label: "Base Uri",
+        value: entity.baseUri,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter active compaign api baseuri [For Authorization]",
+        order: 1
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "apiKey",
+        label: "API Key",
+        value: entity.apiKey,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter active compaign api apikey [For Authorization]",
+        order: 2
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "listId",
+        label: "List Id",
+        value: entity.listId,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter active compaign list id",
+        order: 3
+      })
+    );
+    
+    return controls.sort((a, b) => a.order - b.order);
+  }
+
+  prepareElasticSearchControls(entity: any, iswizard: boolean) {
+
+    const controls: FormBase<any>[] = [];
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "enable",
+        label: "Enable",
+        value: entity.enable,
+        checked: entity.enable,
+        helpblock:
+          "Toggle On | Off Elastic Search",
+        order: 0
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "index",
+        label: "Index",
+        value: entity.index,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Elastic Search default index name",
+        order: 1
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "adlisting_index",
+        label: "Adlisting Index",
+        value: entity.adlisting_index,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Elastic Search default index name [Used for indexing ad listings data]",
+        order: 2
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "agency_index",
+        label: "Agency Index",
+        value: entity.agency_index,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Elastic Search default index name [Used for indexing agency data]",
+        order: 3
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "blogs_index",
+        label: "Blog Index",
+        value: entity.blogs_index,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Elastic Search default index name [Used for indexing blogs data]",
+        order: 4
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "url",
+        label: "Url",
+        value: entity.url,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Elastic Search Url",
+        order: 5
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "username",
+        label: "Username",
+        value: entity.username,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Elastic Search UserName [For Authorization]",
+        order: 6
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "password",
+        label: "Password",
+        value: entity.password,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Elastic Search Password [For Authorization]",
+        order: 7
+      })
+    );
+
+    
+    return controls.sort((a, b) => a.order - b.order);
+  }
+
+
+  prepareZendeskControls(entity: any, iswizard: boolean) {
+
+    const controls: FormBase<any>[] = [];
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "enable",
+        label: "Enable",
+        value: entity.enable,
+        checked: entity.enable,
+        helpblock:
+          "Toggle On | Off Zendesk APi",
+        order: 0
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "url",
+        label: "Url",
+        value: entity.url,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Zendesk API Url [For Authorization]",
+        order: 1
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "user",
+        label: "User",
+        value: entity.user,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Zendesk API User [For Authorization]",
+        order: 2
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "token",
+        label: "Token",
+        value: entity.token,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Zendesk API Token [For Authorization]",
+        order: 2
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "locale",
+        label: "Locale",
+        value: entity.locale,
+        colsize: "col-md-12",
+        helpblock:
+          "Enter Zendesk API Supported Locale e.g en-us",
+        order: 3
+      })
+    );
+
+    
+    return controls.sort((a, b) => a.order - b.order);
+  }
+
+  
+  prepareBlogGeneralControls(blog_settings: any) {
+    const controls: FormBase<any>[] = [];
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "showHeadlines",
+        label: "Display Headlines",
+        value: blog_settings.showHeadlines,
+        checked: blog_settings.showHeadlines,
+        helpblock:
+          "Toggle on | off recent articles or headlines on navigation part",
+        order: 4
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "showMaxHeadlines",
+        label: "Total Headlines",
+        value: blog_settings.showMaxHeadlines,
+        colsize: "col-md-12",
+        pattern: "[0-9]+",
+        required: true,
+        helpblock: "Setup maximum no of headlines or articles to display",
+        order: 5
+      })
+    );
+
+  
+
+    controls.push(
+      new Controls.Textbox({
+        key: "totalParagraphs",
+        label: "Total Paragraphs",
+        value: blog_settings.totalParagraphs.toString(),
+        colsize: "col-md-6",
+        pattern: "[0-9]+",
+        required: true,
+        helpblock:
+          "Maximum number of paragraphs to be displayed on normal post listing.",
+        order: 8
+      })
+    );
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "isShowAuthor",
+        label: "Show Author",
+        value: blog_settings.isShowAuthor,
+        checked: blog_settings.isShowAuthor,
+        helpblock: "Toggle on | off display author information / profile link",
+        order: 11
+      })
+    );
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "isShowPostingDate",
+        label: "Show Date",
+        value: blog_settings.isShowPostingDate,
+        checked: blog_settings.isShowPostingDate,
+        helpblock: "Toggle on | off display date information",
+        order: 12
+      })
+    );
+
+    controls.push(
+      new Controls.Dropdown({
+        key: "postDateTemplate",
+        label: "Date Template",
+        required: true,
+        value: blog_settings.postDateTemplate.toString(),
+        options: [
+          {
+            key: 0,
+            value: "DAY MONTH, YEAR"
+          },
+          {
+            key: 1,
+            value: "MONTH DAYth, YEAR"
+          },
+          {
+            key: 2,
+            value: "MONTH DAY YEAR"
+          },
+          {
+            key: 3,
+            value: "2 days ago"
+          }
+        ],
+        helpblock: "Setup preferred date format for article listings",
+        order: 13
+      })
+    );
+
+    controls.push(
+      new Controls.Dropdown({
+        key: "blogPostAccess",
+        label: "Post Access",
+        required: true,
+        value: blog_settings.blogPostAccess.toString(),
+        options: [
+          {
+            key: 0,
+            value: "Every register user can allow to post article"
+          },
+          {
+            key: 1,
+            value: "Only admin / moderator can post article"
+          }
+        ],
+        helpblock: "Control who can be allowed to post article or blog",
+        order: 16
+      })
+    );
+
+    controls.push(
+      new Controls.Dropdown({
+        key: "blogPostModeration",
+        label: "Post Moderation",
+        required: true,
+        value: blog_settings.blogPostModeration.toString(),
+        options: [
+          {
+            key: 0,
+            value: "Approve directly"
+          },
+          {
+            key: 1,
+            value: "Need moderator / admin review"
+          }
+        ],
+        helpblock: "Control how the posted articles visible to public",
+        order: 17
+      })
+    );
+    controls.push(
+      new Controls.CheckBox({
+        key: "linkProcessing",
+        label: "Auto Link",
+        value: blog_settings.linkProcessing,
+        checked: blog_settings.linkProcessing,
+        helpblock:
+          "Toggle on | off automatcially generate links within article based on matched word with category or tag or wiki posts",
+        order: 18
+      })
+    );
+    controls.push(
+      new Controls.CheckBox({
+        key: "category_Processing",
+        label: "Auto Category Link",
+        value: blog_settings.category_Processing,
+        checked: blog_settings.category_Processing,
+        helpblock:
+          "Toggle on | off automatcially generate category links based on matched word with category",
+        order: 19
+      })
+    );
+    controls.push(
+      new Controls.CheckBox({
+        key: "tag_Processing",
+        label: "Auto Tag Link",
+        value: blog_settings.tag_Processing,
+        checked: blog_settings.tag_Processing,
+        helpblock:
+          "Toggle on | off automatcially generate tag links based on matched word with tag",
+        order: 20
+      })
+    );
+    controls.push(
+      new Controls.CheckBox({
+        key: "glossary_Processing",
+        label: "Auto Glossary Link",
+        value: blog_settings.glossary_Processing,
+        checked: blog_settings.glossary_Processing,
+        helpblock:
+          "Toggle on | off automatcially generate wiki links based on matched word with wiki or dictionary or glossary terms (if functionality available)",
+        order: 21
+      })
+    );
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "isRelated",
+        label: "Enable Related Posts",
+        value: blog_settings.isRelated,
+        checked: blog_settings.isRelated,
+        helpblock: "Toggle on | off related articles shown below article",
+        order: 22
+      })
+    );
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "showRelatedPosts",
+        label: "Enable Related Posts",
+        value: blog_settings.showRelatedPosts,
+        checked: blog_settings.showRelatedPosts,
+        helpblock: "Toggle on | off related articles shown below article",
+        order: 23
+      })
+    );
+
+    controls.push(
+      new Controls.CheckBox({
+        key: "showMainPagePagination",
+        label: "Main Listing Pagination",
+        value: blog_settings.showMainPagePagination,
+        checked: blog_settings.showMainPagePagination,
+        helpblock: "Toggle on | off pagination on home listing",
+        order: 26
+      })
+    );
+
+    controls.push(
+      new Controls.SectionHeader({
+        key: "config_section_01",
+        label: "Feed Settings",
+        order: 28
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "title",
+        label: "Title",
+        value: blog_settings.title,
+        helpblock:
+          "Feed title, specifically used within generate ATOM / RSS Feeds",
+        order: 29
+      })
+    );
+
+    controls.push(
+      new Controls.TextArea({
+        key: "description",
+        label: "Description",
+        value: blog_settings.description,
+        helpblock:
+          "Feed description specifically used within generate ATOM / RSS Feeds",
+        order: 30
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "copyright",
+        label: "Copyright",
+        value: blog_settings.copyright,
+        helpblock: "Copyright information attach with feed",
+        order: 31
+      })
+    );
+    controls.push(
+      new Controls.CheckBox({
+        key: "enable_feeds",
+        label: "Enable Feeds",
+        value: blog_settings.enable_feeds,
+        checked: blog_settings.enable_feeds,
+        helpblock: "Toggle on | off rss / atom feeds for blog post",
+        order: 32
+      })
+    );
+    controls.push(
+      new Controls.Textbox({
+        key: "totalFeeds",
+        label: "Total Feeds",
+        value: blog_settings.totalFeeds.toString(),
+        colsize: "col-md-12",
+        pattern: "[0-9]+",
+        required: true,
+        helpblock: "Total no of articles display in feed",
+        order: 33
+      })
+    );
+   
+    controls.push(
+      new Controls.SectionHeader({
+        key: "config_section_01",
+        label: "Media Seetings",
+        order: 34
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "thumbnail_width",
+        label: "Thumbnail Width",
+        value: blog_settings.thumbnail_width.toString(),
+        colsize: "col-md-6",
+        pattern: "[0-9]+",
+        required: true,
+        helpblock: "Width of thumbnail image created for blog post",
+        order: 35
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "thumbnail_height",
+        label: "Thumbnail Height",
+        value: blog_settings.thumbnail_height.toString(),
+        colsize: "col-md-6",
+        pattern: "[0-9]+",
+        required: true,
+        helpblock: "Height of thumbnail image created for blog post",
+        order: 36
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "banner_width",
+        label: "Banner Width",
+        value: blog_settings.banner_width.toString(),
+        colsize: "col-md-6",
+        pattern: "[0-9]+",
+        required: true,
+        helpblock: "Width of banner image created for blog post",
+        order: 37
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "banner_height",
+        label: "Banner Height",
+        value: blog_settings.banner_height.toString(),
+        colsize: "col-md-6",
+        pattern: "[0-9]+",
+        required: true,
+        helpblock: "Height of banner image created for blog post",
+        order: 38
+      })
+    );
+
+   
+
+    return controls.sort((a, b) => a.order - b.order);
+  }
+
+  prepareBlogAwsControls(entity: any) {
+    const controls: FormBase<any>[] = [];
+
+    controls.push(
+      new Controls.Textbox({
+        key: "bucket",
+        label: "Bucket Name",
+        value: entity.bucket,
+        colsize: "col-md-12",
+        helpblock:
+          "Setup bucketname for storing blog images, covers, sliders etc",
+        order: 1
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "thumb_directory_path",
+        label: "Thumbnail Directory Path",
+        value: entity.thumb_directory_path,
+        colsize: "col-md-12",
+        helpblock:
+          "Setup directory (within bucket) for saving generate blog thumbnails e.g blogs/thumbs/",
+        order: 2
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "midthumb_directory_path",
+        label: "Cover Directory Path",
+        value: entity.midthumb_directory_path,
+        colsize: "col-md-12",
+        helpblock:
+          "Setup directory (within bucket) for saving blog covers and slider images e.g blogs/covers/",
+        order: 3
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "original_directory_path",
+        label: "Original Image Directory Path",
+        value: entity.original_directory_path,
+        colsize: "col-md-12",
+        helpblock:
+          "Setup directory (within bucket) for saving original blog images e.g blogs/images/",
+        order: 4
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "cdn_URL",
+        label: "CDN URL",
+        value: entity.cdn_URL,
+        colsize: "col-md-12",
+        helpblock:
+          "Setup public accessible cloudfront distribution url for streaming photos",
+        order: 5
+      })
+    );
+
+    return controls.sort((a, b) => a.order - b.order);
   }
 
   prepareDatabaseSettingControls(entity: any) {
@@ -192,100 +842,6 @@ export class FormService {
 
   prepareGeneralSettingControls(entity: any, iswizard: boolean) {
     const controls: FormBase<any>[] = [];
-
-    controls.push(
-      new Controls.Dropdown({
-        key: "site_theme",
-        label: "Site Theme",
-        required: true,
-        value: entity.site_theme,
-        options: [
-          {
-            key: "cerulean",
-            value: "Cerulean"
-          },
-          {
-            key: "cosmo",
-            value: "Cosmo"
-          },
-          {
-            key: "cyborg",
-            value: "Cyborg"
-          },
-          {
-            key: "darkly",
-            value: "Darkly"
-          },
-          {
-            key: "flatly",
-            value: "Flatly"
-          },
-          {
-            key: "journal",
-            value: "Journal"
-          },
-          {
-            key: "litera",
-            value: "Litera"
-          },
-          {
-            key: "lumen",
-            value: "Lumen"
-          },
-          {
-            key: "materia",
-            value: "Materia"
-          },
-          {
-            key: "minty",
-            value: "Minty"
-          },
-          {
-            key: "pulse",
-            value: "Pulse"
-          },
-          {
-            key: "sandstone",
-            value: "Sandstone"
-          },
-          {
-            key: "simplex",
-            value: "Simplex"
-          },
-          {
-            key: "sketchy",
-            value: "Sketchy"
-          },
-          {
-            key: "slate",
-            value: "Slate"
-          },
-          {
-            key: "solar",
-            value: "Solar"
-          },
-          {
-            key: "spacelab",
-            value: "Space Lab"
-          },
-          {
-            key: "superhero",
-            value: "Super Hero"
-          },
-          {
-            key: "united",
-            value: "United"
-          },
-          {
-            key: "yeti",
-            value: "Yeti"
-          }
-        ],
-        helpblock:
-          "Choose theme name from list of available themes (bootswatch) unless you used your own custom theme / template",
-        order: 0
-      })
-    );
 
     controls.push(
       new Controls.Textbox({
@@ -649,6 +1205,7 @@ export class FormService {
     return controls.sort((a, b) => a.order - b.order);
   }
 
+
   prepareMediaSettingControls(entity: any, iswizard: boolean) {
     const controls: FormBase<any>[] = [];
 
@@ -704,7 +1261,7 @@ export class FormService {
       })
     );
 
-    /* controls.push(
+    controls.push(
       new Controls.Textbox({
         key: "gamify_badge_width",
         label: "Gamify Badge Width",
@@ -730,7 +1287,7 @@ export class FormService {
           "Setup maximum height to be used by application for generating gamify badge",
         order: 5
       })
-    ); */
+    );
 
     controls.push(
       new Controls.Textbox({
@@ -785,6 +1342,19 @@ export class FormService {
 
     controls.push(
       new Controls.Textbox({
+        key: "logo_footer_path",
+        label: "Logo Footer Path",
+        value: entity.logo_footer_path,
+        colsize: "col-md-12",
+        required: true,
+        helpblock:
+          "Setup default logo path to display logo on footer either direct url or relative path within project.",
+        order: 9
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
         key: "user_default_path",
         label: "User Default Path",
         value: entity.user_default_path,
@@ -822,26 +1392,42 @@ export class FormService {
       })
     );
 
+    controls.push(
+      new Controls.Textbox({
+        key: "location_default_path",
+        label: "Location Default Path",
+        value: entity.location_default_path,
+        colsize: "col-md-12",
+        required: true,
+        helpblock:
+          "Setup default location image path (to be used if no image set for location)",
+        order: 13
+      })
+    );
+
+    
+
     return controls.sort((a, b) => a.order - b.order);
   }
 
   prepareFeatureSettingControls(entity: any, iswizard: boolean) {
     const controls: FormBase<any>[] = [];
 
+    
+
     controls.push(
       new Controls.CheckBox({
-        key: "enable_qa",
-        label: "Enable QA",
-        value: entity.enable_qa,
-        checked: entity.enable_qa,
+        key: "enable_classified",
+        label: "Enable Classified",
+        value: entity.enable_classified,
+        checked: entity.enable_classified,
         helpblock:
-          "Enable qa functionality in application if module available.",
-        order: 3
+          "Enable classified functionality in application if module available.",
+        order: 1
       })
     );
 
-    
-
+  
     controls.push(
       new Controls.SectionHeader({
         key: "config_section_01",
@@ -895,18 +1481,6 @@ export class FormService {
           order: 13
         })
       );
-
-      /*controls.push(
-        new Controls.CheckBox({
-          key: "enable_gamify",
-          label: "Enable Gamify",
-          value: entity.enable_gamify,
-          checked: entity.enable_gamify,
-          helpblock:
-            "Enable gamify functionality in application if module available.",
-          order: 14
-        })
-      );*/
 
       controls.push(
         new Controls.CheckBox({
@@ -1328,18 +1902,6 @@ export class FormService {
       })
     );
 
-    /*controls.push(
-      new Controls.Textbox({
-        key: "gamify_badges_directory",
-        label: "Gamify Badges Directory",
-        value: entity.gamify_badges_directory,
-        colsize: "col-md-12",
-        helpblock:
-          'Setup directory (within bucket) for saving gamify badges e.g "badges/"',
-        order: 7
-      })
-    );*/
-
     controls.push(
       new Controls.Textbox({
         key: "cdn_URL",
@@ -1495,30 +2057,6 @@ export class FormService {
         key: "config_section_01",
         label: "Content Sharing Third Party Plugin Settings",
         order: 12
-      })
-    );
-
-    controls.push(
-      new Controls.Textbox({
-        key: "addthis_pubid",
-        label: "Addthis PubId",
-        value: entity.addthis_pubid,
-        colsize: "col-md-12",
-        helpblock:
-          "Enable addthis plugin for sharing content option for more information visit: https://www.addthis.com/",
-        order: 13
-      })
-    );
-
-    controls.push(
-      new Controls.Textbox({
-        key: "sharethis_propertyId",
-        label: "ShareThis PropertyId",
-        value: entity.sharethis_propertyId,
-        colsize: "col-md-12",
-        helpblock:
-          "Enable sharethis property id for sharing content option for more information visit: https://sharethis.com/",
-        order: 14
       })
     );
 
@@ -1748,27 +2286,61 @@ export class FormService {
     return controls.sort((a, b) => a.order - b.order);
   }
 
-
-
-  prepareQAGeneralControls(entity: any) {
+  
+  prepareCommentSettingControls(entity: any, iswizard: boolean) {
     const controls: FormBase<any>[] = [];
 
     controls.push(
       new Controls.CheckBox({
-        key: "enable_public_questions",
-        label: "Enable Public Questions",
-        value: entity.enable_public_questions,
-        checked: entity.enable_public_questions,
+        key: "enable",
+        label: "Enable Comments",
+        value: entity.enable,
+        checked: entity.enable,
+        helpblock: "Toggle on | off email functionality within website",
+        order: 0
+      })
+    );
+
+    controls.push(
+      new Controls.Dropdown({
+        key: "comment_option",
+        label: "Comment Options",
+        required: true,
+        value: entity.comment_option.toString(),
+        options: [
+          /*{
+            key: 0,
+            value: "Website Own"
+          },*/
+          {
+            key: 1,
+            value: "Disqus"
+          },
+          {
+            key: 2,
+            value: "Facebook Comments"
+          }
+        ],
+        order: 1
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "discus_src",
+        label: "Disqus Url",
+        value: entity.discus_src,
+        colsize: "col-md-12",
         helpblock:
-          "Enable normal users to create topics from his / her own account or restrict this functionality to admin only",
-        order: 7
+          "If disqus option enabled, please put your discus src your setup via Disqus Dashboard",
+        order: 2
       })
     );
 
     return controls.sort((a, b) => a.order - b.order);
   }
 
-  
+
 }
 
 /*

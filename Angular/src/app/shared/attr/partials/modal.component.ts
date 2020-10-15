@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: ClassifiedEngine                    */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -54,11 +54,11 @@ export class ViewComponent implements OnInit {
     // permission check
     /*if (this.Info.isActionGranded !== undefined) {
       if (!this.Info.isActionGranded) {
-        this.coreActions.Notify({
-          title: "Permission Denied",
-          text: "",
-          css: "bg-danger"
-        });
+        this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
         return;
       }
     }*/

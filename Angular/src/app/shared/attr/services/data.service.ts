@@ -1,25 +1,26 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: ClassifiedEngine                    */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
-
+import { Store } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { SettingsService } from "./settings.service";
-import { CoreAPIActions } from "../../../reducers/core/actions";
-
+//import { CoreAPIActions } from "../../../reducers/core/actions";
+import { Notify } from "../../../reducers/core/actions";
 /* -------------------------------------------------------------------------- */
 /*             Core Data Access (API) Library for Ad Listings                 */
 /* -------------------------------------------------------------------------- */
 @Injectable()
 export class DataService {
   constructor(
+    private _store: Store<IAppState>,
     private settings: SettingsService,
-    private http: HttpClient,
-    private coreActions: CoreAPIActions
+    private http: HttpClient
   ) {}
 
   /* -------------------------------------------------------------------------- */
@@ -62,18 +63,18 @@ export class DataService {
     let URL = this.settings.getApiOptions().delete_attr;
     this.http.post(URL, JSON.stringify(obj)).subscribe(
       (data: any) => {
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Record Removed",
           text: "",
           css: "bg-success"
-        });
+        }));
       },
       err => {
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Record not Saved",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }
@@ -84,18 +85,18 @@ export class DataService {
   DeleteTemplate(obj, url) {
     this.http.post(url, JSON.stringify(obj)).subscribe(
       (data: any) => {
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Record Removed",
           text: "",
           css: "bg-success"
-        });
+        }));
       },
       err => {
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Record not Saved",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -13,7 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { LoaderComponent } from './components/loader/loader.component';
-import { AlertComponent } from './components/alert/alert.component';
+// import { AlertComponent } from './components/alert/alert.component';
 
 import { SpinnerModule} from './components/loader/types/spinner.module';
 
@@ -27,7 +27,7 @@ import { NotifyService } from './components/pnotify/pnotify.service';
 import { PlUploadDirective } from './directives/uploader/plupload';
 /* Core Service */
 import { CoreService } from '../admin/core/coreService';
-import { CoreAPIActions } from '../reducers/core/actions';
+//import { CoreAPIActions } from '../reducers/core/actions';
 /* validators */
 // import { BirthYearValidatorDirective } from './components/dynamicform/validators/birthyear';
 
@@ -51,10 +51,15 @@ import { DisplayFileComponent } from './components/dynamicform/components/displa
 // import {SelectModule} from 'ng2-select';
 import { EditorModule } from '@tinymce/tinymce-angular';
 
+// video uploader
+// import { VideoUploadComponent } from '../shared/videos/components/uploaders/components/uploader';
 
 // cropie component
 import { CroppieComponent } from './directives/croppie/croppie';
 import { CropperViewComponent } from "../shared/cropie/modal";
+
+// form component
+import { FormViewComponent } from "../shared/modals/forms/modal.component";
 
 // multi select component
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
@@ -85,7 +90,6 @@ import { BannerUploaderComponent } from "../shared/cropie/uploader";
     BootstrapToolbarComponent,
     PaginationComponent,
     LoaderComponent,
-    AlertComponent,
     DynamicFormControlComponent,
     DynamicModalFormComponent,
     FileDisplayComponent,
@@ -95,10 +99,13 @@ import { BannerUploaderComponent } from "../shared/cropie/uploader";
     DisplayFileComponent,
     PlUploadDirective,
     NoRecordFoundComponent,
+    // VideoUploadComponent,
+    //AvatorComponent,
     CroppieComponent,
     CropperViewComponent,
     MultiOptionsComponent,
-    BannerUploaderComponent
+    BannerUploaderComponent,
+    FormViewComponent
   ],
   exports: [
     BootstrapNavigationComponent,
@@ -106,7 +113,6 @@ import { BannerUploaderComponent } from "../shared/cropie/uploader";
     BootstrapToolbarComponent,
     PaginationComponent,
     LoaderComponent,
-    AlertComponent,
     DynamicFormControlComponent,
     DynamicModalFormComponent,
     FileDisplayComponent,
@@ -116,12 +122,15 @@ import { BannerUploaderComponent } from "../shared/cropie/uploader";
     DisplayFileComponent,
     PlUploadDirective,
     NoRecordFoundComponent,
+    // VideoUploadComponent,
+    //AvatorComponent,
     CroppieComponent,
     CropperViewComponent,
     MultiOptionsComponent,
-    BannerUploaderComponent
+    BannerUploaderComponent,
+    FormViewComponent
   ],
   entryComponents: [CropperViewComponent],
-  providers: [NotifyService, CoreService, CoreAPIActions]
+  providers: [NotifyService, CoreService]
 })
 export class PartialModule {}

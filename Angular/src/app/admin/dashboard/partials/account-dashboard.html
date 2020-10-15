@@ -1,51 +1,48 @@
-<div class="card">
-  <div class="card-body">
-    <div class="m-t-10 m-b-10">
-      <div class="row m-b-10">
-        <div class="col-md-4" *ngIf="(configs$ | async).general.media">
+<div class="dashborad-box">
+  <h4 class="title">My Account</h4>
+  <div class="section-body">
+    <div *ngIf="config.getGlobalVar('theme') === 'default'">
+      <div class="row">
+        <div
+          class="col-md-4 col-xs-12"
+          *ngIf="(configs$ | async).general.media"
+        >
           <app-banneruploader
             [Info]="User"
             [MediaSettings]="(configs$ | async).general.media"
             (OnCropped)="onImageUploaded($event)"
           ></app-banneruploader>
         </div>
-        <div class="col-md-8">
-          <h3
-            class="m-b-10"
-            *ngIf="User.firstname !== null"
-          >
+        <div class="col-md-8 col-xs-12">
+          <h3 class="m-b-10" *ngIf="User.firstname !== null">
             {{ User.firstname }} {{ User.lastname }}
           </h3>
-          <h3
-            class="m-b-10"
-            *ngIf="User.firstname === null || User.firstname === ''"
-          >
-            My Account
-          </h3>
+          <h3 class="m-b-10" *ngIf="User.firstname === null">My Account</h3>
           <hr />
-          <p class="m-t-0 m-b-5" *ngIf="User.last_login">
-            Last Login: {{ User.customize_last_login }}
+          <!--<p class="m-t-0 m-b-5">
+                        Last Login: {{ User.customize_last_login }}
+                    </p>-->
+          <p class="m-t-0 m-b-5">
+            Account Created: {{ User.customize_register_date }}
           </p>
-          <p class="m-t-0 m-b-5" *ngIf="User.last_login">
-            Register: {{ User.customize_register_date }}
+          <hr />
+          <p class="m-t-0 m-b-5">
+            Asked Questions: {{User.stats.stat_qa}}
           </p>
+          <p class="m-t-0 m-b-5">Answered Questions: {{User.stats.stat_qaanswers}}</p>
+          <p class="m-t-0 m-b-5">Favorited Questions: {{User.stats.stat_qa_fav}}</p>
          
         </div>
       </div>
-
-    
-      <div *ngIf="(configs$ | async).general.features.enable_qa">
-          <div class="row">
-              <div class="col-md-6">
-                 <app-smqa-list [type]="0" [stats]="User.stats.stat_qa" [title]="'My Questions'" [rout_url]="'/my-qa'" [browse_url]="'/my-qa'"></app-smqa-list>
-              </div>
-              <div class="col-md-6">
-                <app-smqa-list [type]="2" [stats]="User.stats.stat_qa" [title]="'My Answered Questions'" [rout_url]="'/my-qa'" [browse_url]="'/my-qa/answered'"></app-smqa-list>
-              </div>
-          </div>
-
-      </div>
-     
     </div>
+ 
   </div>
 </div>
+
+<app-smqa-list
+  [type]="0"
+  [title]="'My Questions'"
+  [rout_url]="'/my-qa'"
+  [browse_url]="'/my-qa'"
+></app-smqa-list>
+

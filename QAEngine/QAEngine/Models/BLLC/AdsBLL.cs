@@ -183,15 +183,6 @@ namespace Jugnoon.BLL
             return collectionQuery;
         }
 
-        private static IQueryable<JGN_Ads> AddSortOption(IQueryable<JGN_Ads> collectionQuery, string field, string direction)
-        {
-            var reverse = false;
-            if (direction == "desc")
-                reverse = true;
-
-            return (IQueryable<JGN_Ads>)collectionQuery.Sort(field, reverse);
-
-        }
         private static System.Linq.Expressions.Expression<Func<JGN_Ads, bool>> returnWhereClause(AdEntity entity)
         {
             var where_clause = PredicateBuilder.New<JGN_Ads>(true);

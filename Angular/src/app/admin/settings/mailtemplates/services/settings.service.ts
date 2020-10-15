@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -15,10 +15,13 @@ import { CoreService } from "../../../core/coreService";
 import {
   ButtonCSS,
   ICONCSS,
-  ThemeCSS
+  ThemeCSS,
 } from "../../../../configs/themeSettings";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
+
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+import * as configSelectors from "../../../../reducers/configs/selectors";
+
 @Injectable()
 export class SettingsService {
   // configurations
@@ -26,28 +29,32 @@ export class SettingsService {
   private uploadOptions: iUploadOptions;
   private toolbarOptions: any;
   private searchOptions: any;
-// Application Configuration Data
-@select(["configuration", "configs"])
-readonly configs$: Observable<any>;
-Configs: any = {};
-  constructor(private coreService: CoreService, public config: AppConfig) {
+  // Application Configuration Data
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
+  /*@select(["configuration", "configs"])
+  readonly configs$: Observable<any>;*/
+  Configs: any = {};
+  constructor(
+    private _store: Store<IAppState>,
+    private coreService: CoreService,
+    public config: AppConfig
+  ) {
     const APIURL = config.getConfig("host");
     this.apiOptions = {
       load: APIURL + "api/mailtemplates/load",
       getinfo: APIURL + "api/mailtemplates/getinfo",
       action: APIURL + "api/mailtemplates/action",
-      proc: APIURL + "api/mailtemplates/proc"
+      proc: APIURL + "api/mailtemplates/proc",
     };
 
     this.configs$.subscribe((configs: any) => {
       if (configs.general !== undefined) {
-          console.log('configs defined');
-          this.Configs = configs.general.mailtemplates;
-          this.init_toolbar_options();
-          this.init_search_options();
+        console.log("configs defined");
+        this.Configs = configs.general.mailtemplates;
+        this.init_toolbar_options();
+        this.init_search_options();
       }
-  });
-
+    });
   }
 
   init_search_options() {
@@ -64,7 +71,7 @@ Configs: any = {};
       categories: [],
       selectedcategory: "",
       singleaction: true,
-      actions: this.initialize_actions()
+      actions: this.initialize_actions(),
     };
   }
   initialize_actions() {
@@ -77,8 +84,8 @@ Configs: any = {};
         icon: "icon-file-plus",
         options: {},
         css: "btn m-b-5 btn-block btn-success",
-        event: "add"
-      }
+        event: "add",
+      },
     ];
   }
   init_toolbar_options() {
@@ -91,7 +98,7 @@ Configs: any = {};
       left_caption: "Filter:",
       right_caption: "",
       right_options: [],
-      actions: []
+      actions: [],
     };
     this.toolbarOptions.left_options.push({
       title: "Type",
@@ -104,18 +111,18 @@ Configs: any = {};
           value: -1,
           isclick: true,
           clickevent: "f_reset",
-          tooltip: "Show all items"
+          tooltip: "Show all items",
         },
-        { id: "2", separator: true }
-      ]
+        { id: "2", separator: true },
+      ],
     });
 
     const template_types: any = [];
     for (const prop in this.Configs) {
       template_types.push({
-         value: this.Configs[prop],
-         title: prop
-      })
+        value: this.Configs[prop],
+        title: prop,
+      });
     }
     // supported mailtemplates content types
     for (const type of template_types) {
@@ -125,7 +132,7 @@ Configs: any = {};
         value: type.value,
         isclick: true,
         clickevent: "f_type",
-        tooltip: "Load " + type.title + " templates"
+        tooltip: "Load " + type.title + " templates",
       });
     }
 
@@ -148,9 +155,9 @@ Configs: any = {};
           isclick: true,
           clickevent: "m_markas",
           icon: ICONCSS.DELETE_ICON,
-          tooltip: "Delete selected records"
-        }
-      ]
+          tooltip: "Delete selected records",
+        },
+      ],
     });
   }
 
@@ -178,7 +185,7 @@ Configs: any = {};
       subject: "",
       tags: "",
       contents: "",
-      type: "0"
+      type: "0",
     };
   }
 }

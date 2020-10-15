@@ -278,7 +278,6 @@ namespace Jugnoon.BLL
             return collectionQuery;
         }
 
-
         private static System.Linq.Expressions.Expression<Func<JGN_Dictionary, bool>> returnWhereClause(DictionaryEntity entity)
         {
             var where_clause = PredicateBuilder.New<JGN_Dictionary>(true);

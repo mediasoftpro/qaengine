@@ -22,12 +22,22 @@ namespace Jugnoon.Meta
                     description = SiteConfig.generalLocalizer["_meta_home_desc"].Value,
                     imageurl = "",
                     style_exists = true,
-                    script_exists = true
+                    script_exists = true,
+                    layout = "~/Views/themes/[THEME]/layouts/index.cshtml"
                 },
                 new Page {
                     pagename = "signup",
                     viewname = "signup",
                     title = SiteConfig.generalLocalizer["_meta_signup"].Value,
+                    description = "",
+                    imageurl = "",
+                    style_exists = false,
+                    script_exists = true
+                },
+                new Page {
+                    pagename = "agency-signup",
+                    viewname = "agency_signup",
+                    title = SiteConfig.generalLocalizer["_meta_agency_signup"].Value,
                     description = "",
                     imageurl = "",
                     style_exists = false,

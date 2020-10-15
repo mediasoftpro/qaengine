@@ -70,6 +70,7 @@ namespace Jugnoon.Utility
         {
             return Config.GetUrl(Configs.MediaSettings.category_default_path);
         }
+
     }
 
     public class TagUrlConfig

@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -201,6 +201,30 @@ export class FormService {
       })
     );
 
+    controls.push(
+      new Controls.Textbox({
+        key: "phone",
+        label: "Phone No",
+        value: entity.phoneNumber,
+        placeholder: "Enter Phone Number",
+        minLength: 3,
+        maxLength: 50,
+        order: 2
+      })
+    );
+
+    controls.push(
+      new Controls.Textbox({
+        key: "mobile",
+        label: "Mobile",
+        value: entity.mobile,
+        placeholder: "Enter Mobile Number",
+        minLength: 3,
+        maxLength: 50,
+        order: 3
+      })
+    );
+
     // dynamic form 
     let isEdit = false;
     if (entity.id !== '') {
@@ -257,31 +281,69 @@ export class FormService {
   
       controls.push(
         new Controls.Textbox({
-          key: "credits",
-          label: "Credits",
-          value: entity.account.credits.toString(),
+          key: "basic_credits",
+          label: "Basic Credits",
+          value: entity.account.basic_credits.toString(),
           colsize: "col-md-12",
           pattern: "[0-9]+",
           required: true,
-          helpblock: "Update user account credits manually",
+          helpblock: "Update user basic credits manually",
           order: 1005
         })
       );
   
-      let lifetimerenewal = false;
-      if (entity.account.islifetimerenewal === 1) {
-        lifetimerenewal = true;
-      }
       controls.push(
-        new Controls.CheckBox({
-          key: "islifetimerenewal",
-          label: "Lifetime Renewal",
-          value: entity.account.islifetimerenewal,
-          checked: lifetimerenewal,
-          helpblock: "Toggle on | off enforcing lifetime renewal (paid) account",
+        new Controls.Textbox({
+          key: "featured_credits",
+          label: "Featured Credits",
+          value: entity.account.featured_credits.toString(),
+          colsize: "col-md-12",
+          pattern: "[0-9]+",
+          required: true,
+          helpblock: "Update user featured credits manually",
           order: 1006
         })
       );
+
+      controls.push(
+        new Controls.Textbox({
+          key: "premium_credits",
+          label: "Premium Credits",
+          value: entity.account.premium_credits.toString(),
+          colsize: "col-md-12",
+          pattern: "[0-9]+",
+          required: true,
+          helpblock: "Update user premium credits manually",
+          order: 1007
+        })
+      );
+
+      controls.push(
+        new Controls.Textbox({
+          key: "hot_credits",
+          label: "Hot Credits",
+          value: entity.account.hot_credits.toString(),
+          colsize: "col-md-12",
+          pattern: "[0-9]+",
+          required: true,
+          helpblock: "Update user hot credits manually",
+          order: 1008
+        })
+      );
+
+      controls.push(
+        new Controls.Textbox({
+          key: "super_hot_credits",
+          label: "Super Hot Credits",
+          value: entity.account.super_hot_credits.toString(),
+          colsize: "col-md-12",
+          pattern: "[0-9]+",
+          required: true,
+          helpblock: "Update user super hot credits manually",
+          order: 1009
+        })
+      );
+      
     }
     
 

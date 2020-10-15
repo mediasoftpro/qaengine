@@ -27,8 +27,7 @@ namespace Jugnoon.BLL
 
             await context.SaveChangesAsync();
 
-
-            Update_Fav_Stats(context, userid, mediatype, type, 0);
+            await Update_Fav_Stats(context, userid, mediatype, type, 0);
             return true;
         }
 
@@ -37,37 +36,27 @@ namespace Jugnoon.BLL
             var all = from c in context.JGN_Favorites where c.contentid == contentid && c.userid == userid && c.type == type select c;
             context.JGN_Favorites.RemoveRange(all);
             await context.SaveChangesAsync();
-
-            /*if (userid != "")
-            {
-               Update_Fav_Stats(context, userid, mediatype, type, 1);
-            }*/
+            await Update_Fav_Stats(context, userid, mediatype, type, 1);
 
             return true;
         }
 
-        private static void Update_Fav_Stats(ApplicationDbContext context, string username, int mediatype, int type, int action)
+        private static async Task Update_Fav_Stats(ApplicationDbContext context, string username, int mediatype, int type, int action)
         {
-            // Removed saving favorites stats in database
-            /*if (type != 2)
+            string _field = "stat_qa_fav";
+            switch (type)
             {
-                // changes happend
-                string _field = "stat_favorites";
-                if (mediatype == 1)
-                    _field = "stat_audiofavorites";
-                else if (type == 1)
-                    _field = "stat_qafavorites";
-
-                int count = Convert.ToInt32(UserBLL.Return_Value(context, username, _field));
-                if (action == 0)
-                    count++;
-                else
-                    count--;
-                if(type == 1)
-                   UserBLL.Update_Field_V3(context, username, _field, (byte)count);
-                else
-                   UserBLL.Update_Field_V3(context, username, _field, (byte)count);
-            }*/
+                case 70:
+                    // qa
+                    _field = "stat_qa_fav";
+                    break;
+            }
+            int count = Convert.ToInt32(UserStatsBLL.Get_Field_Value(context, username, _field));
+            if (action == 0)
+                count++;
+            else
+                count--;
+            await UserStatsBLL.Update_Field(context, username, count, _field);
 
         }
 

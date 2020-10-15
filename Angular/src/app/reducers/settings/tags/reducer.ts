@@ -1,7 +1,7 @@
 
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -10,75 +10,67 @@
 import { TagsAPIAction, TagsAPIActions, TagsBLL } from "./actions";
 import { ITagState, TAGS_INITIAL_STATE } from "./model";
 import { tassign } from "tassign";
-import { Action } from "redux";
 
-export function createTagsReducer() {
-  return function tagsReducer(
-    state: ITagState = TAGS_INITIAL_STATE,
-    a: Action
-  ): ITagState {
-    const action = a as TagsAPIAction;
-
-    const bll = new TagsBLL();
-    /*if (!action.meta) {
-      return state;
-    }*/
-    switch (action.type) {
-      case TagsAPIActions.IS_ITEM_SELECTED:
+const bll = new TagsBLL();
+export const tagsReducer = (
+  state = TAGS_INITIAL_STATE,
+  action: TagsAPIActions
+): ITagState => {
+  switch (action.type) {
+    case TagsAPIAction.IS_ITEM_SELECTED:
         return tassign(state, { itemsselected: action.payload });
 
-      case TagsAPIActions.SELECT_ALL:
+      case TagsAPIAction.SELECT_ALL:
         return bll.selectAll(state, action);
 
-      case TagsAPIActions.LOAD_STARTED:
+      case TagsAPIAction.LOAD_STARTED:
         return tassign(state, { loading: true, error: null });
 
-      case TagsAPIActions.LOAD_SUCCEEDED:
+      case TagsAPIAction.LOAD_SUCCEEDED:
         return bll.loadSucceeded(state, action);
 
-      case TagsAPIActions.LOAD_FAILED:
-        return tassign(state, { loading: false, error: action.error });
+      case TagsAPIAction.LOAD_FAILED:
+        return tassign(state, { loading: false, error: action.payload });
 
       /* update wholefilter options */
-      case TagsAPIActions.UPDATE_FILTER_OPTIONS:
+      case TagsAPIAction.UPDATE_FILTER_OPTIONS:
         return tassign(state, {
           filteroptions: Object.assign({}, state.filteroptions, action.payload)
         });
 
       /* update specific filter option */
-      case TagsAPIActions.APPLY_FILTER:
+      case TagsAPIAction.APPLY_FILTER:
         return bll.applyFilterChanges(state, action);
 
       /* update pagination current page */
-      case TagsAPIActions.UPDATE_PAGINATION_CURRENTPAGE:
+      case TagsAPIAction.UPDATE_PAGINATION_CURRENTPAGE:
         return bll.updatePagination(state, action);
 
       /* add record */
-      case TagsAPIActions.ADD_RECORD:
+      case TagsAPIAction.ADD_RECORD:
         return bll.addRecord(state, action);
 
       /* update record state */
-      case TagsAPIActions.UPDATE_RECORD:
+      case TagsAPIAction.UPDATE_RECORD:
         return bll.updateRecord(state, action);
 
       /* apply changes (multiple selection items e.g delete selected records or enable selected records) */
-      case TagsAPIActions.APPLY_CHANGES:
+      case TagsAPIAction.APPLY_CHANGES:
         return bll.applyChanges(state, action);
       // remove loader
-      case TagsAPIActions.LOAD_END:
+      case TagsAPIAction.LOAD_END:
         return tassign(state, { loading: false });
 
-      case TagsAPIActions.REFRESH_PAGINATION:
+      case TagsAPIAction.REFRESH_PAGINATION:
         return bll.refreshpagination(state, action);
 
-      case TagsAPIActions.REFRESH_DATA:
-        const filterOptions = state.filteroptions;
+      case TagsAPIAction.REFRESH_DATA:
+        const filterOptions = Object.assign({}, state.filteroptions);
         filterOptions.track_filter = true;
         return tassign(state, {
           filteroptions: Object.assign({}, state.filteroptions, filterOptions)
         });
-    }
-
-    return state;
-  };
-}
+    default:
+      return state;
+  }
+};

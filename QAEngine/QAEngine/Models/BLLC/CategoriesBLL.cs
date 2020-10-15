@@ -21,8 +21,9 @@ namespace Jugnoon.BLL
     {
         public enum Types
         {
-            AbuseReport = 4,
+            Blogs = 6,
             General = 3,
+            AbuseReport = 4,
             qa = 11
         };
 
@@ -267,6 +268,7 @@ namespace Jugnoon.BLL
 
         public static IQueryable<JGN_Categories> processOptionalConditions(IQueryable<JGN_Categories> collectionQuery, CategoryEntity query)
         {
+
             if (query.order != "")
                 collectionQuery = (IQueryable<JGN_Categories>)collectionQuery.Sort(query.order);
 
@@ -283,15 +285,6 @@ namespace Jugnoon.BLL
             return collectionQuery;
         }
 
-        private static IQueryable<JGN_Categories> AddSortOption(IQueryable<JGN_Categories> collectionQuery, string field, string direction)
-        {
-            var reverse = false;
-            if (direction == "desc")
-                reverse = true;
-
-            return (IQueryable<JGN_Categories>)collectionQuery.Sort(field, reverse);
-
-        }
         private static System.Linq.Expressions.Expression<Func<JGN_Categories, bool>> returnWhereClause(CategoryEntity entity)
         {
             var where_clause = PredicateBuilder.New<JGN_Categories>(true);

@@ -10,10 +10,11 @@ namespace Jugnoon.Settings
         public static Features FeatureSettings { get; set; }
         public static Listing ListingSettings { get; set; }
         public static Media MediaSettings { get; set; }
+        public static Comments CommentSettings { get; set; }
         public static Registration RegistrationSettings { get; set; }
         public static Smtp SmtpSettings { get; set; }
         public static Social SocialSettings { get; set; }
-
+        public static ElasticSearch ElasticSearchSettings { get; set; }
     }
 }
 

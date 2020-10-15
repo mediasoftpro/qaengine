@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -18,9 +18,6 @@ import { ToastrModule } from "ngx-toastr";
 
 import { JMediaLazyGuard } from "./j-media-guard.guard";
 import { AppConfig } from "./configs/app.config";
-/* REDUX */
-import { NgReduxModule } from "@angular-redux/store";
-import { NgReduxRouterModule } from "@angular-redux/router";
 
 /* bootstrap module */
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -29,32 +26,37 @@ import { AppComponent } from "./app.component";
 
 // Module Component
 import { PartialModule } from "./partials/shared.module";
-import { StoreModule } from "./reducers/store/module";
+
+/* NGRX */
+import { AppStoreModule } from "./reducers/store/module";
 
 // Account Shared Layout Components
-import { AccountLeftNavigationComponent } from "./account/shared/left-navigation/left-navigation";
+import { AccountNavigationComponent } from "./account/shared/header-navigation/navigation.component";
+import { AccountLeftNavigationV2Component } from "./account/shared/left-navigation-v2/left-navigation";
 import { AccountTopNavigationComponent } from "./account/shared/topnav-navigation/topnav-component";
 import { AccountBreadcrumbComponent } from "./account/shared/breadcrumb/breadcrumb.component";
+import { AccountFooterComponent } from "./account/shared/footer/footer.component";
+
 // Admin Shared Layout Components
 import { NavigationComponent } from "./admin/shared/header-navigation/navigation.component";
 import { BreadcrumbComponent } from "./admin/shared/breadcrumb/breadcrumb.component";
-
+import { SideBarNavigationComponent} from "./admin/shared/sidebar-navigation/sidebar.navigation";
 import { CookieService } from "ngx-cookie-service";
 
 // authentication
 import { UserService } from "./admin/users/services/auth.service";
 import { SettingsService } from "./admin/users/services/settings.service";
-import { UserAPIActions } from "./reducers/users/actions";
+//import { UserAPIActions } from "./reducers/users/actions";
 import { PermissionService } from "./admin/users/services/permission.service";
+
 // configuration
-import { ConfigAPIActions } from "./reducers/configs/actions";
-
+// import { ConfigAPIActions } from "./reducers/configs/actions";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-
 import { EditorModule } from "@tinymce/tinymce-angular";
 
 // actions
-import { QAAPIActions } from "./reducers/qa/actions";
+//import { AdListingAPIActions } from "./reducers/adlistings/actions";
+
 
 // multi select component
 import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
@@ -67,7 +69,7 @@ import { BasicAuthInterceptor } from './configs/interceptor';
 import { ErrorInterceptor } from './configs/errorinterceptor';
 // /app/angular/assets/i18n/ for application integration, ./assets/i18n/ for development
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, "/app/angular/assets/i18n/", ".json");
+  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
 @NgModule({
@@ -77,9 +79,13 @@ export function createTranslateLoader(http: HttpClient) {
     BreadcrumbComponent,
     AccountTopNavigationComponent,
     AccountBreadcrumbComponent,
-    AccountLeftNavigationComponent
+    AccountLeftNavigationV2Component,
+    AccountNavigationComponent,
+    SideBarNavigationComponent,
+    AccountFooterComponent
   ],
   imports: [
+    AppStoreModule,
     RouterModule.forRoot(appRoutes),
     TranslateModule.forRoot({
       loader: {
@@ -97,9 +103,6 @@ export function createTranslateLoader(http: HttpClient) {
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    NgReduxModule,
-    NgReduxRouterModule,
-    StoreModule,
     PartialModule
   ],
   providers: [
@@ -109,9 +112,6 @@ export function createTranslateLoader(http: HttpClient) {
     JMediaLazyGuard,
     UserService,
     SettingsService,
-    UserAPIActions,
-    ConfigAPIActions,
-    QAAPIActions,
     AppConfig,
     PermissionService
   ],

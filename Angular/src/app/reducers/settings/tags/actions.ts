@@ -1,180 +1,152 @@
 
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Injectable } from "@angular/core";
-import { dispatch } from "@angular-redux/store";
-import { FluxStandardAction } from "flux-standard-action";
+import { Action } from "@ngrx/store";
 import { tassign } from "tassign";
 import { ITagState } from "./model";
 
-type Payload = any;
-interface MetaData {}
-export type TagsAPIAction = FluxStandardAction<Payload, MetaData>;
 
-@Injectable()
-export class TagsAPIActions {
-  static readonly LOAD_STARTED = "TAGS_LOAD_STARTED";
-  static readonly LOAD_SUCCEEDED = "TAGS_LOAD_SUCCEEDED";
-  static readonly LOAD_FAILED = "TAGS_LOAD_FAILED";
+export enum TagsAPIAction {
+  LOAD_STARTED = "TAGS_LOAD_STARTED",
+  LOAD_SUCCEEDED = "TAGS_LOAD_SUCCEEDED",
+  LOAD_FAILED = "TAGS_LOAD_FAILED",
 
-  static readonly APPLY_CHANGES = "TAGS_APPLY_CHANGES";
-  static readonly APPLY_CHANGES_SUCCEEDED = "TAGS_APPLY_CHANGES_SUCCEEDED";
-  static readonly APPLY_CHANGES_FAILED = "TAGS_APPLY_CHANGES_SUCCEEDED";
+  APPLY_CHANGES = "TAGS_APPLY_CHANGES",
+  APPLY_CHANGES_SUCCEEDED = "TAGS_APPLY_CHANGES_SUCCEEDED",
+  APPLY_CHANGES_FAILED = "TAGS_APPLY_CHANGES_SUCCEEDED",
 
-  static readonly UPDATE_FILTER_OPTIONS = "TAGS_UPDATE_FILTER_OPTIONS";
-  static readonly APPLY_FILTER = "TAGS_APPLY_FILTER";
-  static readonly UPDATE_PAGINATION_CURRENTPAGE =
-    "TAGS_UPDATE_PAGINATION_CURRENTPAGE";
-  static readonly UPDATE_CATEGORIES = "TAGS_UPDATE_CATEGORIES";
+  UPDATE_FILTER_OPTIONS = "TAGS_UPDATE_FILTER_OPTIONS",
+  APPLY_FILTER = "TAGS_APPLY_FILTER",
+  UPDATE_PAGINATION_CURRENTPAGE =
+    "TAGS_UPDATE_PAGINATION_CURRENTPAGE",
+  
+  SELECT_ALL = "TAGS_SELECT_ALL",
+  IS_ITEM_SELECTED = "TAGS_IP_IS_ITEM_SELECTED",
 
-  static readonly SELECT_ALL = "TAGS_SELECT_ALL";
-  static readonly IS_ITEM_SELECTED = "TAGS_IP_IS_ITEM_SELECTED";
-
-  static readonly ADD_RECORD = "TAGS_ADD_RECORD";
-  static readonly UPDATE_RECORD = "TAGS_UPDATE_RECORD";
-  static readonly REMOVE_RECORD = "TAGS_REMOVE_RECORD";
+  ADD_RECORD = "TAGS_ADD_RECORD",
+  UPDATE_RECORD = "TAGS_UPDATE_RECORD",
+  REMOVE_RECORD = "TAGS_REMOVE_RECORD",
 
   // REFERESH LOAD
-  static readonly LOAD_END = "TAGS_YT_LOADEND";
-  static readonly REFRESH_DATA = "TAGS_REFRESH_DATA";
-  static readonly REFRESH_PAGINATION = "TAGS_REFRESH_PAGINATION";
-  @dispatch()
-  loadStarted = (): TagsAPIAction => ({
-    type: TagsAPIActions.LOAD_STARTED,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  loadSucceeded = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.LOAD_SUCCEEDED,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  loadFailed = (error): TagsAPIAction => ({
-    type: TagsAPIActions.LOAD_FAILED,
-    // meta: { },
-    payload: null,
-    error
-  });
-
-  @dispatch()
-  applyChanges = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.APPLY_CHANGES,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  actionSucceeded = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.APPLY_CHANGES_SUCCEEDED,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  actionFailed = (error): TagsAPIAction => ({
-    type: TagsAPIActions.APPLY_CHANGES_SUCCEEDED,
-    // meta: { },
-    payload: null,
-    error
-  });
-
-  @dispatch()
-  updateFilterOptions = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.UPDATE_FILTER_OPTIONS,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  applyFilter = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.APPLY_FILTER,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updatePaginationCurrentPage = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.UPDATE_PAGINATION_CURRENTPAGE,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateCategories = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.UPDATE_CATEGORIES,
-    // meta: { },
-    payload: payload
-  });
-  @dispatch()
-  selectAll = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.SELECT_ALL,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateItemsSelectionStatus = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.IS_ITEM_SELECTED,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  addRecord = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.ADD_RECORD,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateRecord = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.UPDATE_RECORD,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  loadEnd = (): TagsAPIAction => ({
-    type: TagsAPIActions.LOAD_END,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  reloadList = (): TagsAPIAction => ({
-    type: TagsAPIActions.REFRESH_DATA,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  refresh_pagination = (payload: Payload): TagsAPIAction => ({
-    type: TagsAPIActions.REFRESH_PAGINATION,
-    // meta: { },
-    payload: payload
-  });
+  LOAD_END = "TAGS_YT_LOADEND",
+  REFRESH_DATA = "TAGS_REFRESH_DATA",
+  REFRESH_PAGINATION = "TAGS_REFRESH_PAGINATION"
 }
+
+export class loadStarted implements Action {
+  public readonly type = TagsAPIAction.LOAD_STARTED;
+  constructor(public payload: any) {}
+}
+
+export class loadSucceeded implements Action {
+  public readonly type = TagsAPIAction.LOAD_SUCCEEDED;
+  constructor(public payload: any) {}
+}
+
+export class loadFailed implements Action {
+  public readonly type = TagsAPIAction.LOAD_FAILED;
+  constructor(public payload: any) {}
+}
+
+export class applyChanges implements Action {
+  public readonly type = TagsAPIAction.APPLY_CHANGES;
+  constructor(public payload: any) {}
+}
+
+export class actionSucceeded implements Action {
+  public readonly type = TagsAPIAction.APPLY_CHANGES_SUCCEEDED;
+  constructor(public payload: any) {}
+}
+
+export class actionFailed implements Action {
+  public readonly type = TagsAPIAction.APPLY_CHANGES_FAILED;
+  constructor(public payload: any) {}
+}
+
+export class updateFilterOptions implements Action {
+  public readonly type = TagsAPIAction.UPDATE_FILTER_OPTIONS;
+  constructor(public payload: any) {}
+}
+
+export class applyFilter implements Action {
+  public readonly type = TagsAPIAction.APPLY_FILTER;
+  constructor(public payload: any) {}
+}
+
+export class updatePaginationCurrentPage implements Action {
+  public readonly type = TagsAPIAction.UPDATE_PAGINATION_CURRENTPAGE;
+  constructor(public payload: any) {}
+}
+
+export class selectAll implements Action {
+  public readonly type = TagsAPIAction.SELECT_ALL;
+  constructor(public payload: any) {}
+}
+
+export class updateItemsSelectionStatus implements Action {
+  public readonly type = TagsAPIAction.IS_ITEM_SELECTED;
+  constructor(public payload: any) {}
+}
+
+export class addRecord implements Action {
+  public readonly type = TagsAPIAction.ADD_RECORD;
+  constructor(public payload: any) {}
+}
+
+export class updateRecord implements Action {
+  public readonly type = TagsAPIAction.UPDATE_RECORD;
+  constructor(public payload: any) {}
+}
+
+export class loadEnd implements Action {
+  public readonly type = TagsAPIAction.LOAD_END;
+  constructor(public payload: any) {}
+}
+
+export class refresh_pagination implements Action {
+  public readonly type = TagsAPIAction.REFRESH_PAGINATION;
+  constructor(public payload: any) {}
+}
+
+export class reloadList implements Action {
+  public readonly type = TagsAPIAction.REFRESH_DATA;
+  constructor(public payload: any) {}
+}
+
+export type TagsAPIActions =
+  | loadStarted
+  | loadSucceeded
+  | loadFailed
+  | applyChanges
+  | actionSucceeded
+  | actionFailed
+  | updateFilterOptions
+  | applyFilter
+  | updatePaginationCurrentPage
+  | selectAll
+  | updateItemsSelectionStatus
+  | addRecord
+  | updateRecord
+  | loadEnd
+  | refresh_pagination
+  | reloadList;
 
 export class TagsBLL {
   loadSucceeded(state: ITagState, action: any) {
     // update totalrecords object in pagination prop
-    const _pagination = state.pagination;
+    const _pagination = Object.assign({}, state.pagination);
     _pagination.totalRecords = action.payload.records;
     _pagination.pageSize = state.filteroptions.pagesize;
     _pagination.currentPage = state.filteroptions.pagenumber;
     // avoid loading categories again in next call
-    const _filteroption = state.filteroptions;
-    _filteroption.loadstats = false;
+const _filteroption= Object.assign({}, state.filteroptions);    _filteroption.loadstats = false;
 
     return tassign(state, {
       posts: action.payload.posts,
@@ -187,7 +159,7 @@ export class TagsBLL {
   }
 
   applyFilterChanges(state: ITagState, action: any) {
-    const filters = state.filteroptions;
+    const filters =  Object.assign({}, state.filteroptions);
     for (const prop in filters) {
       if (prop === action.payload.attr) {
         filters[prop] = action.payload.value;
@@ -200,7 +172,7 @@ export class TagsBLL {
   }
 
   updatePagination(state: ITagState, action: any) {
-    const pagination = state.pagination;
+    const pagination = Object.assign({}, state.pagination);
     pagination.currentPage = action.payload.currentpage;
 
     return tassign(state, {
@@ -209,7 +181,9 @@ export class TagsBLL {
   }
 
   selectAll(state: ITagState, action: any) {
-    const posts = state.posts;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     for (const item of posts) {
       item.Selected = action.payload;
     }
@@ -222,13 +196,17 @@ export class TagsBLL {
   }
 
   addRecord(state: ITagState, action: any) {
-    const posts = state.posts;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     posts.unshift(action.payload);
     return tassign(state, { posts: posts });
   }
 
   updateRecord(state: ITagState, action: any) {
-    const posts = state.posts;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     for (let post of posts) {
       if (post.id === action.payload.id) {
         post = Object.assign({}, post, action.payload);
@@ -238,7 +216,9 @@ export class TagsBLL {
   }
 
   applyChanges(state: ITagState, action: any) {
-    const _updated_state = state.posts;
+     const _updated_state = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     for (const selected of action.payload.SelectedItems) {
       if (action.payload.isenabled.action === "togglestatus") {
         for (const item of _updated_state) {
@@ -275,7 +255,7 @@ export class TagsBLL {
   }
 
   refreshpagination(state: ITagState, action: any) {
-    const pagination = state.pagination;
+    const pagination = Object.assign({}, state.pagination);
     pagination.totalRecords = action.payload.totalrecords;
     pagination.pageSize = action.payload.pagesize;
     return tassign(state, { pagination: pagination });

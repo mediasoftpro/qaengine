@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: VideoEngine                         */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -13,20 +13,27 @@ import {
   EventEmitter,
   OnInit,
   AfterViewInit,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ViewChild
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormBase } from "./model/base";
+
+import { Store } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
+
 // cropper directives
 import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
 import { CropperViewComponent } from "../../../shared/cropie/modal";
+import { FormViewComponent } from "../../../shared/modals/forms/modal.component";
 
-import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../reducers/core/actions";
+import { triggleEvent } from "../../../reducers/core/actions";
 
 @Component({
   selector: "df-control",
   templateUrl: "./dynamic-form-control.html",
-  providers: [CoreAPIActions]
+  providers: []
 })
 export class DynamicFormControlComponent implements OnInit, AfterViewInit {
   @Input() control: FormBase<any>;
@@ -37,13 +44,14 @@ export class DynamicFormControlComponent implements OnInit, AfterViewInit {
   @Output() uploadStatus = new EventEmitter<any>();
   @Output() uploadCompleted = new EventEmitter<any>();
   @Output() autoTextChange = new EventEmitter<string>();
+  @Output() onFeatures = new EventEmitter<any>();
 
   constructor(
+    private _store: Store<IAppState>,
     private ref: ChangeDetectorRef,
-    private modalService: NgbModal,
-    private coreAction: CoreAPIActions
+    private modalService: NgbModal
   ) {}
-
+  @ViewChild('auto') auto;
   showUploadBtn = true;
   cropperView = false;
   uploadedFiles: any = [];
@@ -132,12 +140,23 @@ export class DynamicFormControlComponent implements OnInit, AfterViewInit {
   /*                            auto complete events                            */
   /* -------------------------------------------------------------------------- */
   onChangeSearch(text: any) {
-    this.coreAction.triggleEvent({ term: text });
+    this._store.dispatch(new triggleEvent({ term: text }));
+    this.auto.open();
+  }
+
+  onInputFocused(e: any) {
+     
+     this.auto.open();
   }
 
   // pass dropdown selection value with key reference to parent component
   selectedDropdownValue(key: any, value: any) {
     this.OnDropdownSelectionChange.emit({ key, value });
+  }
+
+  onItemSelect(item: any) {
+   
+    this.OnDropdownSelectionChange.emit({ key: this.control.key, value: item.key });
   }
 
   filesUploaded(files: any) {
@@ -219,6 +238,33 @@ export class DynamicFormControlComponent implements OnInit, AfterViewInit {
         console.log("dismissed");
       }
     );
+  }
+
+  toggleModelForm(event: any) {
+    const _options: NgbModalOptions = {
+      backdrop: false,
+      size: "lg"
+    };
+    const _this = this;
+    //console.log("crop options");
+    //console.log(this.control.cropperOptions);
+    const modalRef = this.modalService.open(FormViewComponent, _options);
+    modalRef.componentInstance.Info = {
+      title: this.control.formOptions.title,
+      data: this.control.formOptions.controls,
+      isedit: this.control.formOptions.isedit,
+    };
+    modalRef.result.then(
+      result => {
+        
+        _this.onFeatures.emit({ data: result.data});
+       
+      },
+      dismissed => {
+        console.log("dismissed");
+      }
+    );
+    event.stopPropagation();
   }
 
   removeCropperImage(event) {

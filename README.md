@@ -5,9 +5,8 @@ QAEngine is wrapped with all basic and advance features that can help you build 
 
 It can be used as standalone application or can be easily integrated in existing solution.
 
-This project is currently built with ASP.NET Core 3.1 + Angular 9.0.2 + Bootstrap 4.4.1
+This project is currently built with ASP.NET Core 3.1 + Angular 10.1 + NGRX + Bootstrap 4.4.1
 
-### [Product Demo](http://qaengine.aspnetprojects.com/ "Product Demo")
 
 ### [Product Home & Documentation](https://www.mediasoftpro.com/product/qaengine "Product Home & Documentation")
 
@@ -16,7 +15,9 @@ This project is currently built with ASP.NET Core 3.1 + Angular 9.0.2 + Bootstr
 List of main features includes
 - **MEMBERSHIP**: Extended ASP.NET Identity Module that can allow users to create account, login, manage account, update profile, change password, email etc
 - **Q&A**: Allow user to ask questions or answer to questions with numerous actions including votes, add to favorite, submit reports etc
+- **BLOGS**: Full-featured articles, news, blogs posting engine with all basics & advance features
 - **MY ACCOUNT**: Advance my-account application (Angular based) that can allow users to manage own asked and liked questions, answers, profile, settings and configurations.
+- **GAMIFY**: Optional gamify script to manage complex gamification functionality within application including badges, rewards, points, credits, levels, packages and more.
 - **SOCIAL PROFILES**: It support public profiles to display user public contents, questions, answers while allowing other users to take actions.
 - **CONTROL PANEL**: Advance control panel (single page latest angular based) that can help site administrator to manage website settings, configurations, contents, users, reports etc.
 - **CONFIGURATIONS**: Support advance configuration section that can allow you configure almost every available features on the fly without making changes in code.
@@ -53,5 +54,5 @@ If you want to report a new bug, please check if the bug isn´t already reported
 ### Contribute
 Checkout [CONTRIBUTING.md](https://github.com/mediasoftpro/qaengine/blob/master/CONTRIBUTING.md "CONTRIBUTING.md") document for more detail.
 
-### Donate
-If you like our product and contribute in the form of donation, [click here](https://github.com/mediasoftpro/qaengine/blob/master/DONATE.md "click here") for more detail.
+### Author
+Muhammad Irfan => Lead Software Engineer

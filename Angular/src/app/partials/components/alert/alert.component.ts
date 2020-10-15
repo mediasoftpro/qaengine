@@ -1,14 +1,14 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
-
+/*
 import { Component, OnInit, OnChanges, Input } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
+import { IAppState } from "../../../reducers/store/model";
+import * as selectors from "../../../reducers/core/selectors";
 
 @Component({
   selector: "alert",
@@ -97,3 +97,4 @@ export class AlertComponent implements OnInit, OnChanges {
     }
   }
 }
+*/

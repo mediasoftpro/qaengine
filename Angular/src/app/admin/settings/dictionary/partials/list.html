@@ -1,8 +1,8 @@
-<alert></alert>
+
 <app-loader *ngIf="loading$ | async"></app-loader>
 
 <div *ngIf="!(loading$ | async)">
-  <div *ngIf="(Data$ | async).length > 0">
+  <div *ngIf="Data.length > 0">
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped no-wrap">
         <thead>
@@ -18,41 +18,15 @@
                 <label class="p-b-0 p-t-0" for="selectall"></label>
               </div>
             </th>
-            <th
-              (click)="Sort('value')"
-              style="cursor: pointer;"
-              [ngClass]="fieldstates.value ? 'selected-sort-option' : ''"
-            >
-              <span class="m-r-5">Value</span>
-              <i
-                [ngClass]="
-                  fieldstates.value && sortedFields['value'].direction === 'asc'
-                    ? 'fa fa-sort-asc'
-                    : fieldstates.value &&
-                      sortedFields['value'].direction === 'desc'
-                    ? 'fa fa-sort-desc'
-                    : 'fa fa-sort'
-                "
-                aria-hidden="true"
-              ></i>
+            <th>
+              Value
+              
             </th>
             <th
-              (click)="Sort('type')"
-              style="cursor: pointer;"
-              [ngClass]="fieldstates.type ? 'selected-sort-option' : ''"
+              
             >
-              <span class="m-r-5">Type</span>
-              <i
-                [ngClass]="
-                  fieldstates.type && sortedFields['type'].direction === 'asc'
-                    ? 'fa fa-sort-asc'
-                    : fieldstates.type &&
-                      sortedFields['type'].direction === 'desc'
-                    ? 'fa fa-sort-desc'
-                    : 'fa fa-sort'
-                "
-                aria-hidden="true"
-              ></i>
+              Type
+              
             </th>
             <th class="text-nowrap">
               Action
@@ -63,7 +37,7 @@
           <tr
             [@fadeIn]="''"
             [hidden]="item.isdeleted"
-            *ngFor="let item of Data$ | async; trackBy: getKey; let i = index"
+            *ngFor="let item of Data; trackBy: getKey; let i = index"
           >
             <td style="width:5%;">
               <div class="checkbox">
@@ -141,7 +115,7 @@
       </table>
     </div>
   </div>
-  <app-norecord *ngIf="(Data$ | async).length === 0"></app-norecord>
+  <app-norecord *ngIf="Data.length === 0"></app-norecord>
 </div>
 
 <div class="text-center content-group-lg pt-20">

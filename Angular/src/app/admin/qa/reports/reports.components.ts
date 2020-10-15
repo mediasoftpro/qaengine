@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,8 +8,8 @@
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../../../shared/qa/services/settings.service";
@@ -18,15 +18,16 @@ import { FormService } from "../../../shared/qa/services/form.service";
 
 // shared services
 import { CoreService } from "../../core/coreService";
-import { CoreAPIActions } from "../../../reducers/core/actions";
 
 // reducer actions
-import { QAAPIActions } from "../../../reducers/qa/actions";
+import { Notify } from "../../../reducers/core/actions";
+import { filteroptions } from "../../../reducers/qa/selectors";
+import { auth } from "../../../reducers/users/selectors";
+
 import { fadeInAnimation } from "../../../animations/core";
 
 import { PermissionService } from "../../../admin/users/services/permission.service";
 
-import { GoogleChartInterface } from "ng2-google-charts/google-charts-interfaces";
 
 @Component({
   templateUrl: "./reports.html",
@@ -36,11 +37,10 @@ import { GoogleChartInterface } from "ng2-google-charts/google-charts-interfaces
 })
 export class QAReportsComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: QAAPIActions,
     private route: ActivatedRoute,
     private formService: FormService,
     private permission: PermissionService,
@@ -56,17 +56,14 @@ export class QAReportsComponent implements OnInit {
   ChartType = "ColumnChart";
   message = "Please select report type to generate!";
 
-  @select(["qa", "filteroptions"])
-  readonly filteroptions$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+  readonly filteroptions$ = this._store.pipe(select(filteroptions));
+  readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
   isActionGranded = false; // Grand action on resources like add / edit /delete
 
-  public tooltipChart: GoogleChartInterface = {
+  public tooltipChart: any = {
     chartType: "ColumnChart",
     dataTable: [],
     options: {
@@ -192,11 +189,11 @@ export class QAReportsComponent implements OnInit {
 
   toolbaraction(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
+      this._store.dispatch(new Notify({
         title: "Permission Denied",
         text: "",
         css: "bg-danger"
-      });
+      }));
       return;
     }
     switch (selection.action) {

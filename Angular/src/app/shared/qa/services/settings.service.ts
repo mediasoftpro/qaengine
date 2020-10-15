@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -22,6 +22,7 @@ export class SettingsService {
     this.apiOptions = {
       load: APIURL + "api/qa/load",
       load_reports: APIURL + "api/qa/load_reports",
+      generate_report: APIURL + "api/qa/generate_report",
       getinfo: APIURL + "api/qa/getinfo",
       action: APIURL + "api/qa/action",
       answeraction: APIURL + "api/qa/ansaction",

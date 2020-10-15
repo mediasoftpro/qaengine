@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: VideoEngine                         */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -18,6 +18,7 @@ export class FormBase<T> {
   minLength?: number;
   maxLength?: number;
   pattern?: string;
+  append_text?: string;
   order: number;
   controlType: string;
   checked?: boolean;
@@ -25,6 +26,7 @@ export class FormBase<T> {
   helpblock?: any;
   uploadoptions?: any; // file uploader options / settings
   cropperOptions?: any; // cropper (image) / settings
+  formOptions?: any; // modal form optiosn within form
   multiselectOptions?: any; // multi select options / settings
   tinymiceOptions?: any; // tinymice edition options / settings
   autocompleteOptions?: any; // auto complete options / settings
@@ -46,6 +48,7 @@ export class FormBase<T> {
       minLength?: number;
       maxLength?: number;
       pattern?: string;
+      append_text?: string;
       order?: number;
       controlType?: string;
       checked?: boolean;
@@ -53,6 +56,7 @@ export class FormBase<T> {
       helpblock?: any;
       uploadoptions?: any;
       cropperOptions?: any;
+      formOptions?: any;
       multiselectOptions?: any;
       tinymiceOptions?: any;
       autocompleteOptions?: any;
@@ -73,6 +77,7 @@ export class FormBase<T> {
     this.maxLength = options.maxLength;
     this.pattern = options.pattern;
     this.label = options.label || "";
+    this.append_text = options.append_text || "";
     this.required = !!options.required;
     this.email = !!options.email;
     this.order = options.order === undefined ? 1 : options.order;
@@ -84,6 +89,8 @@ export class FormBase<T> {
       options.uploadoptions === undefined ? "" : options.uploadoptions;
     this.cropperOptions =
       options.cropperOptions === undefined ? "" : options.cropperOptions;
+    this.formOptions =
+      options.formOptions === undefined ? {} : options.formOptions;
     this.multiselectOptions =
       options.multiselectOptions === undefined
         ? ""

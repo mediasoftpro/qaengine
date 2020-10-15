@@ -1,31 +1,26 @@
-<div class="row">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-header">
-        <h4 class="m-b-0">Change Password</h4>
-      </div>
-      <div class="card-body">
-        <app-loader *ngIf="showLoader"></app-loader>
-        <dynamic-modal-form
-          *ngIf="!showLoader && controls.length > 0"
-          [controls]="controls"
-          [showLoader]="showLoader"
-          [showCancel]="false"
-          [showModal]="false"
-          [submitText]="submitText"
-          (OnSubmit)="SubmitForm($event)"
-        >
-        </dynamic-modal-form>
-      </div>
+<div class="dashborad-box">
+  <h4 class="title">Change Password</h4>
+  <div class="row">
+    <div class="col-md-6 col-xs-12">
+      <app-loader *ngIf="showLoader"></app-loader>
+          <dynamic-modal-form
+            *ngIf="!showLoader && controls.length > 0"
+            [controls]="controls"
+            [showLoader]="showLoader"
+            [showCancel]="false"
+            [showModal]="false"
+            [submitText]="submitText"
+            (OnSubmit)="SubmitForm($event)"
+          >
+          </dynamic-modal-form>
+     
     </div>
-    <div class="card m-t-20">
-      <div class="card-body">
-        <div class="m-t-20 m-b-20 text-center">
-          <button (click)="deleteAccount()" class="btn btn-danger">
-            Delete Account
-          </button>
-        </div>
-      </div>
-    </div>
+  </div>
+</div>
+<div class="dashborad-box">
+  <div class="section-body text-center">
+    <button (click)="deleteAccount()" class="btn btn-danger">
+      Delete Account
+    </button>
   </div>
 </div>

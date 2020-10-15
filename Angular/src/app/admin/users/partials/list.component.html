@@ -4,11 +4,11 @@
   <app-alert></app-alert>
 
   <div *ngIf="!(loading$ | async)">
-    <div class="row" *ngIf="(Data$ | async).length > 0">
+    <div class="row" *ngIf="Data.length > 0">
       <div
         class="col-md-3 col-xs-6 videolist"
         [hidden]="item.isdeleted"
-        *ngFor="let item of Data$ | async; trackBy: getKey"
+        *ngFor="let item of Data; trackBy: getKey"
       >
         <div class="card-img-top img-responsive">
           <a
@@ -78,7 +78,7 @@
         </div>
       </div>
     </div>
-    <div class="row" *ngIf="(Data$ | async).length == 0">
+    <div class="row" *ngIf="Data.length == 0">
       <div class="col-md-12">
         <div style="padding:80px 0px;">
           <h3 style="text-align:center;">{{NoRecordText}}</h3>

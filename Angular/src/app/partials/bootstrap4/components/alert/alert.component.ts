@@ -1,14 +1,15 @@
 
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                     Product Name: ClassifiedEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 import { Component, OnInit, OnChanges, Input } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+import * as selectors from "../../../../reducers/core/selectors";
 
 @Component({
   selector: "app-alert",
@@ -20,6 +21,9 @@ import { select } from "@angular-redux/store";
   `
 })
 export class BootstrapAlertComponent implements OnInit, OnChanges {
+
+  constructor(private _store: Store<IAppState>) {}
+
   @Input() alert = "error";
   @Input() icon = "";
   @Input() heading = "";
@@ -28,10 +32,11 @@ export class BootstrapAlertComponent implements OnInit, OnChanges {
   showAlert = false;
   alertCss = "alert-danger";
 
-  @select(["core", "message"])
-  readonly message$: Observable<any>;
+  readonly message$ = this._store.pipe(select(selectors.message));
+  
+  /*@select(["core", "message"])
+  readonly message$: Observable<any>;*/
 
-  constructor() {}
   // @Output() OnSelection = new EventEmitter<number>();
   ngOnInit() {
     this.message$.subscribe(msg => {

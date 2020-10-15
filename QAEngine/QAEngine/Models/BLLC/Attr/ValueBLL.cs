@@ -18,8 +18,8 @@ namespace Jugnoon.Attributes
     {
 
         #region Action Script
-        
-        public static async Task<JGN_Attr_Values> Add(ApplicationDbContext context,JGN_Attr_Values entity)
+
+        public static async Task<JGN_Attr_Values> Add(ApplicationDbContext context, JGN_Attr_Values entity)
         {
             var ent = new JGN_Attr_Values()
             {
@@ -38,7 +38,7 @@ namespace Jugnoon.Attributes
             return entity;
         }
 
-        public static async Task<bool> Update(ApplicationDbContext context,JGN_Attr_Values entity)
+        public static async Task<bool> Update(ApplicationDbContext context, JGN_Attr_Values entity)
         {
             if (entity.id > 0)
             {
@@ -57,8 +57,8 @@ namespace Jugnoon.Attributes
             return true;
         }
 
-        public static void Delete(ApplicationDbContext context,long id)
-        {      
+        public static void Delete(ApplicationDbContext context, long id)
+        {
             if (id > 0)
             {
                 context.JGN_Attr_Values.RemoveRange(context.JGN_Attr_Values.Where(x => x.id == id));
@@ -70,13 +70,13 @@ namespace Jugnoon.Attributes
 
         #region Core Loading Script
 
-        public static Task<List<JGN_Attr_Values>> LoadItems(ApplicationDbContext context,AttrValueEntity entity)
+        public static Task<List<JGN_Attr_Values>> LoadItems(ApplicationDbContext context, AttrValueEntity entity)
         {
-            if (!entity.iscache 
-                || Jugnoon.Settings.Configs.GeneralSettings.cache_duration == 0  
+            if (!entity.iscache
+                || Jugnoon.Settings.Configs.GeneralSettings.cache_duration == 0
                 || entity.pagenumber > Jugnoon.Settings.Configs.GeneralSettings.max_cache_pages)
             {
-                return FetchItems(context,entity);
+                return FetchItems(context, entity);
             }
             else
             {
@@ -84,7 +84,7 @@ namespace Jugnoon.Attributes
                 var data = new List<JGN_Attr_Values>();
                 if (!SiteConfig.Cache.TryGetValue(key, out data))
                 {
-                    data = FetchItems(context,entity).Result;
+                    data = FetchItems(context, entity).Result;
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         // Keep in cache for this time, reset time if accessed.
@@ -101,20 +101,20 @@ namespace Jugnoon.Attributes
             }
         }
 
-        private static Task<List<JGN_Attr_Values>> FetchItems(ApplicationDbContext context,AttrValueEntity entity)
-        {          
+        private static Task<List<JGN_Attr_Values>> FetchItems(ApplicationDbContext context, AttrValueEntity entity)
+        {
             var collectionQuery = context.JGN_Attr_Values.Where(returnWhereClause(entity));
             collectionQuery = processOptionalConditions(collectionQuery, entity);
             return LoadCompleteList(collectionQuery);
         }
 
-        public static int Count(ApplicationDbContext context,AttrValueEntity entity)
+        public static int Count(ApplicationDbContext context, AttrValueEntity entity)
         {
-            if (!entity.iscache 
-                || Jugnoon.Settings.Configs.GeneralSettings.cache_duration == 0  
+            if (!entity.iscache
+                || Jugnoon.Settings.Configs.GeneralSettings.cache_duration == 0
                 || entity.pagenumber > Jugnoon.Settings.Configs.GeneralSettings.max_cache_pages)
             {
-                return CountRecords(context,entity);
+                return CountRecords(context, entity);
             }
             else
             {
@@ -122,7 +122,7 @@ namespace Jugnoon.Attributes
                 int records = 0;
                 if (!SiteConfig.Cache.TryGetValue(key, out records))
                 {
-                    records = CountRecords(context,entity);
+                    records = CountRecords(context, entity);
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         // Keep in cache for this time, reset time if accessed.
@@ -140,7 +140,7 @@ namespace Jugnoon.Attributes
             }
         }
 
-        private static int CountRecords(ApplicationDbContext context,AttrValueEntity entity)
+        private static int CountRecords(ApplicationDbContext context, AttrValueEntity entity)
         {
             return context.JGN_Attr_Values.Where(returnWhereClause(entity)).Count();
         }
@@ -154,7 +154,7 @@ namespace Jugnoon.Attributes
 
             return str.ToString();
         }
-    
+
 
         public static Task<List<JGN_Attr_Values>> LoadCompleteList(IQueryable<JGN_Attr_Values> query)
         {
@@ -191,11 +191,11 @@ namespace Jugnoon.Attributes
             where_clause = where_clause.And(p => p.attr_type == (byte)entity.attr_type);
 
             if (entity.id > 0)
-                 where_clause = where_clause.And(p => p.id == entity.id);
+                where_clause = where_clause.And(p => p.id == entity.id);
 
             if (!entity.nofilter)
             {
-              
+
                 if (entity.contentid > 0)
                     where_clause = where_clause.And(p => p.contentid == entity.contentid);
 
@@ -203,7 +203,7 @@ namespace Jugnoon.Attributes
                     where_clause = where_clause.And(p => p.userid == entity.userid);
 
                 if (entity.term != "")
-                     where_clause = where_clause.And(p => p.title.Contains(entity.term));
+                    where_clause = where_clause.And(p => p.title.Contains(entity.term));
             }
 
             return where_clause;
@@ -214,56 +214,56 @@ namespace Jugnoon.Attributes
 
         /* Utility Functions */
         // Linq Version
-        public static bool Update_Field_V3(ApplicationDbContext context,long ID, dynamic Value, string FieldName)
+        public static bool Update_Field_V3(ApplicationDbContext context, long ID, dynamic Value, string FieldName)
         {
-                var item = context.JGN_Attr_Values
-                     .Where(p => p.id == ID)
-                     .FirstOrDefault<JGN_Attr_Values>();
+            var item = context.JGN_Attr_Values
+                 .Where(p => p.id == ID)
+                 .FirstOrDefault<JGN_Attr_Values>();
 
-                if (item != null)
+            if (item != null)
+            {
+                foreach (var prop in item.GetType().GetProperties())
                 {
-                    foreach (var prop in item.GetType().GetProperties())
+                    if (prop.Name.ToLower() == FieldName.ToLower())
                     {
-                        if (prop.Name.ToLower() == FieldName.ToLower())
-                        {
-                            prop.SetValue(item, Value);
-                        }
+                        prop.SetValue(item, Value);
                     }
-                    context.Entry(item).State = EntityState.Modified;
-                    context.SaveChanges();
-
                 }
+                context.Entry(item).State = EntityState.Modified;
+                context.SaveChanges();
 
-            
+            }
+
+
             return true;
         }
 
-        public static string Get_Field_Value(ApplicationDbContext context,long ID, string FieldName)
+        public static string Get_Field_Value(ApplicationDbContext context, long ID, string FieldName)
         {
             string Value = "";
             // var context = SiteConfig.dbContext;
-           
-            
-                var item = context.JGN_Attr_Values
-                     .Where(p => p.id == ID)
-                     .FirstOrDefault<JGN_Attr_Values>();
 
-                if (item != null)
+
+            var item = context.JGN_Attr_Values
+                 .Where(p => p.id == ID)
+                 .FirstOrDefault<JGN_Attr_Values>();
+
+            if (item != null)
+            {
+                foreach (var prop in item.GetType().GetProperties())
                 {
-                    foreach (var prop in item.GetType().GetProperties())
+                    if (prop.Name.ToLower() == FieldName.ToLower())
                     {
-                        if (prop.Name.ToLower() == FieldName.ToLower())
-                        {
-                            if (prop.GetValue(item, null) != null)
-                                Value = prop.GetValue(item, null).ToString();
-                        }
+                        if (prop.GetValue(item, null) != null)
+                            Value = prop.GetValue(item, null).ToString();
                     }
                 }
+            }
 
             return Value;
         }
 
-        public static string ProcessAction(ApplicationDbContext context,List<AttrValueEntity> list)
+        public static string ProcessAction(ApplicationDbContext context, List<AttrValueEntity> list)
         {
             foreach (var entity in list)
             {

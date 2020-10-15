@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,17 +8,16 @@
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../../../shared/qa/services/settings.service";
 import { DataService } from "../../../shared/qa/services/data.service";
 
-// shared services
-import { CoreAPIActions } from "../../../reducers/core/actions";
-
 // reducer actions
+import { Notify } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
 import { fadeInAnimation } from "../../../animations/core";
 
 /* modal popup */
@@ -37,9 +36,9 @@ import { PermissionService } from "../../../admin/users/services/permission.serv
 })
 export class QAProfileComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
-    private coreActions: CoreAPIActions,
     private coreService: CoreService,
     private route: ActivatedRoute,
     private permission: PermissionService,
@@ -60,8 +59,8 @@ export class QAProfileComponent implements OnInit {
   uploadedFiles = [];
   SelectedItems: any = [];
   Author_FullName = "";
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+
+  readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -109,11 +108,11 @@ export class QAProfileComponent implements OnInit {
     this.showLoader = true;
     this.dataService.GetInfo(this.RecordID).subscribe((data: any) => {
       if (data.status === "error") {
-        this.coreActions.Notify({
-          title: data.message,
-          text: "",
-          css: "bg-success"
-        });
+       this._store.dispatch(new Notify({
+            title:  data.message,
+            text: "",
+            css: "bg-success"
+          }));
         // redirect to main page
         this.router.navigate(["/qa"]);
       } else {
@@ -191,11 +190,12 @@ export class QAProfileComponent implements OnInit {
 
   ProcessActions(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
+      this._store.dispatch(new Notify({
         title: "Permission Denied",
         text: "",
         css: "bg-danger"
-      });
+      }));
+     
       return;
     }
     if (this.SelectedItems.length > 0) {

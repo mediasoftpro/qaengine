@@ -16,11 +16,11 @@ namespace Jugnoon.Meta
             var pages = new List<SitemapMeta>();
             switch (query.controller)
             {
-               
-                case "qa":
-                    pages = qa.Sitemap.Prepare();
+                case "blogs":
+                    pages = Blogs.Sitemap.Prepare();
                     break;
-              
+               
+
             }
 
             var processed_items = processItems(pages, query);
@@ -121,7 +121,7 @@ namespace Jugnoon.Meta
         public string index { get; set; }
         public string order { get; set; }
         public string date { get; set; }
-        
+       
         public List<SitemapMeta> child { get; set; }
     }
 }

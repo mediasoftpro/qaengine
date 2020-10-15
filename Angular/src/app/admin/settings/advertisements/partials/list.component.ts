@@ -1,38 +1,36 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit, EventEmitter, Input, Output } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
-import { AdvertisementAPIActions } from "../../../../reducers/settings/advertisements/actions";
+
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+import * as advertismentSelectors from "../../../../reducers/settings/advertisements/selectors";
+import { applyFilter, updatePaginationCurrentPage} from "../../../../reducers/settings/advertisements/actions";
+import { Notify } from "../../../../reducers/core/actions";
 import { DataService } from "../services/data.service";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
+
 @Component({
   selector: "app-list",
   templateUrl: "./list.html"
 })
 export class ListComponent implements OnInit {
   constructor(
-    private actions: AdvertisementAPIActions,
-    private dataService: DataService,
-    private coreActions: CoreAPIActions
+    private _store: Store<IAppState>,
+    private dataService: DataService
   ) {}
 
   @Input() isActionGranded = false;
 
-  @select(["advertisement", "posts"])
-  readonly Data$: Observable<any>;
-
-  @select(["advertisement", "loading"])
-  readonly loading$: Observable<boolean>;
-
-  @select(["advertisement", "pagination"])
-  readonly pagination$: Observable<any>;
+  readonly Data$ = this._store.pipe(select(advertismentSelectors.posts));
+  readonly loading$ = this._store.pipe(select(advertismentSelectors.loading));
+  readonly pagination$ = this._store.pipe(select(advertismentSelectors.pagination));
+  
 
   ngOnInit() {}
 
@@ -47,11 +45,11 @@ export class ListComponent implements OnInit {
 
   _UpdateRecord(item: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     item.editview = false;
@@ -68,8 +66,9 @@ export class ListComponent implements OnInit {
   /* pagination click event */
   PaginationChange(value: number) {
     // update filter option to query database
-    this.actions.applyFilter({ attr: "pagenumber", value: value });
+    this._store.dispatch(new applyFilter({ attr: "pagenumber", value: value }));
+    
     // update pagination current page (to hightlight selected page)
-    this.actions.updatePaginationCurrentPage({ currentpage: value });
+    this._store.dispatch(new updatePaginationCurrentPage({ currentpage: value }));
   }
 }

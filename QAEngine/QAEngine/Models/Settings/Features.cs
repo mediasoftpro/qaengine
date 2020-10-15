@@ -2,13 +2,16 @@
 {
     public class Features
     {
-      
         /// <summary>
         /// Enable qa functionality in application if module available
         /// </summary>
         public bool enable_qa { get; set; }
 
-       
+        /// <summary>
+        /// Enable blogs functionality in application if module available
+        /// </summary>
+        public bool enable_blogs { get; set; }
+
         /// <summary>
         /// Toggle on | off categorizing contents and listing
         /// </summary>

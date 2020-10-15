@@ -8,6 +8,7 @@ namespace Jugnoon.Scripts
         public ItemType ItemType { get; set; } = ItemType.Div;
         public ListType ListType { get; set; } = ListType.Grid;
         public string ColWidth { get; set; } = "col-md-4";
+        public byte totalCoumms { get; set; } = 2;
         public bool showTitle { get; set; } = true;
         public bool showGender { get; set; } = false; 
         public bool showDetail { get; set; } = false;

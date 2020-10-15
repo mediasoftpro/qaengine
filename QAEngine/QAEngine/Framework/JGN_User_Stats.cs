@@ -9,5 +9,7 @@ namespace Jugnoon.Framework
         public string userid { get; set; }
         public int stat_qa { get; set; }
         public int stat_qaanswers { get; set; }
+        public int stat_qa_fav { get; set; }
+
     }
 }

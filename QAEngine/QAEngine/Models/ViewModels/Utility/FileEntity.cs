@@ -4,6 +4,7 @@
     {
         public string filename { get; set; }
         public string img_url { get; set; }
+        public string title { get; set; }
     }
 }
 

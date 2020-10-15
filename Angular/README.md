@@ -15,16 +15,21 @@ When you execute command this will build and publish application under `/wwwroot
 1. open project in any IDE and run command 'npm install' to install all required project dependencies.
 2. open angular.json and remove styles / scripts as its already set within application (do changes with your requirements)
 
+
 ```css
-"src/assets/css/bootswatch/flatly/bootstrap.min.css",
-"src/assets/css/bootswatch/flatly/theme.css",
-"node_modules/font-awesome/css/font-awesome.min.css",
-"src/assets/css/style.css",
+  "src/assets/css/bootswatch/lumen/bootstrap.min.css",
+  "src/assets/css/bootswatch/lumen/theme.css",
+  "node_modules/font-awesome/css/font-awesome.min.css",
+  "src/assets/plugins/fotorama-4.6.4/fotorama.css",
+  "src/assets/css/style.css",
+  "src/assets/css/utility.css",
 ```
 
 ```javascript
-"src/assets/plugins/bootstrap/js/popper.min.js",
-"src/assets/js/bootstrap.min.js",
+  "src/assets/plugins/jquery/jquery.min.js",
+  "src/assets/plugins/bootstrap/js/popper.min.js",
+  "src/assets/js/bootstrap.min.js",
+  "src/assets/plugins/fotorama-4.6.4/fotorama.js",
 ```
 
 3. open app.module.ts and update  translator path '/app/angular/assets/i18n/' (when using within website), './assets/i18n' (when using as stand-alone application)

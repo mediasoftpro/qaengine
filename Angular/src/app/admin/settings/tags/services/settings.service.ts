@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -17,21 +17,25 @@ import {
   ICONCSS,
   ThemeCSS
 } from "../../../../configs/themeSettings";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
+
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+// import { auth } from "../../../../reducers/users/selectors";
+import * as configSelectors from "../../../../reducers/configs/selectors";
+
 @Injectable()
 export class SettingsService {
 
-  @select(["configuration", "configs"])
-  readonly configs$: Observable<any>;
-
+  /*@select(["configuration", "configs"])
+  readonly configs$: Observable<any>;*/
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
   // configurations
   private apiOptions: OPTIONS.IAPIOptions;
   private uploadOptions: iUploadOptions;
   private toolbarOptions: any;
   private searchOptions: any;
   Configs: any = {};
-  constructor(private coreService: CoreService, public config: AppConfig) {
+  constructor(private _store: Store<IAppState>,private coreService: CoreService, public config: AppConfig) {
     const APIURL = config.getConfig("host");
     this.apiOptions = {
       load: APIURL + "api/tags/load",

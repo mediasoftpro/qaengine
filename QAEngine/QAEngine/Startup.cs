@@ -21,6 +21,8 @@ using System.Text;
 using Microsoft.Extensions.Hosting;
 using reCAPTCHA.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Jugnoon.Models.Extensions;
+using ActiveCampaignApiClient;
 
 namespace QAEngine
 {
@@ -50,13 +52,14 @@ namespace QAEngine
 
             // Global configurations 
             var _configRoot = (IConfigurationRoot)this.Configuration;
-            
+
+           
             // direct readable settings
             services.Configure<SiteConfiguration>(Configuration.GetSection("SiteSettings"));
             services.ConfigureWritable<Jugnoon.Settings.Database>(Configuration.GetSection("DB_Settings"), _configRoot);
 
             services.ConfigureWritable<Jugnoon.Settings.General>(Configuration.GetSection("General_Settings"), _configRoot);
-          
+            services.ConfigureWritable<Jugnoon.Settings.Comments>(Configuration.GetSection("Comment_Settings"), _configRoot);
             services.ConfigureWritable<Jugnoon.Settings.Smtp>(Configuration.GetSection("Smtp"), _configRoot);
             services.ConfigureWritable<Jugnoon.Settings.Media>(Configuration.GetSection("Media_Settings"), _configRoot);
             services.ConfigureWritable<Jugnoon.Settings.Features>(Configuration.GetSection("Feature_Settings"), _configRoot);
@@ -66,26 +69,33 @@ namespace QAEngine
             services.ConfigureWritable<Jugnoon.Settings.Aws>(Configuration.GetSection("AWS_Settings"), _configRoot);
             services.ConfigureWritable<Jugnoon.Settings.Social>(Configuration.GetSection("Social_Settings"), _configRoot);
             services.ConfigureWritable<Jugnoon.Settings.Contact>(Configuration.GetSection("Contact_Settings"), _configRoot);
-          
             services.ConfigureWritable<Jugnoon.Settings.Rechapcha>(Configuration.GetSection("RecaptchaSettings"), _configRoot);
+   
+            // blogs (usable if blog module available)
+            services.ConfigureWritable<Jugnoon.Blogs.Settings.General>(Configuration.GetSection("BlogSettings"), _configRoot);
+            services.ConfigureWritable<Jugnoon.Blogs.Settings.Aws>(Configuration.GetSection("Aws_Blog_Settings"), _configRoot);
 
-            // QA (usable if qa module available)
-            services.ConfigureWritable<Jugnoon.qa.Settings.General>(Configuration.GetSection("QA_Settings"), _configRoot);
+            // elatic search settings
+            services.ConfigureWritable<Jugnoon.Settings.ElasticSearch>(Configuration.GetSection("elasticsearch"), _configRoot);
            
+            // active compaign settings
+            services.ConfigureWritable<Jugnoon.Settings.ActiveCompaign>(Configuration.GetSection("ActiveCampaign"), _configRoot);
+            // zendesk settings
+            services.ConfigureWritable<Jugnoon.Settings.Zendesk>(Configuration.GetSection("ZendeskApi"), _configRoot);
+
 
             if (Configuration["DB_Settings:host"] != "" 
                 && Configuration["DB_Settings:database"] != "" 
                 && Configuration["DB_Settings:userid"] != "" 
                 && Configuration["DB_Settings:password"] != "")
             {
-                
-                // rechapcha
-                var recaptcha = Configuration.GetSection("RecaptchaSettings");
-                if (!recaptcha.Exists())
-                    throw new ArgumentException("Missing RecaptchaSettings in configuration.");
 
-                services.Configure<RecaptchaSettings>(recaptcha);
-                services.AddTransient<IRecaptchaService, RecaptchaService>();
+                // rechapcha
+                services.AddRecaptcha(Configuration.GetSection("RecaptchaSettings"));
+                //if (!recaptcha.Exists())
+                //    throw new ArgumentException("Missing RecaptchaSettings in configuration.");
+                //services.Configure<RecaptchaSettings>(recaptcha);
+                //services.AddTransient<IRecaptchaService, RecaptchaService>();
 
                 var conn = "Server=" + Configuration["DB_Settings:host"] + "; Database=" + Configuration["DB_Settings:database"] + "; uid=" + Configuration["DB_Settings:userid"] + ";pwd=" + Configuration["DB_Settings:password"] + ";";  // Configuration.GetConnectionString("DefaultConnection");
                 // setup database connectionstring.
@@ -94,8 +104,8 @@ namespace QAEngine
                 services.AddIdentity<ApplicationUser, ApplicationRole>()
                    .AddEntityFrameworkStores<ApplicationDbContext>()
                    .AddDefaultTokenProviders();
-
-                if (Configuration["Auth_Settings:enable_facebook"] == "true")
+               
+                if (Convert.ToBoolean(Configuration["Auth_Settings:enable_facebook"]))
                 {
                     services.AddAuthentication().AddFacebook(facebookOptions =>
                     {
@@ -104,7 +114,7 @@ namespace QAEngine
                     });
                 }
 
-                if (Configuration["Auth_Settings:enable_twitter"] == "true")
+                if (Convert.ToBoolean(Configuration["Auth_Settings:enable_twitter"]))
                 {
                     services.AddAuthentication().AddTwitter(twitterOptions =>
                     {
@@ -113,7 +123,7 @@ namespace QAEngine
                     });
                 }
 
-                if (Configuration["Auth_Settings:enable_google"] == "true")
+                if (Convert.ToBoolean(Configuration["Auth_Settings:enable_google"]))
                 {
                     services.AddAuthentication().AddGoogle(googleOptions =>
                     {
@@ -191,6 +201,12 @@ namespace QAEngine
 
             // Cache
             services.AddMemoryCache();
+
+            // Active Compaign Client
+            services.AddActiveCampaignApiClient(Configuration);
+
+            // Elastic Search
+            services.AddElasticsearch(Configuration);
 
             // CORS Angular Application
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
@@ -282,7 +298,7 @@ namespace QAEngine
              && Configuration["DB_Settings:database"] != ""
              && Configuration["DB_Settings:userid"] != ""
              && Configuration["DB_Settings:password"] != "")
-            { 
+            {             
                 app.UseEndpoints(endpoints => RouteConfig.Use(endpoints));
             }
             else

@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Options;
 using Jugnoon.Framework;
 using Microsoft.Extensions.Localization;
-using QAEngine.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Jugnoon.Localize;
@@ -26,7 +25,7 @@ namespace QAEngine.Areas.api.Controllers
         public abuseController(
         IOptions<SiteConfiguration> settings,
         ApplicationDbContext context,
-        IStringLocalizer<GeneralResource> generalLocalizer,
+       IStringLocalizer<GeneralResource> generalLocalizer,
         IHttpContextAccessor _httpContextAccessor
         )
         {

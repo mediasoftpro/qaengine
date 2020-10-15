@@ -1,0 +1,27 @@
+﻿@model Jugnoon.Blogs.Models.BlogItemViewModel
+@*
+    Core Blog Item Design
+*@
+
+@if (Model.ListObject.ListType == Jugnoon.Scripts.ListType.Links)
+{
+    // Article Links Only
+   <a href="@Model.ProfileUrl" title="@Model.Data.title">@Model.Data.title</a>
+}
+else
+{
+    var PartialPath = "~/Views/themes/default/blogs/partials";
+    if (Model.ListObject.showDetail)
+    {
+        // Article Detail View
+        @await Html.PartialAsync(PartialPath + "/item/detail.cshtml", Model)
+    }
+    else
+    {
+        // Article List View
+        @await Html.PartialAsync(PartialPath + "/item/list.cshtml", Model)
+    }
+}
+
+
+

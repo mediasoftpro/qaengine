@@ -1,0 +1,26 @@
+﻿@model Jugnoon.Blogs.Models.BlogItemViewModel
+@using Jugnoon.Blogs
+@*
+    Blog Item Video Processing
+*@
+
+@{
+
+    // check for youtube
+    var YtUrls = UtilityBLL.Fetch_Youtube_Url(Model.Data.description);
+    if (YtUrls.Count > 0)
+    {
+        <iframe src="@YtUrls[0].ToString()" frameborder="0" allowfullscreen></iframe>
+    }
+    else
+    {
+        // check for vimeo
+        var VMUrls = UtilityBLL.Fetch_Vimeo_URL(Model.Data.description);
+        if (VMUrls.Count > 0)
+        {
+            <iframe src="@VMUrls[0].ToString()" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+        }
+    }
+
+}
+

@@ -1,8 +1,16 @@
 <div [ngSwitch]="config.getGlobalVar('searchparams').type">
- 
-  <div *ngSwitchCase="'qa'">
-    <app-qa-search></app-qa-search>
-  </div>
   
-
+  <div *ngSwitchCase="'topics'">
+    <app-forum-search></app-forum-search>
+  </div>
+  <div *ngSwitchCase="'blogs'">
+    <app-blog-search></app-blog-search>
+  </div>
+  <div *ngSwitchCase="'users'">
+    <app-users-search></app-users-search>
+  </div>
+  <div *ngSwitchCase="'users'">
+    <app-agency-search></app-agency-search>
+  </div>
+ 
 </div>

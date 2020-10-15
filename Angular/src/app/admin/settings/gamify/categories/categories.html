@@ -1,0 +1,118 @@
+<div *ngIf="!isAccessGranted">
+  <h2 class="m-b-40 m-t-40 text-center">Access Denied</h2>
+</div>
+<div *ngIf="isAccessGranted">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body inbox-panel">
+          <div class="m-b-10">Category Types</div>
+          <ul class="list-group list-group-full">
+            <li
+              *ngFor="let item of CategoryTypes"
+              [ngClass]="{ active: CategoryType == item.value }"
+              class="list-group-item"
+            >
+              <a
+                href="#"
+                (click)="filterCategories(item, $event); (false)"
+                title="{{ item.title }}"
+              >
+                {{ item.title }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <app-navigation-v2
+          [FilterOptions]="FilterOptions"
+          [Options]="SearchOptions"
+        >
+        </app-navigation-v2>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="m-b-0">{{ formHeading }}</h4>
+        </div>
+        <div class="card-body">
+          <app-loader *ngIf="showLoader"></app-loader>
+          <div *ngIf="!showLoader">
+            <div class="m-b-10 m-t-10">
+              <button
+                (click)="addCategory()"
+                type="button"
+                class="btn btn-dark  m-r-5"
+              >
+                <i class="fa fa-plus"></i> Add Category
+              </button>
+            </div>
+            <div *ngIf="CategoryList.length > 0">
+              <div class="table-responsive">
+                <table
+                  class="table table-bordered table-hover table-striped no-wrap"
+                >
+                  <thead>
+                    <tr>
+                      <th class="text-nowrap">
+                        Title
+                      </th>
+                      <th class="text-nowrap">
+                        Short Title
+                      </th>
+                      <th class="text-nowrap">
+                        Priority
+                      </th>
+                      <th class="text-nowrap">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      [hidden]="item.isdeleted"
+                      *ngFor="let item of CategoryList; let i = index"
+                    >
+                      <td>
+                        <h4>{{ item.title }}</h4>
+                        <div [innerHTML]="item.description"></div>
+                      </td>
+
+                      <td>
+                        <h5>{{ item.shorttitle }}</h5>
+                      </td>
+                      <td>
+                        {{ item.priority }}
+                      </td>
+                      <td class="text-nowrap">
+                        <a
+                          href="#"
+                          (click)="toggleEditView(item, $event); (false)"
+                          data-toggle="tooltip"
+                          data-original-title="Edit"
+                        >
+                          <i class="fa fa-pencil text-inverse m-r-10"></i>
+                        </a>
+                        <a
+                          (click)="delete(item, i, $event); (false)"
+                          href="#"
+                          data-toggle="tooltip"
+                          data-original-title="Close"
+                        >
+                          <i class="fa fa-close text-danger"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <app-norecord *ngIf="CategoryList.length === 0"></app-norecord>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,8 +8,8 @@
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../services/settings.service";
@@ -18,10 +18,14 @@ import { FormService } from "../services/form.service";
 
 // shared services
 import { CoreService } from "../../../core/coreService";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
 
 // reducer actions
-import { MailTemplatesAPIActions } from "../../../../reducers/settings/mailtemplates/actions";
+import { reloadList} from "../../../../reducers/settings/mailtemplates/actions";
+import { Notify } from "../../../../reducers/core/actions";
+import {auth} from "../../../../reducers/users/selectors";
+import * as configSelectors from "../../../../reducers/configs/selectors";
+// reducer actions
+
 import { fadeInAnimation } from "../../../../animations/core";
 
 import { PermissionService } from "../../../../admin/users/services/permission.service";
@@ -33,11 +37,10 @@ import { PermissionService } from "../../../../admin/users/services/permission.s
 })
 export class ProcMailTemplateComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: MailTemplatesAPIActions,
     private route: ActivatedRoute,
     private formService: FormService,
     private permission: PermissionService,
@@ -51,11 +54,10 @@ export class ProcMailTemplateComponent implements OnInit {
   formHeading = "Add Mail Tempalte";
   submitText = "Add Template";
 
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
-
-  @select(["configuration", "configs"])
-  readonly configs$: Observable<any>;
+ readonly auth$ = this._store.pipe(select(auth));
+ readonly configs$ = this._store.pipe(select(configSelectors.configs));
+  /*@select(["configuration", "configs"])
+  readonly configs$: Observable<any>;*/
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -118,11 +120,11 @@ export class ProcMailTemplateComponent implements OnInit {
   }
   SubmitForm(payload) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     this.showLoader = true;
@@ -137,20 +139,20 @@ export class ProcMailTemplateComponent implements OnInit {
         console.log(data);
 
         if (data.status === "error") {
-          this.coreActions.Notify({
+          this._store.dispatch(new Notify({
             title: data.message,
             text: "",
             css: "bg-success"
-          });
+          }));
         } else {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: "Record " + _status + " Successfully",
             text: "",
             css: "bg-success"
-          });
+          }));
 
           // enable reload action to refresh data
-          this.actions.reloadList();
+          this._store.dispatch(new reloadList({}));
 
           // redirect
           this.router.navigate(["/settings/mailtemplates/"]);
@@ -159,11 +161,11 @@ export class ProcMailTemplateComponent implements OnInit {
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

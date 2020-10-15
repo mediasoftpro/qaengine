@@ -1,0 +1,44 @@
+﻿@inject Jugnoon.Framework.ApplicationDbContext _context
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Features> featureSettings
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Registration> registrationSettings
+
+@model Jugnoon.Blogs.Models.BlogListViewModel
+@using Jugnoon.Blogs;
+@using Jugnoon.Blogs.Models;
+
+@if (featureSettings.Value.enable_blogs)
+{
+    <!-- Contents Section Started -->
+    var _list = await BlogsBLL.LoadItems(_context, Model.QueryOptions);
+    if (_list.Count > 0)
+    {
+        var PartialPath = "~/Views/themes/default/blogs/partials";
+        <div class="box">
+            <!--<h2>
+                @Model.HeadingTitle
+                @{
+                if (Model.BrowseUrl != "")
+                {
+                <small><a href="@Model.BrowseUrl">@Model.BrowseText</a></small>
+                }
+                }
+            </h2>-->
+
+            @foreach (var Item in _list)
+            {
+                @await Html.PartialAsync(PartialPath + "/item/Item.cshtml", new BlogItemViewModel()
+                {
+                    Data = Item,
+                    ListObject = Model.ListObject,
+                    AuthorUrl = UserUrlConfig.ProfileUrl(Item.author, registrationSettings.Value.uniqueFieldOption),
+                    ProfileUrl = BlogUrlConfig.Generate_Post_Url(Item)
+                });
+                <hr />
+            }
+        </div>
+    }
+    else if (Model.NoRecordFoundText != "")
+    {
+        @await Html.PartialAsync("~/Views/partials/utility/_norecord.cshtml", new NoRecordModelView() { Message = Model.NoRecordFoundText })
+    }
+}

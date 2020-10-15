@@ -1,15 +1,15 @@
 
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, Input, OnInit } from "@angular/core";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 
 /* modal popup */
 import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
@@ -17,15 +17,19 @@ import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
 import { ViewComponent } from "../../../../shared/qa/components/partials/modal.component";
 import { SettingsService } from "../../../../shared/qa/services/settings.service";
 import { DataService } from "../../../../shared/qa/services/data.service";
+
+import { auth } from "../../../../reducers/users/selectors";
+
 @Component({
   selector: "app-qa-info",
   templateUrl: "./info.html"
 })
 export class QAProfileInfoComponent implements OnInit {
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+
+  readonly auth$ = this._store.pipe(select(auth));
 
   constructor(
+    private _store: Store<IAppState>,
     private modalService: NgbModal,
     private settingService: SettingsService,
     private dataService: DataService

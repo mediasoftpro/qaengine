@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,8 +8,8 @@
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../services/settings.service";
@@ -18,10 +18,20 @@ import { FormService } from "../services/form.service";
 
 // shared services
 import { CoreService } from "../../core/coreService";
-import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../reducers/core/actions";
 
 // reducer actions
-import { UserAPIActions } from "../../../reducers/users/actions";
+import * as selectors from "../../../reducers/settings/roles/selectors";
+import {
+  addRecord,
+  updateRecord
+} from "../../../reducers/users/actions";
+
+import { Notify, refreshListStats } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+import * as configSelectors from "../../../reducers/configs/selectors";
+// reducer actions
+//import { UserAPIActions } from "../../../reducers/users/actions";
 import { fadeInAnimation } from "../../../animations/core";
 
 import { PermissionService } from "../../../admin/users/services/permission.service";
@@ -33,26 +43,30 @@ import { PermissionService } from "../../../admin/users/services/permission.serv
   host: { "[@fadeInAnimation]": "" }
 })
 export class UserProfileComponent implements OnInit {
-  @select(["configuration", "configs"])
+
+  /*@select(["configuration", "configs"])
   readonly configs$: Observable<any>;
   // load all available roles
   @select(["roles", "roles"])
   readonly roles$: Observable<any>;
 
   @select(["roles", "isroleloaded"])
-  readonly isroleloaded$: Observable<any>;
+  readonly isroleloaded$: Observable<any>;*/
 
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: UserAPIActions,
     private route: ActivatedRoute,
     private formService: FormService,
     public permission: PermissionService,
     private router: Router
   ) {}
+
+  readonly roles$ = this._store.pipe(select(selectors.roles));
+  readonly isroleloaded$ = this._store.pipe(select(selectors.isroleloaded));
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
 
   controls: any = [];
   ToolbarOptions: any;
@@ -74,8 +88,7 @@ export class UserProfileComponent implements OnInit {
   // User Roles
   Roles: any = [];
 
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+ readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -128,11 +141,11 @@ export class UserProfileComponent implements OnInit {
     this.showLoader = true;
     this.dataService.GetInfo(this.RecordID).subscribe((data: any) => {
       if (data.status === "error") {
-        this.coreActions.Notify({
-          title: data.message,
-          text: "",
-          css: "bg-success"
-        });
+          this._store.dispatch(new Notify({
+            title:  data.message,
+            text: "",
+            css: "bg-success"
+          }));
         // redirect to user page
         this.router.navigate(["/users"]);
       } else {
@@ -177,11 +190,11 @@ export class UserProfileComponent implements OnInit {
 
   OnUploadedImages(images: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     this.dataService.UpdateThumb(this.Info, images);
@@ -251,11 +264,11 @@ export class UserProfileComponent implements OnInit {
     this.showLoader = true;
     this.dataService.GetUserLog(this.Info.id).subscribe((data: any) => {
       if (data.status === "error") {
-        this.coreActions.Notify({
-          title: data.message,
-          text: "",
-          css: "bg-success"
-        });
+          this._store.dispatch(new Notify({
+            title:  data.message,
+            text: "",
+            css: "bg-success"
+          }));
       } else {
         this.UserLog = data.posts;
       }
@@ -274,22 +287,22 @@ export class UserProfileComponent implements OnInit {
     // permission check
     if (this.Info.isActionGranded !== undefined) {
       if (!this.Info.isActionGranded) {
-        this.coreActions.Notify({
-          title: "Permission Denied",
-          text: "",
-          css: "bg-danger"
-        });
+        this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
         return;
       }
     }
     // custom validation
     if (this.Info.viewType === 1 || this.Info.viewType === 4) {
       if (payload.password !== payload.cpassword) {
-        this.coreActions.Notify({
-          title: "Password Not Matched",
+        this._store.dispatch(new Notify({
+          title:  "Password not matched",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     }
 
@@ -308,6 +321,8 @@ export class UserProfileComponent implements OnInit {
       // need custom adjustments based on api call data structure
       this.Info.firstname = payload.firstname;
       this.Info.lastname = payload.lastname;
+      this.Info.mobile = payload.mobile;
+      this.Info.phoneNumber = payload.phone;
       // this.Info.profile.gender = payload.gender;
 
       this.Info.attr_values = this.coreService.processDynamicControlsData(payload, this.Info);
@@ -319,36 +334,39 @@ export class UserProfileComponent implements OnInit {
       this.Info.settings.issendmessages = 0;
       if (payload.issendmessages) this.Info.settings.issendmessages = 1;
 
-      this.Info.account.credits = payload.credits;
-
-      this.Info.account.islifetimerenewal = 0;
+      this.Info.account.basic_credits = payload.basic_credits;
+      this.Info.account.featured_credits = payload.featured_credits;
+      this.Info.account.premium_credits = payload.premium_credits;
+      this.Info.account.hot_credits = payload.hot_credits;
+      this.Info.account.super_hot_credits = payload.super_hot_credits;
+      /*this.Info.account.islifetimerenewal = 0;
       if (payload.islifetimerenewal)
         this.Info.account.islifetimerenewal = 1;
 
-      this.Info.account.paypal_subscriber = 0;
+      this.Info.account.paypal_subscriber = 0;*/
     }
 
     // enable admin related additional edit options
-    this.Info.isadmin = true;
+    //this.Info.isadmin = true;
     
     //console.log(this.Info);
     this.dataService.AddRecord(this.Info).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: data.message,
             text: "",
             css: "bg-danger"
-          });
+          }));
         } else {
           let message = "Account Created Successfully";
           switch (this.Info.viewType) {
             case 1:
-              this.actions.addRecord(data.record);
+              this._store.dispatch(new addRecord(data.record));
               break;
             case 2:
               message = "Profile Updated Successfully";
-              this.actions.updateRecord(data.record);
+              this._store.dispatch(new updateRecord(data.record));
               break;
             case 3:
               message = "Email Updated Successfully";
@@ -360,11 +378,11 @@ export class UserProfileComponent implements OnInit {
               message = "Account Type Changed";
               break;
           }
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: message,
             text: "",
             css: "bg-success"
-          });
+          }));
         }
         this.showLoader = false;
         // back to public view
@@ -372,22 +390,22 @@ export class UserProfileComponent implements OnInit {
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }
 
   ProcessActions(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     if (this.SelectedItems.length > 0) {

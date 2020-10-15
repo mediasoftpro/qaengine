@@ -1,0 +1,118 @@
+﻿@model Jugnoon.Blogs.Models.BlogItemViewModel
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Social> socialSettings
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Blogs.Settings.General> blogSettings
+@*
+    Blog Detail View Design
+*@
+
+@{
+    var PartialPath = "~/Views/themes/default/blogs/partials";
+}
+
+<div class="qa-item">
+    <h2 class="m-b-10">@Model.Data.title</h2>
+    <div class="m-t-5">
+        @if (blogSettings.Value.isShowPostingDate)
+        {
+            var formatDate = Model.Data.created_at.ToString("dd MMMM yyyy");
+            switch (blogSettings.Value.postDateTemplate)
+            {
+                case 0:
+                    // DAY MONTH, YEAR
+                    formatDate = Model.Data.created_at.ToString("dd MMMM, yyyy");
+                    break;
+                case 1:
+                    // MONTH DAYth, YEAR
+                    formatDate = Model.Data.created_at.ToString("MMMM dd, yyyy");
+                    break;
+                case 2:
+                    // MONTH DAY YEAR
+                    formatDate = Model.Data.created_at.ToString("MMMM dd yyyy");
+                    break;
+                case 3:
+                    // 2 days ago
+                    formatDate = UtilityBLL.CustomizeDate((DateTime)Model.Data.created_at, DateTime.Now);
+                    break;
+            }
+            <span class="m-r-10"><i class="fa fa-calendar"></i> @formatDate</span>
+        }
+        @if (blogSettings.Value.isShowAuthor)
+            {
+            <span class="m-r-10"><i class="fa fa-user"></i> <a class="light" href="@Model.AuthorUrl">@UserBLL.prepareUserName(Model.Data.author)</a></span>
+        }
+
+    </div>
+    <div class="m-t-20 m-b-20">
+        @await Html.PartialAsync(PartialPath + "/item/cover.cshtml", Model)
+    </div>
+    <div class="m-t-10  item-normal-text">
+        @* @Html.Raw(Model.Data.description.ToString()) *@
+        @* Load Two Paragraphs *@
+        @Html.Raw(Jugnoon.Blogs.BlogScripts.PrepareShortDescription(Model.Data.description.ToString(), 2))
+
+        @* Attach Photo Gallery if Exist *@
+        @await Html.PartialAsync(PartialPath + "/item/gallery.cshtml", Model)
+
+        @* Load Remaining Paragraphs *@
+        @Html.Raw(Jugnoon.Blogs.BlogScripts.PrepareLastParagraphs(Model.Data.description.ToString(), 2))
+    </div>
+
+    @{
+        var counter = 0;
+    }
+    @if (Model.Data.category_list != null && Model.Data.category_list.Count > 0)
+        {
+        <div class="m-t-10 m-b-10">
+            <strong>@GeneralResource["_categories"].Value:</strong>
+            <p>
+                @foreach (var category in Model.Data.category_list)
+                {
+                    if (counter > 0)
+                    {
+                        @Html.Raw(", ")
+                    }
+                    <a class="btn btn-primary btn-sm m-b-5" href="@CategoryUrlConfig.PrepareUrl(category.category.term, "blogs/")"
+                       title="@category.category.title">@category.category.title</a>
+                    counter++;
+                }
+            </p>
+            
+        </div>
+    }
+
+    @if (Model.Data.tags != null || Model.Data.tags != "")
+    {
+            <div class="m-t-10 m-b-10">
+                <strong class="m-b-5">@GeneralResource["_labels"].Value:</strong><br />
+                <p>
+                    @{
+                        // tag or label processing
+                        counter = 0;
+                        if (Model.Data.tags.Contains(","))
+                        {
+                            var _tags = Model.Data.tags.Split(char.Parse(","));
+                            @foreach (var cat in _tags)
+                            {
+                                if (counter > 0)
+                                {
+                                    @Html.Raw(", ")
+                                }
+                                <a class="btn btn-primary btn-sm m-b-5" href="@TagUrlConfig.PrepareUrl(cat.ToString(), "blogs/")">@UtilityBLL.UppercaseFirst(cat.ToString(), true)</a>
+                                counter++;
+                            }
+                        }
+                        else
+                        {
+                            <a class="btn btn-primary btn-sm m-b-5" href="@TagUrlConfig.PrepareUrl(Model.Data.tags.ToString(), "blogs/")">
+                                @UtilityBLL.UppercaseFirst(Model.Data.tags.ToString(), true)
+                            </a>
+                        }
+                    }
+                </p>
+            </div>
+     }
+    <hr />
+    
+</div>
+

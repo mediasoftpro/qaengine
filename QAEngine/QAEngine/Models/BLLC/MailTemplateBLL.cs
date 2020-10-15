@@ -19,6 +19,7 @@ namespace Jugnoon.BLL
     {
         General = 0,
         Members = 1,
+        Blogs = 8,
         QA = 5
     };
 

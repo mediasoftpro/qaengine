@@ -1,8 +1,8 @@
-<alert></alert>
+
 <app-loader *ngIf="loading$ | async"></app-loader>
 
 <div *ngIf="!(loading$ | async)">
-  <div *ngIf="(Data$ | async).length > 0">
+  <div *ngIf="Data.length > 0">
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped no-wrap">
         <thead>
@@ -42,7 +42,7 @@
           <tr
             [@fadeIn]="''"
             [hidden]="item.isdeleted"
-            *ngFor="let item of Data$ | async; trackBy: getKey; let i = index"
+            *ngFor="let item of Data; trackBy: getKey; let i = index"
           >
             <td style="width:5%;">
               <div class="checkbox">
@@ -150,7 +150,7 @@
       </table>
     </div>
   </div>
-  <app-norecord *ngIf="(Data$ | async).length === 0"></app-norecord>
+  <app-norecord *ngIf="Data.length === 0"></app-norecord>
 </div>
 
 <div class="text-center content-group-lg pt-20">

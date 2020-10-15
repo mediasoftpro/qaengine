@@ -1,176 +1,136 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Injectable } from "@angular/core";
-import { dispatch } from "@angular-redux/store";
-import { FluxStandardAction } from "flux-standard-action";
+import { Action } from "@ngrx/store";
 import { IAbuseReportStats } from "./model";
 import { tassign } from "tassign";
 import { CoreService } from "../../../admin/core/coreService";
 
-type Payload = any;
-interface MetaData {}
-export type AbuseReportAction = FluxStandardAction<Payload, MetaData>;
 
-@Injectable()
-export class AbuseReportActions {
+export enum AbuseReportAction {
+  LOAD_STARTED = "ABUSEREPORT_LOAD_STARTED",
+  LOAD_SUCCEEDED = "ABUSEREPORT_LOAD_SUCCEEDED",
+  LOAD_FAILED = "ABUSEREPORT_LOAD_FAILED",
+  APPLY_CHANGES = "ABUSEREPORT_APPLY_CHANGES",
+  UPDATE_FILTER_OPTIONS = "ABUSEREPORT_UPDATE_FILTER_OPTIONS",
+  APPLY_FILTER = "ABUSEREPORT_APPLY_FILTER",
+  UPDATE_PAGINATION_CURRENTPAGE =
+    "ABUSEREPORT_UPDATE_PAGINATION_CURRENTPAGE",
+  SELECT_ALL = "ABUSEREPORT_SELECT_ALL",
+  IS_ITEM_SELECTED = "ABUSEREPORT_IP_IS_ITEM_SELECTED",
 
-
-  static readonly LOAD_STARTED = "ABUSEREPORT_LOAD_STARTED";
-  static readonly LOAD_SUCCEEDED = "ABUSEREPORT_LOAD_SUCCEEDED";
-  static readonly LOAD_ABUSEREPORT_SUCCEEDED = "ABUSEREPORT_NOALBUM_LOAD_SUCCEEDED";
-  static readonly LOAD_FAILED = "ABUSEREPORT_LOAD_FAILED";
-  static readonly APPLY_CHANGES = "ABUSEREPORT_APPLY_CHANGES";
-  static readonly APPLY_ABUSEREPORT_CHANGES = "ABUSEREPORT_NOALBUM_APPLY_CHANGES";
-  static readonly UPDATE_FILTER_OPTIONS = "ABUSEREPORT_UPDATE_FILTER_OPTIONS";
-  static readonly APPLY_FILTER = "ABUSEREPORT_APPLY_FILTER";
-  static readonly UPDATE_PAGINATION_CURRENTPAGE =
-    "ABUSEREPORT_UPDATE_PAGINATION_CURRENTPAGE";
-  static readonly SELECT_ALL = "ABUSEREPORT_SELECT_ALL";
-  static readonly IS_ITEM_SELECTED = "ABUSEREPORT_IP_IS_ITEM_SELECTED";
-
-  static readonly ADD_RECORD = "ABUSEREPORT_ADD_RECORD";
-  static readonly UPDATE_RECORD = "ABUSEREPORT_UPDATE_RECORD";
-  static readonly UPDATE_USER = "ABUSEREPORT_UPDATE_USER"; // update user info in filter options (to load logged in user data)
-  static readonly LOAD_END = "ABUSEREPORT_YT_LOADEND";
+  ADD_RECORD = "ABUSEREPORT_ADD_RECORD",
+  UPDATE_RECORD = "ABUSEREPORT_UPDATE_RECORD",
+  UPDATE_USER = "ABUSEREPORT_UPDATE_USER",
+  LOAD_END = "ABUSEREPORT_YT_LOADEND",
   // REFERESH LOAD
-  static readonly REFRESH_DATA = "ABUSEREPORT_REFRESH_DATA";
-  static readonly REFRESH_PAGINATION = "ABUSEREPORT_REFRESH_PAGINATION";
-  static readonly REFRESH_ABUSEREPORT_PAGINATION =
-    "ABUSEREPORT_NOALBUM_REFRESH_PAGINATION";
-
-  @dispatch()
-  loadStarted = (): AbuseReportAction => ({
-    type: AbuseReportActions.LOAD_STARTED,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  loadSucceeded = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.LOAD_SUCCEEDED,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  loadPhotosSucceeded = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.LOAD_ABUSEREPORT_SUCCEEDED,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  loadFailed = (error): AbuseReportAction => ({
-    type: AbuseReportActions.LOAD_FAILED,
-    // meta: { },
-    payload: null,
-    error
-  });
-
-  @dispatch()
-  applyChanges = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.APPLY_CHANGES,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  applyPhotoChanges = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.APPLY_ABUSEREPORT_CHANGES,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  updateFilterOptions = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.UPDATE_FILTER_OPTIONS,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  applyFilter = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.APPLY_FILTER,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updatePaginationCurrentPage = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.UPDATE_PAGINATION_CURRENTPAGE,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  selectAll = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.SELECT_ALL,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateItemsSelectionStatus = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.IS_ITEM_SELECTED,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  addRecord = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.ADD_RECORD,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateRecord = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.UPDATE_RECORD,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  loadEnd = (): AbuseReportAction => ({
-    type: AbuseReportActions.LOAD_END,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  reloadList = (): AbuseReportAction => ({
-    type: AbuseReportActions.REFRESH_DATA,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  refresh_pagination = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.REFRESH_PAGINATION,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  refresh_ABUSEREPORT_pagination = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.REFRESH_ABUSEREPORT_PAGINATION,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateFilter = (payload: Payload): AbuseReportAction => ({
-    type: AbuseReportActions.UPDATE_USER,
-    // meta: { },
-    payload: payload
-  });
+  REFRESH_DATA = "ABUSEREPORT_REFRESH_DATA",
+  REFRESH_PAGINATION = "ABUSEREPORT_REFRESH_PAGINATION",
 }
+
+
+export class loadStarted implements Action {
+  public readonly type = AbuseReportAction.LOAD_STARTED;
+  constructor(public payload: any) {}
+}
+
+export class loadSucceeded implements Action {
+  public readonly type = AbuseReportAction.LOAD_SUCCEEDED;
+  constructor(public payload: any) {}
+}
+
+export class loadFailed implements Action {
+  public readonly type = AbuseReportAction.LOAD_FAILED;
+  constructor(public payload: any) {}
+}
+
+export class applyChanges implements Action {
+  public readonly type = AbuseReportAction.APPLY_CHANGES;
+  constructor(public payload: any) {}
+}
+
+export class updateFilterOptions implements Action {
+  public readonly type = AbuseReportAction.UPDATE_FILTER_OPTIONS;
+  constructor(public payload: any) {}
+}
+
+export class applyFilter implements Action {
+  public readonly type = AbuseReportAction.APPLY_FILTER;
+  constructor(public payload: any) {}
+}
+
+export class updatePaginationCurrentPage implements Action {
+  public readonly type = AbuseReportAction.UPDATE_PAGINATION_CURRENTPAGE;
+  constructor(public payload: any) {}
+}
+
+export class selectAll implements Action {
+  public readonly type = AbuseReportAction.SELECT_ALL;
+  constructor(public payload: any) {}
+}
+
+export class updateItemsSelectionStatus implements Action {
+  public readonly type = AbuseReportAction.IS_ITEM_SELECTED;
+  constructor(public payload: any) {}
+}
+
+export class addRecord implements Action {
+  public readonly type = AbuseReportAction.ADD_RECORD;
+  constructor(public payload: any) {}
+}
+
+export class updateRecord implements Action {
+  public readonly type = AbuseReportAction.UPDATE_RECORD;
+  constructor(public payload: any) {}
+}
+
+export class loadEnd implements Action {
+  public readonly type = AbuseReportAction.LOAD_END;
+  constructor(public payload: any) {}
+}
+
+export class reloadList implements Action {
+  public readonly type = AbuseReportAction.REFRESH_DATA;
+  constructor(public payload: any) {}
+}
+
+export class refresh_pagination implements Action {
+  public readonly type = AbuseReportAction.REFRESH_PAGINATION;
+  constructor(public payload: any) {}
+}
+
+export class updateFilter implements Action {
+  public readonly type = AbuseReportAction.UPDATE_USER;
+  constructor(public payload: any) {}
+}
+
+
+export type AbuseReportActions =
+  | loadStarted
+  | loadSucceeded
+  | loadFailed
+  | applyChanges
+  | updateFilterOptions
+  | applyFilter
+  | updateFilterOptions
+  | applyFilter
+  | updatePaginationCurrentPage
+  | selectAll
+  | updateRecord
+  | updateItemsSelectionStatus
+  | addRecord
+  | loadEnd
+  | reloadList
+  | updateFilter
+  | refresh_pagination
+  | reloadList;
+
 
 export class AbuseReportBLL {
   
@@ -183,13 +143,12 @@ export class AbuseReportBLL {
       }
     }
     // update totalrecords object in pagination prop
-    const _pagination = state.pagination;
+    const _pagination = Object.assign({}, state.pagination);
     _pagination.totalRecords = action.payload.records;
     _pagination.pageSize = state.filteroptions.pagesize;
     _pagination.currentPage = state.filteroptions.pagenumber;
     // avoid loading categories again in next call
-    const _filteroption = state.filteroptions;
-    _filteroption.loadstats = false;
+const _filteroption= Object.assign({}, state.filteroptions);    _filteroption.loadstats = false;
 
     return tassign(state, {
       posts: action.payload.posts,
@@ -202,7 +161,7 @@ export class AbuseReportBLL {
   }
 
   updateUserFilter(state: IAbuseReportStats, action: any) {
-    const filters = state.filteroptions;
+    const filters =  Object.assign({}, state.filteroptions);
     filters.userid = action.payload.id;
     return tassign(state, {
       filteroptions: filters
@@ -210,7 +169,7 @@ export class AbuseReportBLL {
   }
 
   applyFilterChanges(state: IAbuseReportStats, action: any) {
-    const filters = state.filteroptions;
+    const filters =  Object.assign({}, state.filteroptions);
     for (const prop in filters) {
       if (prop === action.payload.attr) {
         filters[prop] = action.payload.value;
@@ -224,7 +183,7 @@ export class AbuseReportBLL {
   }
 
   updatePagination(state: IAbuseReportStats, action: any) {
-    const pagination = state.pagination;
+    const pagination = Object.assign({}, state.pagination);
     pagination.currentPage = action.payload.currentpage;
 
     return tassign(state, {
@@ -233,7 +192,9 @@ export class AbuseReportBLL {
   }
 
   selectAll(state: IAbuseReportStats, action: any) {
-    const posts = state.posts;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     for (const item of posts) {
       item.Selected = action.payload.checked;
     }
@@ -245,13 +206,17 @@ export class AbuseReportBLL {
   }
 
   addRecord(state: IAbuseReportStats, action: any) {
-    const posts = state.posts;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     posts.unshift(action.payload);
     return tassign(state, { posts: posts });
   }
 
   updateRecord(state: IAbuseReportStats, action: any) {
-    const posts = state.posts;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     for (let post of posts) {
       if (post.id === action.payload.id) {
         post = Object.assign({}, post, action.payload);
@@ -261,7 +226,7 @@ export class AbuseReportBLL {
   }
 
   applyChanges(state: IAbuseReportStats, action: any) {
-    let _updated_state = state.posts;
+    let _updated_state  = Object.assign({}, state.posts);
     for (const selected of action.payload.SelectedItems) {
       for (const item of _updated_state) {
         if (item.id === selected.id) {
@@ -283,7 +248,7 @@ export class AbuseReportBLL {
   }
 
   refreshpagination(state: IAbuseReportStats, action: any) {
-    const pagination = state.pagination;
+    const pagination = Object.assign({}, state.pagination);
     pagination.totalRecords = action.payload.totalrecords;
     pagination.pageSize = action.payload.pagesize;
     return tassign(state, { pagination: pagination });

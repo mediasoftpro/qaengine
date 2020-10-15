@@ -14,6 +14,11 @@
         public string character { get; set; } = "";
         public bool havephoto { get; set; } = false;
         public bool isadmin { get; set; } = false;
+
+        // Agency Related
+        public long agencyid { get; set; } = 0;
+
+        public string agencyname { get; set; } = "";
     }
 }
  

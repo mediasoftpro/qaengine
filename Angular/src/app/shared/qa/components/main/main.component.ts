@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,8 +8,8 @@
 
 import { Component, OnInit, Input } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../../services/settings.service";
@@ -18,10 +18,21 @@ import { PermissionService } from "../../../../admin/users/services/permission.s
 
 // shared services
 import { CoreService } from "../../../../admin/core/coreService";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
 
 // reducer actions
-import { QAAPIActions } from "../../../../reducers/qa/actions";
+import * as selectors from "../../../../reducers/qa/selectors";
+import {
+  applyFilter,
+  updateItemsSelectionStatus,
+  selectAll,
+  updateFilterOptions,
+  refresh_pagination,
+} from "../../../../reducers/qa/actions";
+
+import { Notify, refreshListStats } from "../../../../reducers/core/actions";
+import { auth } from "../../../../reducers/users/selectors";
+import * as configSelectors from "../../../../reducers/configs/selectors";
+
 import { fadeInAnimation } from "../../../../animations/core";
 
 @Component({
@@ -31,13 +42,13 @@ import { fadeInAnimation } from "../../../../animations/core";
   host: { "[@fadeInAnimation]": "" },
 })
 export class MainQAComponent implements OnInit {
+
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
     public permission: PermissionService,
-    private coreActions: CoreAPIActions,
-    private actions: QAAPIActions,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -48,27 +59,20 @@ export class MainQAComponent implements OnInit {
   @Input() PublicView = false;
   @Input() route_path = "/qa/";
 
-  @select(["qa", "filteroptions"])
-  readonly filteroptions$: Observable<any>;
-
-  @select(["qa", "categories"])
-  readonly categories$: Observable<any>;
-
-  @select(["qa", "itemsselected"])
-  readonly isItemSelected$: Observable<any>;
-
-  @select(["qa", "isloaded"])
-  readonly isloaded$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
-
-  @select(["qa", "records"])
-  readonly records$: Observable<any>;
-
-  @select(["qa", "pagination"])
-  readonly pagination$: Observable<any>;
-
+  
+  readonly filteroptions$ = this._store.pipe(
+    select(selectors.filteroptions)
+  );
+  readonly isloaded$ = this._store.pipe(select(selectors.isloaded));
+  readonly categories$ = this._store.pipe(select(selectors.categories));
+  readonly isItemSelected$ = this._store.pipe(
+    select(selectors.itemsselected)
+  );
+  readonly records$ = this._store.pipe(select(selectors.records));
+  readonly pagination$ = this._store.pipe(select(selectors.pagination));
+  readonly auth$ = this._store.pipe(select(auth));
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
+  
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
   isActionGranded = false; // Grand action on resources like add / edit /delete
@@ -122,7 +126,7 @@ export class MainQAComponent implements OnInit {
     );
 
     this.filteroptions$.subscribe((options) => {
-      this.FilterOptions = options;
+      this.FilterOptions = Object.assign({}, options);
       if (this.reload) {
         // load directly without loading from store
         this.loadRecords(options);
@@ -131,7 +135,7 @@ export class MainQAComponent implements OnInit {
           this.loadRecords(options);
           // reset track filter to false again
           options.track_filter = false;
-          this.actions.updateFilterOptions(options);
+           this._store.dispatch(new updateFilterOptions(this.FilterOptions));
         }
       }
     });
@@ -161,18 +165,18 @@ export class MainQAComponent implements OnInit {
       if (params["tagname"] !== undefined) {
         this.FilterOptions.tags = params["tagname"];
         this.FilterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-        this.actions.updateFilterOptions(this.FilterOptions);
+        this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
       if (params["catname"] !== undefined) {
         this.FilterOptions.categoryname = params["catname"];
         this.FilterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-        this.actions.updateFilterOptions(this.FilterOptions);
+        this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
 
       if (params["uname"] !== undefined) {
         this.FilterOptions.userid = params["uname"];
         this.FilterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-        this.actions.updateFilterOptions(this.FilterOptions);
+        this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
 
       if (params["abuse"] !== undefined) {
@@ -184,7 +188,7 @@ export class MainQAComponent implements OnInit {
           this.showReportLink = false;
         }
         this.FilterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-        this.actions.updateFilterOptions(this.FilterOptions);
+        this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
     });
 
@@ -249,10 +253,11 @@ export class MainQAComponent implements OnInit {
   }
 
   selectAll(selectall: boolean) {
-    this.actions.selectAll({
+    this._store.dispatch(new selectAll({
       type: this.type,
       checked: selectall,
-    });
+    }));
+  
   }
 
   /* toolbar actions */
@@ -274,35 +279,26 @@ export class MainQAComponent implements OnInit {
         this.ProcessActions(selection.value);
         return;
       case "f_type":
-        this.actions.applyFilter({ attr: "type", value: selection.value });
+        this._store.dispatch(new applyFilter({ attr: "type", value: selection.value }));
         break;
       case "f_isapproved":
-        this.actions.applyFilter({
-          attr: "isapproved",
-          value: selection.value,
-        });
+        this._store.dispatch(new applyFilter({ attr: "isapproved", value: selection.value }));
         break;
       case "f_status":
-        this.actions.applyFilter({ attr: "isenabled", value: selection.value });
+        this._store.dispatch(new applyFilter({ attr: "isenabled", value: selection.value }));
         break;
-      // case "f_featured":
-      //    this.actions.applyFilter({ attr: 'isfeatured', value: selection.value });
-      //    break;
       case "f_adult":
-        this.actions.applyFilter({ attr: "isadult", value: selection.value });
+        this._store.dispatch(new applyFilter({ attr: "isadult", value: selection.value }));
         break;
       case "pagesize":
-        this.actions.applyFilter({ attr: "pagesize", value: selection.value });
+        this._store.dispatch(new applyFilter({ attr: "pagesize", value: selection.value }));
         break;
 
       case "m_filter":
-        this.actions.applyFilter({
-          attr: "datefilter",
-          value: selection.value,
-        });
+        this._store.dispatch(new applyFilter({ attr: "datefilter", value: selection.value }));
         break;
       case "sort":
-        this.actions.applyFilter({ attr: "direction", value: selection.value });
+        this._store.dispatch(new applyFilter({ attr: "direction", value: selection.value }));
         break;
     }
   }
@@ -315,7 +311,7 @@ export class MainQAComponent implements OnInit {
     _filterOptions.userid = "";
     _filterOptions.pagenumber = 1;
     _filterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-    this.actions.updateFilterOptions(_filterOptions);
+    this._store.dispatch(new updateFilterOptions(_filterOptions));
   }
 
   getSelectedItems(arr: any) {
@@ -329,11 +325,12 @@ export class MainQAComponent implements OnInit {
 
   ProcessActions(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
+      this._store.dispatch(new updateFilterOptions({
         title: "Permission Denied",
         text: "",
         css: "bg-danger",
-      });
+      }));
+      
       return;
     }
     if (this.SelectedItems.length > 0) {
@@ -349,16 +346,17 @@ export class MainQAComponent implements OnInit {
   }
 
   refreshStats() {
-    this.actions.refresh_pagination({
+    this._store.dispatch(new refresh_pagination({
       type: this.type,
       totalrecords: this.Records,
-      pagesize: this.FilterOptions.pagesize,
-    });
+      pagesize: this.FilterOptions.pagesize
+    }));
     // refresh list states
-    this.coreActions.refreshListStats({
+    this._store.dispatch(new refreshListStats({
       totalrecords: this.Records,
       pagesize: this.FilterOptions.pagesize,
-      pagenumber: this.Pagination.currentPage,
-    });
+      pagenumber: this.Pagination.currentPage
+    }));
+    
   }
 }

@@ -41,7 +41,7 @@ namespace Jugnoon.Attributes
                 if (item != null)
                 {
                     item.title = UtilityBLL.processNull(entity.title, 0);
-                    
+
                     context.Entry(item).State = EntityState.Modified;
                     await context.SaveChangesAsync();
                 }
@@ -73,7 +73,7 @@ namespace Jugnoon.Attributes
 
             return LoadCompleteList(collectionQuery);
         }
-      
+
 
         public static int Count(ApplicationDbContext context, AttrTemplateEntity entity)
         {

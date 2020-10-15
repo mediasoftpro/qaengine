@@ -1,7 +1,7 @@
 
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -9,8 +9,8 @@
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../services/settings.service";
@@ -19,10 +19,13 @@ import { FormService } from "../services/form.service";
 
 // shared services
 import { CoreService } from "../../../core/coreService";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
 
 // reducer actions
-import { ROLEAPIActions } from "../../../../reducers/settings/roles/actions";
+import * as selectors from "../../../../reducers/settings/roles/selectors";
+import { reloadList} from "../../../../reducers/settings/roles/actions";
+import { Notify } from "../../../../reducers/core/actions";
+import {auth} from "../../../../reducers/users/selectors";
+import * as configSelectors from "../../../../reducers/configs/selectors";
 
 import { PermissionService } from "../../../../admin/users/services/permission.service";
 @Component({
@@ -31,11 +34,10 @@ import { PermissionService } from "../../../../admin/users/services/permission.s
 })
 export class ProcRoleComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: ROLEAPIActions,
     private route: ActivatedRoute,
     private permission: PermissionService,
     private formService: FormService,
@@ -50,14 +52,18 @@ export class ProcRoleComponent implements OnInit {
   submitText = "Add Role";
   ObjectList = [];
   selectall = false;
+
+  readonly objects$ = this._store.pipe(select(selectors.objects));
+  readonly isroleloaded$ = this._store.pipe(select(selectors.isroleloaded));
+  /*
   @select(["roles", "objects"])
   readonly objects$: Observable<any>;
 
   @select(["roles", "isroleloaded"])
-  readonly isroleloaded$: Observable<any>;
+  readonly isroleloaded$: Observable<any>;*/
 
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+
+ readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -145,11 +151,11 @@ export class ProcRoleComponent implements OnInit {
 
   updatePermission() {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     const arr = [];
@@ -166,29 +172,29 @@ export class ProcRoleComponent implements OnInit {
     this.dataService.UpdatePermission(arr).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
+          this._store.dispatch(new Notify({
             title: data.message,
             text: "",
-            css: "bg-success"
-          });
+            css: "bg-danger"
+          }));
         } else {
-          this.coreActions.Notify({
+          this._store.dispatch(new Notify({
             title: "Permission Updated Successfully",
             text: "",
             css: "bg-success"
-          });
-
+          }));
+         
           this.router.navigate(["/settings/roles/"]);
         }
         this.showLoader = false;
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

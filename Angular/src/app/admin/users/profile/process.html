@@ -47,6 +47,12 @@
                     Email Address: <strong>{{ Info.email }}</strong>
                   </p>
                   <p>
+                    Phone: <strong>{{ Info.phoneNumber }}</strong>
+                  </p>
+                  <p>
+                    Mobile: <strong>{{ Info.mobile }}</strong>
+                  </p>
+                  <p>
                     Date Registered:
                     <strong>{{ Info.created_at | date: "fullDate" }}</strong>
                   </p>
@@ -116,25 +122,6 @@
                   <h3>User Stats</h3>
                   <hr />
                   <p class="m-b-5">
-                    Total Videos: {{ Info.stats.stat_videos }}
-                  </p>
-                  <p class="m-b-5">Total Audio: {{ Info.stats.stat_audio }}</p>
-                  <p class="m-b-5">
-                    Total Albums: {{ Info.stats.stat_albums }}
-                  </p>
-                  <p class="m-b-5">
-                    Total Photos: {{ Info.stats.stat_photos }}
-                  </p>
-                  <p class="m-b-5">Total Blogs: {{ Info.stats.stat_blogs }}</p>
-                  <p class="m-b-5">
-                    Total Forum Topics: {{ Info.stats.stat_forum_topics }}
-                  </p>
-                  <p class="m-b-5">Total QA Asked: {{ Info.stats.stat_qa }}</p>
-                  <p class="m-b-5">
-                    Total QA Answered: {{ Info.stats.stat_qaanswers }}
-                  </p>
-                  <p class="m-b-5">Total Polls: {{ Info.stats.stat_polls }}</p>
-                  <p class="m-b-5">
                     Total Ad Listings: {{ Info.stats.stat_adlistings }}
                   </p>
                 </div>
@@ -178,36 +165,19 @@
                   <h3>User Account</h3>
                   <hr />
                   <p class="m-b-5">
-                    Total Available Credits: {{ Info.account.credits }}
+                    Basic Credits: {{ Info.account.basic_credits }}
                   </p>
                   <p class="m-b-5">
-                    Lifetime Renewal:
-                    <span
-                      class="badge badge-danger m-r-5"
-                      *ngIf="Info.account.islifetimerenewal == 0"
-                      >Inactive</span
-                    >
-                    <span
-                      class="badge badge-success m-r-5"
-                      *ngIf="Info.account.islifetimerenewal == 1"
-                      >Active</span
-                    >
+                    Featured Credits: {{ Info.account.featured_credits }}
                   </p>
                   <p class="m-b-5">
-                    Last Time Purchased:
-                    <span *ngIf="!Info.account.last_purchased">No Record</span>
-                    <span *ngIf="Info.account.last_purchased">{{
-                      Info.account.membership_expiry | date: "fullDate"
-                    }}</span>
+                    Premium Credits: {{ Info.account.premium_credits }}
                   </p>
                   <p class="m-b-5">
-                    Membership Expiry Time:
-                    <span *ngIf="!Info.account.membership_expiry"
-                      >No Record</span
-                    >
-                    <span *ngIf="Info.account.membership_expiry">{{
-                      Info.account.membership_expiry | date: "fullDate"
-                    }}</span>
+                    Hot Credits: {{ Info.account.hot_credits }}
+                  </p>
+                  <p class="m-b-5">
+                    Super Hot Credits: {{ Info.account.super_hot_credits }}
                   </p>
                 </div>
               </div>

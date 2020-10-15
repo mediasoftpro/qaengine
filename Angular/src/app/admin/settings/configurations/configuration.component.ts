@@ -1,14 +1,15 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit } from "@angular/core";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
+
 import { ActivatedRoute } from "@angular/router";
 // services
 import { SettingsService } from "./services/settings.service";
@@ -16,10 +17,14 @@ import { DataService } from "./services/data.service";
 
 // shared services
 import { CoreService } from "../../core/coreService";
-import { CoreAPIActions } from "../../../reducers/core/actions";
 
 // reducer actions
-import { ConfigurationsAPIActions } from "../../../reducers/settings/configurations/actions";
+import * as selectors from "../../../reducers/settings/configurations/selectors";
+
+import { Notify, refreshListStats } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+import * as configSelectors from "../../../reducers/configs/selectors";
+// reducer actions
 import { FormService } from "./services/form.service";
 
 import { PermissionService } from "../../../admin/users/services/permission.service";
@@ -29,30 +34,24 @@ import { PermissionService } from "../../../admin/users/services/permission.serv
 })
 export class ConfigurationComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
     public permission: PermissionService,
-    private actions: ConfigurationsAPIActions,
     private route: ActivatedRoute,
     private formService: FormService
   ) {}
 
-  //@select(['configurations', 'posts'])
-  //readonly Data$: Observable<any>;
-
-  @select(["configurations", "configurations"])
-  readonly Configurations$: Observable<any>;
-
-  @select(["configurations", "loading"])
-  readonly loading$: Observable<boolean>;
-
-  @select(["configurations", "isloaded"])
-  readonly isloaded$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+  readonly Configurations$ = this._store.pipe(
+    select(selectors.configurations)
+  );
+  readonly isloaded$ = this._store.pipe(select(selectors.isloaded));
+  readonly loading$ = this._store.pipe(
+    select(selectors.loading)
+  );
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
+  readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -71,7 +70,8 @@ export class ConfigurationComponent implements OnInit {
   submitText = "Save Changes";
   primay_prop = "";
   child_prop = "";
-
+  GlobalConfigs: any = {};
+  
   ngOnInit() {
     // user authentication & access right management
     // full resource access key and readonly key can be generated via roles management
@@ -108,8 +108,14 @@ export class ConfigurationComponent implements OnInit {
     });
 
     this.Configurations$.subscribe((settings: any) => {
-      this.Configurations = settings;
+      // this.Configurations = settings;
+      this.Configurations = Object.assign({}, settings);
+      
       this.InitializeMainNavigation();
+    });
+
+    this.configs$.subscribe((settings: any) => {
+      this.GlobalConfigs = settings;
     });
   }
 
@@ -166,39 +172,6 @@ export class ConfigurationComponent implements OnInit {
     }
   }
 
-  /*initializeTabs() {
-        this.navTabs = [];
-        for (const nav of this.SearchOptions.navList) {
-            if (nav.id === this.ConfigType) {
-                for (const prop in this.Configurations) {
-                    if (prop === nav.title.toLowerCase()) {
-                        let NavId = 0;
-                        for (const inner_prop in this.Configurations[prop]) {
-                              this.navTabs.push({
-                                 id: NavId,
-                                 title: inner_prop[0].toUpperCase() + inner_prop.slice(1),
-                                 parent_attr: prop,
-                                 child_attr: inner_prop
-                             });
-                             NavId++;
-                        }
-                    }
-                }
-            }
-        }
-        // render form with first tab item for first time
-        if (this.navTabs.length > 0) {
-            this.renderForm(this.navTabs[0].parent_attr, this.navTabs[0].child_attr);
-        }
-   }*/
-
-  /*renderPrimaryNav(nav: any, event: any) {
-        this.ConfigType = nav.id;
-        this.initializeTabs();
-       
-        event.stopPropagation();
-   } */
-
   renderNav(p_nav: any, nav: any, event: any) {
     this.ConfigType = p_nav.id;
     this.ChildConfigType = nav.id;
@@ -211,24 +184,29 @@ export class ConfigurationComponent implements OnInit {
       sub_prop[0].toUpperCase() + sub_prop.slice(1) + " Settings";
     this.primay_prop = primary_prop;
     this.child_prop = sub_prop;
+
+    const configs = Object.assign({}, this.Configurations[primary_prop][sub_prop]);
+   
     this.controls = this.formService.getControls(
-      this.Configurations[primary_prop][sub_prop],
+      configs,
       primary_prop,
-      sub_prop
+      sub_prop,
+      false
     );
   }
 
   SubmitForm(payload) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
 
-    let settings = this.Configurations[this.primay_prop][this.child_prop];
+    let settings = Object.assign({}, this.Configurations[this.primay_prop][this.child_prop]);
+    // let settings = this.Configurations[this.primay_prop][this.child_prop];
     for (const prop in settings) {
       for (const payload_prop in payload) {
         if (payload_prop === prop) {
@@ -236,33 +214,33 @@ export class ConfigurationComponent implements OnInit {
         }
       }
     }
-    console.log(settings);
+   
     this.showProcessing = true;
     this.dataService
       .UpdateConfigurations(settings, this.primay_prop, this.child_prop)
       .subscribe(
         (data: any) => {
           if (data.status === "error") {
-            this.coreActions.Notify({
+            this._store.dispatch(new Notify({
               title: data.message,
               text: "",
-              css: "bg-success"
-            });
+              css: "bg-danger"
+            }));
           } else {
-            this.coreActions.Notify({
-              title: "Settings Updated",
+            this._store.dispatch(new Notify({
+              title: "Settings updated successfully",
               text: "",
               css: "bg-success"
-            });
+            }));
           }
           this.showProcessing = false;
         },
         err => {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: "Error Occured",
             text: "",
             css: "bg-danger"
-          });
+          }));
           this.showProcessing = false;
         }
       );

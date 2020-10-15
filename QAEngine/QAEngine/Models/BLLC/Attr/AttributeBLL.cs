@@ -23,7 +23,7 @@ namespace Jugnoon.Attributes
     };
     public class AttrAttributeBLL
     {
-      
+
 
         #region Action Script
 
@@ -57,7 +57,7 @@ namespace Jugnoon.Attributes
         }
 
 
-        public static async Task<bool> Update(ApplicationDbContext context,JGN_Attr_Attributes entity)
+        public static async Task<bool> Update(ApplicationDbContext context, JGN_Attr_Attributes entity)
         {
             if (entity.id > 0)
             {
@@ -88,7 +88,7 @@ namespace Jugnoon.Attributes
             return true;
         }
 
-        public static async Task<bool> Delete(ApplicationDbContext context,long id)
+        public static async Task<bool> Delete(ApplicationDbContext context, long id)
         {
             if (id > 0)
             {
@@ -97,18 +97,18 @@ namespace Jugnoon.Attributes
             }
             return true;
         }
-                       
+
         #endregion
 
         #region Core Loading Script
 
         public static Task<List<JGN_Attr_Attributes>> LoadItems(ApplicationDbContext context, AttrAttributeEntity entity)
         {
-            if (!entity.iscache 
-                || Jugnoon.Settings.Configs.GeneralSettings.cache_duration == 0  
+            if (!entity.iscache
+                || Jugnoon.Settings.Configs.GeneralSettings.cache_duration == 0
                 || entity.pagenumber > Jugnoon.Settings.Configs.GeneralSettings.max_cache_pages)
             {
-                return FetchItems(context,entity);
+                return FetchItems(context, entity);
             }
             else
             {
@@ -116,7 +116,7 @@ namespace Jugnoon.Attributes
                 var data = new List<JGN_Attr_Attributes>();
                 if (!SiteConfig.Cache.TryGetValue(key, out data))
                 {
-                    data = FetchItems(context,entity).Result;
+                    data = FetchItems(context, entity).Result;
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         // Keep in cache for this time, reset time if accessed.
@@ -133,19 +133,19 @@ namespace Jugnoon.Attributes
             }
         }
 
-        private static Task<List<JGN_Attr_Attributes>> FetchItems(ApplicationDbContext context,AttrAttributeEntity entity)
+        private static Task<List<JGN_Attr_Attributes>> FetchItems(ApplicationDbContext context, AttrAttributeEntity entity)
         {
             var collectionQuery = context.JGN_Attr_Attributes.Where(returnWhereClause(entity));
             collectionQuery = processOptionalConditions(collectionQuery, entity);
             return LoadCompleteList(collectionQuery);
         }
-        public static async Task<int> Count(ApplicationDbContext context,AttrAttributeEntity entity)
+        public static async Task<int> Count(ApplicationDbContext context, AttrAttributeEntity entity)
         {
-            if (!entity.iscache 
-                || Jugnoon.Settings.Configs.GeneralSettings.cache_duration == 0  
+            if (!entity.iscache
+                || Jugnoon.Settings.Configs.GeneralSettings.cache_duration == 0
                 || entity.pagenumber > Jugnoon.Settings.Configs.GeneralSettings.max_cache_pages)
             {
-                return await CountRecords(context,entity);
+                return await CountRecords(context, entity);
             }
             else
             {
@@ -153,7 +153,7 @@ namespace Jugnoon.Attributes
                 int records = 0;
                 if (!SiteConfig.Cache.TryGetValue(key, out records))
                 {
-                    records = await CountRecords(context,entity);
+                    records = await CountRecords(context, entity);
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         // Keep in cache for this time, reset time if accessed.
@@ -171,16 +171,16 @@ namespace Jugnoon.Attributes
             }
         }
 
-        private static async Task<int> CountRecords(ApplicationDbContext context,AttrAttributeEntity entity)
+        private static async Task<int> CountRecords(ApplicationDbContext context, AttrAttributeEntity entity)
         {
-           return await context.JGN_Attr_Attributes.Where(returnWhereClause(entity)).CountAsync();
+            return await context.JGN_Attr_Attributes.Where(returnWhereClause(entity)).CountAsync();
         }
 
         public static string GenerateKey(string key, AttrAttributeEntity entity)
         {
             var str = new StringBuilder();
-            str.AppendLine(key + "_" + "" + entity.sectionid + entity.term + "" + entity.type + "" + entity.attr_type +  entity.pagenumber + "" + entity.pagesize);
-           
+            str.AppendLine(key + "_" + "" + entity.sectionid + entity.term + "" + entity.type + "" + entity.attr_type + entity.pagenumber + "" + entity.pagesize);
+
             return str.ToString();
         }
 
@@ -228,28 +228,29 @@ namespace Jugnoon.Attributes
         private static System.Linq.Expressions.Expression<Func<JGN_Attr_Attributes, bool>> returnWhereClause(AttrAttributeEntity entity)
         {
             var where_clause = PredicateBuilder.New<JGN_Attr_Attributes>(true);
-            
+
             if (entity.excludedid > 0)
-                 where_clause = where_clause.And(p => p.id != entity.excludedid);
+                where_clause = where_clause.And(p => p.id != entity.excludedid);
 
             if (entity.id > 0)
-                 where_clause = where_clause.And(p => p.id == entity.id);
-            
-            if (!entity.nofilter) { 
+                where_clause = where_clause.And(p => p.id == entity.id);
+
+            if (!entity.nofilter)
+            {
 
                 if (entity.sectionid > 0)
                     where_clause = where_clause.And(p => p.sectionid == entity.sectionid);
 
                 if (entity.term != "")
-                     where_clause = where_clause.And(p => p.title.Contains(entity.term));
+                    where_clause = where_clause.And(p => p.title.Contains(entity.term));
             }
 
             return where_clause;
         }
 
         #endregion
-    
-        public static void Update_Field_V3(ApplicationDbContext context,long ID, dynamic Value, string FieldName)
+
+        public static void Update_Field_V3(ApplicationDbContext context, long ID, dynamic Value, string FieldName)
         {
             if (ID > 0)
             {
@@ -273,7 +274,7 @@ namespace Jugnoon.Attributes
             }
         }
 
-        public static string Get_Field_Value(ApplicationDbContext context,long ID, string FieldName)
+        public static string Get_Field_Value(ApplicationDbContext context, long ID, string FieldName)
         {
             string Value = "";
             if (ID > 0)
@@ -294,11 +295,11 @@ namespace Jugnoon.Attributes
                     }
                 }
             }
-            
+
             return Value;
         }
 
-        public static async Task<string> ProcessAction(ApplicationDbContext context,List<AttrAttributeEntity> list)
+        public static async Task<string> ProcessAction(ApplicationDbContext context, List<AttrAttributeEntity> list)
         {
             foreach (var entity in list)
             {

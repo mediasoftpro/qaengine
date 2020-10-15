@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: VideoEngine                         */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,8 +8,8 @@
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../services/settings.service";
@@ -18,10 +18,16 @@ import { FormService } from "../services/form.service";
 
 // shared services
 import { CoreService } from "../../../core/coreService";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../../reducers/core/actions";
 
 // reducer actions
-import { CategoriesAPIActions } from "../../../../reducers/settings/categories/actions";
+import * as categoriesSelectors from "../../../../reducers/settings/categories/selectors";
+import * as configSelectors from "../../../../reducers/configs/selectors";
+import { reloadList} from "../../../../reducers/settings/categories/actions";
+import { Notify } from "../../../../reducers/core/actions";
+import {auth} from "../../../../reducers/users/selectors";
+
+//import { CategoriesAPIActions } from "../../../../reducers/settings/categories/actions";
 import { fadeInAnimation } from "../../../../animations/core";
 
 import { PermissionService } from "../../../../admin/users/services/permission.service";
@@ -33,11 +39,10 @@ import { PermissionService } from "../../../../admin/users/services/permission.s
 })
 export class ProcCategoriesComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: CategoriesAPIActions,
     private route: ActivatedRoute,
     private formService: FormService,
     private permission: PermissionService,
@@ -56,18 +61,12 @@ export class ProcCategoriesComponent implements OnInit {
   ParentID = 0;
   IsLoaded = false;
 
-  @select(["categories", "isloaded"])
-  readonly isloaded$: Observable<any>;
-
-  @select(["categories", "dropdown_categories"])
-  readonly dropdownCategories$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
-
-  @select(["configuration", "configs"])
-  readonly configs$: Observable<any>;
-
+  readonly dropdownCategories$ = this._store.pipe(select(categoriesSelectors.dropdown_categories));
+  readonly isloaded$ = this._store.pipe(select(categoriesSelectors.isloaded));
+  readonly pagination$ = this._store.pipe(select(categoriesSelectors.pagination));
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
+  readonly auth$ = this._store.pipe(select(auth));
+  
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
   isActionGranded = false; // Grand action on resources like add / edit /delete
@@ -205,11 +204,11 @@ export class ProcCategoriesComponent implements OnInit {
         }
         this.showLoader = false;
       } else {
-        this.coreActions.Notify({
-          title: data.message,
-          text: "",
-          css: "bg-error"
-        });
+         this._store.dispatch(new Notify({
+            title: data.message,
+            text: "",
+            css: "bg-danger"
+          }));
         this.initializeControls(this.settingService.getInitObject());
       }
     });
@@ -227,11 +226,11 @@ export class ProcCategoriesComponent implements OnInit {
       payload.priority = 0;
     }
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
 
@@ -249,21 +248,21 @@ export class ProcCategoriesComponent implements OnInit {
     this.dataService.AddRecord(payload).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
+          this._store.dispatch(new Notify({
             title: data.message,
             text: "",
             css: "bg-success"
-          });
+          }));
         } else {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: "Record " + _status + " Successfully",
             text: "",
             css: "bg-success"
-          });
+          }));
 
           // enable reload action to refresh data
-          this.actions.reloadList();
-
+          this._store.dispatch(new reloadList({}));
+                   
           // redirect
           this.router.navigate(["/settings/categories/"]);
         }
@@ -271,11 +270,11 @@ export class ProcCategoriesComponent implements OnInit {
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

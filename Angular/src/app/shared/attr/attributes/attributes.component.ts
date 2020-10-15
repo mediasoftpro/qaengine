@@ -1,20 +1,23 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: ClassifiedEngine                    */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit, Input } from "@angular/core";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 
 // services
 import { DataService } from "../../attr/services/data.service";
 
-// shared services
-import { CoreAPIActions } from "../../../reducers/core/actions";
-
 // reducer actions
+import { Notify } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+//import * as configSelectors from "../../../reducers/configs/selectors";
+
 import { fadeInAnimation } from "../../../animations/core";
 
 /* modal popup */
@@ -29,8 +32,8 @@ import { ViewComponent } from "../../attr/partials/modal.component";
 })
 export class DynamicAttributesComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private dataService: DataService,
-    private coreActions: CoreAPIActions,
     private modalService: NgbModal
   ) {}
 
@@ -167,22 +170,23 @@ export class DynamicAttributesComponent implements OnInit {
              }
           }
         }
-
-        this.coreActions.Notify({
-          title: "Record Saved",
+        this._store.dispatch(new Notify({
+          title:  "Record Saved",
           text: "",
           css: "bg-success"
-        });
+        }));
+        
 
         this.showLoader = false;
 
       },
       err => {
-        this.coreActions.Notify({
-          title: "Record not Saved",
+        this._store.dispatch(new Notify({
+          title:  "Record not saved",
           text: "",
           css: "bg-danger"
-        });
+        }));
+        
       }
     );
   }

@@ -1,0 +1,72 @@
+﻿@model Jugnoon.Blogs.Models.BlogItemViewModel
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Blogs.Settings.General> blogSettings
+@*
+    Blog List Design
+*@
+
+@{
+    var PartialPath = "~/Views/themes/default/blogs/partials";
+}
+
+<div class="qa-item">
+    <a href="@Model.ProfileUrl" title="@Model.Data.title" class="title">@Model.Data.title</a>
+    <div class="m-t-5">
+        @if (blogSettings.Value.isShowPostingDate)
+        {
+            var formatDate = Model.Data.created_at.ToString("dd MMMM yyyy");
+            switch (blogSettings.Value.postDateTemplate)
+            {
+                case 0:
+                    // DAY MONTH, YEAR
+                    formatDate = Model.Data.created_at.ToString("dd MMMM, yyyy");
+                    break;
+                case 1:
+                    // MONTH DAYth, YEAR
+                    formatDate = Model.Data.created_at.ToString("MMMM dd, yyyy");
+                    break;
+                case 2:
+                    // MONTH DAY YEAR
+                    formatDate = Model.Data.created_at.ToString("MMMM dd yyyy");
+                    break;
+                case 3:
+                    // 2 days ago
+                    formatDate = UtilityBLL.CustomizeDate((DateTime)Model.Data.created_at, DateTime.Now);
+                    break;
+            }
+            <span class="m-r-10"><i class="fa fa-calendar"></i> @formatDate</span>
+        }
+        @if (blogSettings.Value.isShowAuthor)
+        {
+            <span class="m-r-10"><i class="fa fa-user"></i> <a class="light" href="@Model.AuthorUrl">@UserBLL.prepareUserName(Model.Data.author)</a></span>
+        }
+        @{
+            var counter = 0;
+        }
+        @if (Model.Data.category_list != null && Model.Data.category_list.Count > 0)
+        {
+            <div class="m-t-5">
+                @foreach (var category in Model.Data.category_list)
+                {
+                    if (counter > 0)
+                    {
+                        @Html.Raw(", ")
+                    }
+                    <span class="m-r-10">
+                        <i class="fa fa-tags"></i>
+                        <a class="light" href="@CategoryUrlConfig.PrepareUrl(category.category.term, "blogs/")"
+                           title="@category.category.title">@category.category.title</a>
+                    </span>
+                    counter++;
+                }
+            </div>
+        }
+    </div>
+    <div class="m-t-10">
+        @await Html.PartialAsync(PartialPath + "/item/cover.cshtml", Model)
+    </div>
+
+    <div class="m-t-10 item-normal-text">
+        @Html.Raw(Jugnoon.Blogs.BlogScripts.PrepareShortDescription(Model.Data.description.ToString(), blogSettings.Value.totalParagraphs))
+    </div>
+
+</div>

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Jugnoon.Attributes;
 using Jugnoon.Localize;
+using System;
 
 namespace QAEngine.Areas.api.Controllers
 {
@@ -27,7 +28,7 @@ namespace QAEngine.Areas.api.Controllers
         public attrController(
           IOptions<SiteConfiguration> settings,
           ApplicationDbContext context,
-          IStringLocalizer<GeneralResource> generalLocalizer,
+         IStringLocalizer<GeneralResource> generalLocalizer,
           IWebHostEnvironment _environment,
           IHttpContextAccessor _httpContextAccessor,
           IOptions<General> generalSettings
@@ -75,13 +76,21 @@ namespace QAEngine.Areas.api.Controllers
         {
             var json = new StreamReader(Request.Body).ReadToEnd();
             var data = JsonConvert.DeserializeObject<AttrAttributeEntity>(json);
-            data.nofilter = false;
-            data.order = "priority desc";
-            var _posts = await AttrAttributeBLL.LoadItems(_context, data);
+            try
+            {
+                data.nofilter = false;
+                data.order = "priority desc";
+                var _posts = await AttrAttributeBLL.LoadItems(_context, data);
 
-            var _records = 0;
+                var _records = 0;
 
-            return Ok(new { posts = _posts, records = _records });
+                return Ok(new { posts = _posts, records = _records });
+            }
+            catch(Exception ex)
+            {
+                return Ok(new { status = "error", message = ex.Message });
+            }
+          
         }
 
 

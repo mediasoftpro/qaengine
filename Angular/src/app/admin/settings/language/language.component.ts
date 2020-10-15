@@ -1,24 +1,41 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 
 // services
 import { SettingsService } from "./services/settings.service";
 import { DataService } from "./services/data.service";
 
 // shared services
-import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../reducers/core/actions";
 
 // reducer actions
-import { LanguageAPIActions } from "../../../reducers/settings/language/actions";
+//import { LanguageAPIActions } from "../../../reducers/settings/language/actions";
+
+// reducer actions
+import * as selectors from "../../../reducers/settings/language/selectors";
+import {
+  applyFilter,
+  updateItemsSelectionStatus,
+  addRecord,
+  updateFilterOptions,
+  refresh_pagination,
+} from "../../../reducers/settings/language/actions";
+
+import { Notify, refreshListStats } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+import * as configSelectors from "../../../reducers/configs/selectors";
+
+
+
 import { fadeInAnimation } from "../../../animations/core";
 import { PermissionService } from "../../../admin/users/services/permission.service";
 
@@ -30,14 +47,25 @@ import { PermissionService } from "../../../admin/users/services/permission.serv
 })
 export class LanguageComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
-    private coreActions: CoreAPIActions,
-    public permission: PermissionService,
-    private actions: LanguageAPIActions
+    public permission: PermissionService
   ) {}
 
-  @select(["language", "filteroptions"])
+  readonly filteroptions$ = this._store.pipe(
+    select(selectors.filteroptions)
+  );
+  
+  readonly isloaded$ = this._store.pipe(select(selectors.isloaded));
+  readonly isItemSelected$ = this._store.pipe(
+    select(selectors.itemsselected)
+  );
+  readonly records$ = this._store.pipe(select(selectors.records));
+  readonly pagination$ = this._store.pipe(select(selectors.pagination));
+  readonly auth$ = this._store.pipe(select(auth));
+
+  /*@select(["language", "filteroptions"])
   readonly filteroptions$: Observable<any>;
 
   @select(["language", "isloaded"])
@@ -47,10 +75,7 @@ export class LanguageComponent implements OnInit {
   readonly records$: Observable<any>;
 
   @select(["language", "pagination"])
-  readonly pagination$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+  readonly pagination$: Observable<any>;*/
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -88,12 +113,12 @@ export class LanguageComponent implements OnInit {
     this.ToolbarOptions = this.settingService.getToolbarOptions();
 
     this.filteroptions$.subscribe(options => {
-      this.FilterOptions = options;
+      this.FilterOptions = Object.assign({}, options);
       if (options.track_filter) {
         this.dataService.LoadRecords(options);
         // reset track filter to false again
-        options.track_filter = false;
-        this.actions.updateFilterOptions(options);
+        this.FilterOptions.track_filter = false;
+         this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
     });
 
@@ -121,16 +146,16 @@ export class LanguageComponent implements OnInit {
     const _filterOptions = filters.filters;
     _filterOptions.pagenumber = 1;
     _filterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-    this.actions.updateFilterOptions(_filterOptions);
+      this._store.dispatch(new updateFilterOptions(_filterOptions));
   }
 
   ProcessActions(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     selection.value.actionstatus = selection.action;
@@ -140,16 +165,16 @@ export class LanguageComponent implements OnInit {
   }
 
   refreshStats() {
-    this.actions.refresh_pagination({
+     this._store.dispatch(new refresh_pagination({
       type: 0,
       totalrecords: this.Records,
       pagesize: this.FilterOptions.pagesize
-    });
+    }));
     // refresh list states
-    this.coreActions.refreshListStats({
+    this._store.dispatch(new refreshListStats({
       totalrecords: this.Records,
       pagesize: this.FilterOptions.pagesize,
       pagenumber: this.Pagination.currentPage
-    });
+    }));
   }
 }

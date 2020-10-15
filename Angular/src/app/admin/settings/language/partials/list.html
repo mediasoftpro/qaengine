@@ -1,46 +1,18 @@
-<alert></alert>
+
 <app-loader *ngIf="loading$ | async"></app-loader>
 
 <div *ngIf="!(loading$ | async)">
-  <div *ngIf="(Data$ | async).length > 0">
+  <div *ngIf="Data.length > 0">
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped no-wrap">
         <thead>
           <tr>
-            <th
-              (click)="Sort('culturename')"
-              style="cursor: pointer;"
-              [ngClass]="fieldstates.culturename ? 'selected-sort-option' : ''"
-            >
-              <span class="m-r-5">Culture</span>
-              <i
-                [ngClass]="
-                  fieldstates.culturename &&
-                  sortedFields['culturename'].direction === 'asc'
-                    ? 'fa fa-sort-asc'
-                    : fieldstates.culturename &&
-                      sortedFields['culturename'].direction === 'desc'
-                    ? 'fa fa-sort-desc'
-                    : 'fa fa-sort'
-                "
-                aria-hidden="true"
-              ></i>
+            <th>
+              Culture
             </th>
             <th
-              (click)="Sort('region')"
-              style="cursor: pointer;"
-              [ngClass]="fieldstates.region ? 'selected-sort-option' : ''"
             >
-              <span class="m-r-5">Region</span>
-              <i
-                [ngClass]="
-                  fieldstates.region &&
-                  sortedFields['region'].direction === 'asc'
-                    ? 'fa fa-sort-asc'
-                    : 'fa fa-sort'
-                "
-                aria-hidden="true"
-              ></i>
+             Region
             </th>
             <th class="text-nowrap">
               Default
@@ -54,7 +26,7 @@
           <tr
             [@fadeIn]="''"
             [hidden]="item.isdeleted"
-            *ngFor="let item of Data$ | async; trackBy: getKey; let i = index"
+            *ngFor="let item of Data; trackBy: getKey; let i = index"
           >
             <td>
               {{ item.culturename }}
@@ -87,7 +59,7 @@
       </table>
     </div>
   </div>
-  <app-norecord *ngIf="(Data$ | async).length === 0"></app-norecord>
+  <app-norecord *ngIf="Data.length === 0"></app-norecord>
 </div>
 
 <div class="text-center content-group-lg pt-20">

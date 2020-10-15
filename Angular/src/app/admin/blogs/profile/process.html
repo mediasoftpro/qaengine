@@ -1,0 +1,28 @@
+<div *ngIf="!isAccessGranted">
+  <h2 class="m-b-40 m-t-40 text-center">Access Denied</h2>
+</div>
+<div *ngIf="isAccessGranted">
+  <div class="row justify-content-md-center">
+    <div class="col-md-12">
+      <app-loader *ngIf="showLoader"></app-loader>
+      <div *ngIf="!showLoader">
+        <div class="m-b-10">
+          <app-toolbar-v2
+            [Options]="ToolbarOptions"
+            [isItemsSelected]="isItemsSelected"
+            (Action)="toolbaraction($event)"
+          ></app-toolbar-v2>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <app-blog-info
+              [Author_FullName]="Author_FullName"
+              [Info]="Info"
+            ></app-blog-info>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

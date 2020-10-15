@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "AdminApp": {
+    "AngularApp": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,37 +13,23 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../QAEngine/QAEngine/wwwroot/app/angular",
+            "outputPath": "../QAEngine/QAEngine/wwwroot/app/default",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/tinymce/skins",
-                "output": "/tinymce/skins/"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/tinymce/themes",
-                "output": "/tinymce/themes/"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/tinymce/plugins",
-                "output": "/tinymce/plugins/"
-              }
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
             ],
             "styles": [
+              
               "node_modules/ngx-toastr/toastr.css",
               "src/assets/plugins/croppie/croppie.css"
             ],
             "scripts": [
-              "src/assets/plugins/jquery/jquery.min.js",
+              
               "src/assets/plugins/croppie/croppie.js",
               "node_modules/exif-js/exif.js",
               "node_modules/tinymce/tinymce.min.js"
@@ -62,7 +48,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -84,18 +69,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "AdminApp:build"
+            "browserTarget": "AngularApp:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "AdminApp:build:production"
+              "browserTarget": "AngularApp:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "AdminApp:build"
+            "browserTarget": "AngularApp:build"
           }
         },
         "test": {
@@ -132,19 +117,19 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "AdminApp:serve"
+            "devServerTarget": "AngularApp:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "AdminApp:serve:production"
+              "devServerTarget": "AngularApp:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "AdminApp",
+  "defaultProject": "AngularApp",
   "cli": {
-    "analytics": "ef132662-8294-4f37-aaca-a1ad53efb86e"
+    "analytics": "81f382e4-ac10-48c1-8b9e-1f76c3b8db8b"
   }
 }

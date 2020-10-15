@@ -1,180 +1,150 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Injectable } from "@angular/core";
-import { dispatch } from "@angular-redux/store";
-import { FluxStandardAction } from "flux-standard-action";
+import { Action } from "@ngrx/store";
 import { tassign } from "tassign";
 import { IDictionaryState } from "./model";
-type Payload = any;
-interface MetaData {}
-export type DictionaryAPIAction = FluxStandardAction<Payload, MetaData>;
 
-@Injectable()
-export class DictionaryAPIActions {
-  static readonly LOAD_STARTED = "DICTIONARY_LOAD_STARTED";
-  static readonly LOAD_SUCCEEDED = "DICTIONARY_LOAD_SUCCEEDED";
-  static readonly LOAD_FAILED = "DICTIONARY_LOAD_FAILED";
+export enum DictionaryAPIAction {
+  LOAD_STARTED = "DICTIONARY_LOAD_STARTED",
+  LOAD_SUCCEEDED = "DICTIONARY_LOAD_SUCCEEDED",
+  LOAD_FAILED = "DICTIONARY_LOAD_FAILED",
+  APPLY_CHANGES = "DICTIONARY_APPLY_CHANGES",
+  APPLY_CHANGES_SUCCEEDED =
+    "DICTIONARY_APPLY_CHANGES_SUCCEEDED",
+  APPLY_CHANGES_FAILED = "DICTIONARY_APPLY_CHANGES_SUCCEEDED",
 
-  static readonly APPLY_CHANGES = "DICTIONARY_APPLY_CHANGES";
-  static readonly APPLY_CHANGES_SUCCEEDED =
-    "DICTIONARY_APPLY_CHANGES_SUCCEEDED";
-  static readonly APPLY_CHANGES_FAILED = "DICTIONARY_APPLY_CHANGES_SUCCEEDED";
+  UPDATE_FILTER_OPTIONS = "DICTIONARY_UPDATE_FILTER_OPTIONS",
+  APPLY_FILTER = "DICTIONARY_APPLY_FILTER",
+  UPDATE_PAGINATION_CURRENTPAGE =
+    "DICTIONARY_UPDATE_PAGINATION_CURRENTPAGE",
+ 
+  SELECT_ALL = "DICTIONARY_SELECT_ALL",
+  IS_ITEM_SELECTED = "DICTIONARY_IP_IS_ITEM_SELECTED",
 
-  static readonly UPDATE_FILTER_OPTIONS = "DICTIONARY_UPDATE_FILTER_OPTIONS";
-  static readonly APPLY_FILTER = "DICTIONARY_APPLY_FILTER";
-  static readonly UPDATE_PAGINATION_CURRENTPAGE =
-    "DICTIONARY_UPDATE_PAGINATION_CURRENTPAGE";
-  static readonly UPDATE_CATEGORIES = "DICTIONARY_UPDATE_CATEGORIES";
-
-  static readonly SELECT_ALL = "DICTIONARY_SELECT_ALL";
-  static readonly IS_ITEM_SELECTED = "DICTIONARY_IP_IS_ITEM_SELECTED";
-
-  static readonly ADD_RECORD = "DICTIONARY_ADD_RECORD";
-  static readonly UPDATE_RECORD = "DICTIONARY_UPDATE_RECORD";
-  static readonly REMOVE_RECORD = "DICTIONARY_REMOVE_RECORD";
+  ADD_RECORD = "DICTIONARY_ADD_RECORD",
+  UPDATE_RECORD = "DICTIONARY_UPDATE_RECORD",
+  REMOVE_RECORD = "DICTIONARY_REMOVE_RECORD",
 
   // REFERESH LOAD
-  static readonly LOAD_END = "DICTIONARY_YT_LOADEND";
-  static readonly REFRESH_DATA = "DICTIONARY_REFRESH_DATA";
-  static readonly REFRESH_PAGINATION = "DICTIONARY_REFRESH_PAGINATION";
-
-  @dispatch()
-  loadStarted = (): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.LOAD_STARTED,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  loadSucceeded = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.LOAD_SUCCEEDED,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  loadFailed = (error): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.LOAD_FAILED,
-    // meta: { },
-    payload: null,
-    error
-  });
-
-  @dispatch()
-  applyChanges = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.APPLY_CHANGES,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  actionSucceeded = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.APPLY_CHANGES_SUCCEEDED,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  actionFailed = (error): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.APPLY_CHANGES_SUCCEEDED,
-    // meta: { },
-    payload: null,
-    error
-  });
-
-  @dispatch()
-  updateFilterOptions = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.UPDATE_FILTER_OPTIONS,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  applyFilter = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.APPLY_FILTER,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updatePaginationCurrentPage = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.UPDATE_PAGINATION_CURRENTPAGE,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateCategories = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.UPDATE_CATEGORIES,
-    // meta: { },
-    payload: payload
-  });
-  @dispatch()
-  selectAll = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.SELECT_ALL,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateItemsSelectionStatus = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.IS_ITEM_SELECTED,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  addRecord = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.ADD_RECORD,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateRecord = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.UPDATE_RECORD,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  loadEnd = (): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.LOAD_END,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  reloadList = (): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.REFRESH_DATA,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  refresh_pagination = (payload: Payload): DictionaryAPIAction => ({
-    type: DictionaryAPIActions.REFRESH_PAGINATION,
-    // meta: { },
-    payload: payload
-  });
+  LOAD_END = "DICTIONARY_YT_LOADEND",
+  REFRESH_DATA = "DICTIONARY_REFRESH_DATA",
+  REFRESH_PAGINATION = "DICTIONARY_REFRESH_PAGINATION"
 }
+
+export class loadStarted implements Action {
+  public readonly type = DictionaryAPIAction.LOAD_STARTED;
+  constructor(public payload: any) {}
+}
+
+export class loadSucceeded implements Action {
+  public readonly type = DictionaryAPIAction.LOAD_SUCCEEDED;
+  constructor(public payload: any) {}
+}
+
+export class loadFailed implements Action {
+  public readonly type = DictionaryAPIAction.LOAD_FAILED;
+  constructor(public payload: any) {}
+}
+
+export class applyChanges implements Action {
+  public readonly type = DictionaryAPIAction.APPLY_CHANGES;
+  constructor(public payload: any) {}
+}
+
+export class actionSucceeded implements Action {
+  public readonly type = DictionaryAPIAction.APPLY_CHANGES_SUCCEEDED;
+  constructor(public payload: any) {}
+}
+
+export class actionFailed implements Action {
+  public readonly type = DictionaryAPIAction.APPLY_CHANGES_FAILED;
+  constructor(public payload: any) {}
+}
+
+export class updateFilterOptions implements Action {
+  public readonly type = DictionaryAPIAction.UPDATE_FILTER_OPTIONS;
+  constructor(public payload: any) {}
+}
+
+export class applyFilter implements Action {
+  public readonly type = DictionaryAPIAction.APPLY_FILTER;
+  constructor(public payload: any) {}
+}
+
+export class updatePaginationCurrentPage implements Action {
+  public readonly type = DictionaryAPIAction.UPDATE_PAGINATION_CURRENTPAGE;
+  constructor(public payload: any) {}
+}
+
+export class selectAll implements Action {
+  public readonly type = DictionaryAPIAction.SELECT_ALL;
+  constructor(public payload: any) {}
+}
+
+export class updateItemsSelectionStatus implements Action {
+  public readonly type = DictionaryAPIAction.IS_ITEM_SELECTED;
+  constructor(public payload: any) {}
+}
+
+export class addRecord implements Action {
+  public readonly type = DictionaryAPIAction.ADD_RECORD;
+  constructor(public payload: any) {}
+}
+
+export class updateRecord implements Action {
+  public readonly type = DictionaryAPIAction.UPDATE_RECORD;
+  constructor(public payload: any) {}
+}
+
+export class loadEnd implements Action {
+  public readonly type = DictionaryAPIAction.LOAD_END;
+  constructor(public payload: any) {}
+}
+
+export class reloadList implements Action {
+  public readonly type = DictionaryAPIAction.REFRESH_DATA;
+  constructor(public payload: any) {}
+}
+
+export class refresh_pagination implements Action {
+  public readonly type = DictionaryAPIAction.REFRESH_PAGINATION;
+  constructor(public payload: any) {}
+}
+
+export type DictionaryAPIActions =
+  | loadStarted
+  | loadSucceeded
+  | loadFailed
+  | applyChanges
+  | actionSucceeded
+  | actionFailed
+  | updateFilterOptions
+  | applyFilter
+  | updatePaginationCurrentPage
+  | selectAll
+  | updateItemsSelectionStatus
+  | addRecord
+  | updateRecord
+  | loadEnd
+  | refresh_pagination
+  | reloadList;
 
 export class DictionaryBLL {
   loadSucceeded(state: IDictionaryState, action: any) {
     // update totalrecords object in pagination prop
-    const _pagination = state.pagination;
+    const _pagination = Object.assign({}, state.pagination);
     _pagination.totalRecords = action.payload.records;
     _pagination.pageSize = state.filteroptions.pagesize;
     _pagination.currentPage = state.filteroptions.pagenumber;
     // avoid loading categories again in next call
-    const _filteroption = state.filteroptions;
-    _filteroption.loadstats = false;
+const _filteroption= Object.assign({}, state.filteroptions);    _filteroption.loadstats = false;
 
     return tassign(state, {
       posts: action.payload.posts,
@@ -187,7 +157,7 @@ export class DictionaryBLL {
   }
 
   applyFilterChanges(state: IDictionaryState, action: any) {
-    const filters = state.filteroptions;
+    const filters =  Object.assign({}, state.filteroptions);
     for (const prop in filters) {
       if (prop === action.payload.attr) {
         filters[prop] = action.payload.value;
@@ -200,7 +170,7 @@ export class DictionaryBLL {
   }
 
   updatePagination(state: IDictionaryState, action: any) {
-    const pagination = state.pagination;
+    const pagination = Object.assign({}, state.pagination);
     pagination.currentPage = action.payload.currentpage;
 
     return tassign(state, {
@@ -209,7 +179,9 @@ export class DictionaryBLL {
   }
 
   selectAll(state: IDictionaryState, action: any) {
-    const posts = state.posts;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     for (const item of posts) {
       item.Selected = action.payload;
     }
@@ -222,8 +194,10 @@ export class DictionaryBLL {
   }
 
   addRecord(state: IDictionaryState, action: any) {
-    const posts = state.posts;
-    const pagination = state.pagination;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
+    const pagination = Object.assign({}, state.pagination);
     pagination.totalRecords = pagination.totalRecords + 1;
     posts.unshift(action.payload);
     /* const coreActions = new CoreAPIActions();
@@ -239,7 +213,9 @@ export class DictionaryBLL {
   }
 
   updateRecord(state: IDictionaryState, action: any) {
-    const posts = state.posts;
+   const posts = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     for (let post of posts) {
       if (post.id === action.payload.id) {
         post = Object.assign({}, post, action.payload);
@@ -249,7 +225,9 @@ export class DictionaryBLL {
   }
 
   applyChanges(state: IDictionaryState, action: any) {
-    const _updated_state = state.posts;
+     const _updated_state = state.posts.map(item => {
+      return Object.assign({}, item);
+    });
     for (const selected of action.payload.SelectedItems) {
       for (const item of _updated_state) {
         if (item.id === selected.id) {
@@ -269,7 +247,7 @@ export class DictionaryBLL {
   }
 
   refreshpagination(state: IDictionaryState, action: any) {
-    const pagination = state.pagination;
+    const pagination = Object.assign({}, state.pagination);
     pagination.totalRecords = action.payload.totalrecords;
     pagination.pageSize = action.payload.pagesize;
     return tassign(state, { pagination: pagination });

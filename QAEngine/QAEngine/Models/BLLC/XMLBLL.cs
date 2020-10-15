@@ -19,7 +19,7 @@ namespace Jugnoon.BLL
             str.AppendLine(" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\"");
             str.AppendLine(" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\">");
 
-            string path = "qa/";
+            string path = "ads/";
             
             var _lst = await CategoryBLL.LoadItems(context,Entity);
             foreach (var Item in _lst)
@@ -39,7 +39,7 @@ namespace Jugnoon.BLL
             str.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             str.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
             var _lst = await CategoryBLL.LoadItems(context,Entity);
-            string path = "qa/";
+            string path = "ads/";
             foreach (var Item in _lst)
             {
                 str.AppendLine("<url>");
@@ -59,7 +59,7 @@ namespace Jugnoon.BLL
             str.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"");
             str.AppendLine(" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\"");
             str.AppendLine(" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\">");
-            string path = "qa/";
+            string path = "ads/";
             var _lst = TagsBLL.LoadItems(context,Entity).Result;
             foreach (var Item in _lst)
             {
@@ -78,7 +78,7 @@ namespace Jugnoon.BLL
             str.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             str.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
             var _lst = TagsBLL.LoadItems(context,Entity).Result;
-            string path = "qa/";
+            string path = "ads/";
             foreach (var Item in _lst)
             {
                 str.AppendLine("<url>");

@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: ClassifiedEngine                    */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,7 +8,8 @@
 
 import { Component, OnInit, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 // services
 import { SettingsService } from "../../attr/services/settings.service";
 import { DataService } from "../../attr/services/data.service";
@@ -16,7 +17,7 @@ import { FormService } from "../../attr/services/form.service";
 
 // shared services
 import { CoreService } from "../../../admin/core/coreService";
-import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../reducers/core/actions";
 
 // reducer actions
 import { fadeInAnimation } from "../../../animations/core";
@@ -24,6 +25,13 @@ import { fadeInAnimation } from "../../../animations/core";
 /* modal popup */
 import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
 import { ViewComponent } from "../../attr/partials/modal.component";
+
+
+// reducer actions
+import { Notify } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+import * as configSelectors from "../../../reducers/configs/selectors";
+
 
 @Component({
   selector: "app-dynamic-settings",
@@ -33,10 +41,10 @@ import { ViewComponent } from "../../attr/partials/modal.component";
 })
 export class DynamicSettingsComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
     private route: ActivatedRoute,
     private formService: FormService,
     private router: Router,
@@ -80,16 +88,17 @@ export class DynamicSettingsComponent implements OnInit {
       })
       .subscribe(
         (data: any) => {
-          console.log("data returned");
+         
           this.Settings = data.posts;
           this.showLoader = false;
         },
         err => {
-          this.coreActions.Notify({
-            title: "Load Failed",
+          this._store.dispatch(new Notify({
+            title:  "Load failed",
             text: "",
             css: "bg-danger"
-          });
+          }));
+          
         }
       );
   }
@@ -230,19 +239,20 @@ export class DynamicSettingsComponent implements OnInit {
             break;
         }
         this.showLoader = false;
-
-        this.coreActions.Notify({
-          title: "Record Saved",
+        this._store.dispatch(new Notify({
+          title:  "Record saved successfully",
           text: "",
           css: "bg-success"
-        });
+        }));
+      
       },
       err => {
-        this.coreActions.Notify({
-          title: "Record not Saved",
+        this._store.dispatch(new Notify({
+          title:  "Record not saved",
           text: "",
           css: "bg-danger"
-        });
+        }));
+       
       }
     );
   }

@@ -1,0 +1,72 @@
+<div *ngIf="isAdmin" class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div *ngIf="!isAccessGranted">
+        <h2 class="m-b-40 m-t-40 text-center">Access Denied</h2>
+      </div>
+      <div *ngIf="isAccessGranted">
+        <div class="row">
+          <div class="col-md-3">
+            <app-navigation-v2
+              [isAdmin]="isAdmin"
+              [FilterOptions]="FilterOptions"
+              [Options]="SearchOptions"
+              (Action)="toolbaraction($event)"
+              (SearchSelection)="FindRecords($event)"
+            >
+            </app-navigation-v2>
+          </div>
+          <div class="col-md-9">
+            <app-toolbar-v2
+              [isAdmin]="isAdmin"
+              [Options]="ToolbarOptions"
+              [isItemsSelected]="isItemsSelected"
+              (Action)="toolbaraction($event)"
+              (SelectAllCard)="selectAll($event)"
+            ></app-toolbar-v2>
+
+            <div class="card-body">
+              <app-blog-list
+                [route_path]="route_path"
+                [isAdmin]="isAdmin"
+                (View)="toolbaraction($event)"
+                [isActionGranded]="isActionGranded"
+                (SelectedItems)="getSelectedItems($event)"
+              ></app-blog-list>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isAdmin">
+  <app-navigation-v2
+    [isAdmin]="isAdmin"
+    [FilterOptions]="FilterOptions"
+    [Options]="SearchOptions"
+    (Action)="toolbaraction($event)"
+    (SearchSelection)="FindRecords($event)"
+  >
+  </app-navigation-v2>
+  <div class="card">
+    <div class="card-body">
+      <div class="m-b-20">
+        <app-toolbar-v2
+          [isAdmin]="isAdmin"
+          [Options]="ToolbarOptions"
+          [isItemsSelected]="isItemsSelected"
+          (Action)="toolbaraction($event)"
+          (SelectAllCard)="selectAll($event)"
+        ></app-toolbar-v2>
+      </div>
+      <app-blog-list
+       
+        [route_path]="route_path"
+        [isAdmin]="isAdmin"
+        (View)="toolbaraction($event)"
+        (SelectedItems)="getSelectedItems($event)"
+      ></app-blog-list>
+    </div>
+  </div>
+</div>

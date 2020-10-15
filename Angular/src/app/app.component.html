@@ -1,4 +1,4 @@
-<div *ngIf="(loader$ | async)" id="loader">
+<div *ngIf="loader$ | async" id="loader">
   <div class="dot"></div>
   <div class="dot"></div>
   <div class="dot"></div>
@@ -7,8 +7,8 @@
   <div class="dot"></div>
   <div class="dot"></div>
   <div class="dot"></div>
-  <div class="loading"></div></div
->
+  <div class="loading"></div>
+</div>
 <div *ngIf="!(loader$ | async)">
   <div *ngIf="(auth_failed$ | async).title !== ''">
     <div class="m-b-40 m-t-40 text-center">
@@ -17,50 +17,81 @@
   </div>
   <div *ngIf="(auth$ | async).isAuthenticated">
     <div *ngIf="config.getGlobalVar('apptype') === 'account'">
-      <!-- Account Application -->
-      <app-account-breadcrumb></app-account-breadcrumb>
-      <div *ngIf="message !== ''">
-        <div class="m-b-40 m-t-40 text-center">
-          <h2>{{ message }}</h2>
-        </div>
-      </div>
-      <div *ngIf="message === ''">
-        <div *ngIf="settingLoading$ | async">
-          Loading settings....
-        </div>
-        <div *ngIf="!(settingLoading$ | async)">
-          <app-account-topnavigation></app-account-topnavigation>
-          <div class="row">
-            <div class="col-md-3 m-t-20">
-              <app-account-leftnavigation></app-account-leftnavigation>
+     
+      <div *ngIf="config.getGlobalVar('theme') === 'default'">
+        <app-account-header></app-account-header>
+          <div class="container m-t-20">
+
+            <app-account-breadcrumb></app-account-breadcrumb>
+
+            <div class="row m-t-10">
+              <div class="col-md-3">
+                <app-account-leftnavigation-v2></app-account-leftnavigation-v2>
+              </div>
+              <div class="col-md-9">
+                <router-outlet></router-outlet>
+              </div>
             </div>
-            <div class="col-md-9 m-t-20">
-              <router-outlet></router-outlet>
-            </div>
+
+            <app-account-footer></app-account-footer>
           </div>
-        </div>
+       
       </div>
     </div>
     <div *ngIf="config.getGlobalVar('apptype') === 'admin'">
-      <!-- dashboard application -->
-      <app-admin-header></app-admin-header>
-  
-      <div class="container">
-        <div class="container-body">
-          <app-admin-breadcrumb></app-admin-breadcrumb>
-          <div *ngIf="settingLoading$ | async">
-            Loading settings....
+      <div id="wrapper">
+        <app-admin-sidebar></app-admin-sidebar>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+          <!-- Main Content -->
+          <div id="content">
+            <app-admin-header></app-admin-header>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+              <router-outlet></router-outlet>
+            </div>
+            <!-- /.container-fluid -->
           </div>
-          <div *ngIf="!(settingLoading$ | async)">
-            <router-outlet></router-outlet>
-          </div>
+          <!-- End of Main Content -->
+
+          <!-- Footer -->
+          <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+              <div class="copyright text-center my-auto">
+                <span>
+                  © {{ year }} - Developed by
+                  <a target="_blank" href="https://www.mediasoftpro.com"
+                    >Mediasoft Pro</a
+                  ></span
+                >
+              </div>
+            </div>
+          </footer>
+          <!-- End of Footer -->
         </div>
-  
-        <footer class="footer">
-          © {{ year }} - Developed by
-          <a target="_blank" href="https://www.mediasoftpro.com">Mediasoft Pro</a>
-        </footer>
+        <!-- End of Content Wrapper -->
       </div>
+
+      <!-- <app-admin-header></app-admin-header>
+    
+        <div class="container">
+          <div class="container-body">
+            <app-admin-breadcrumb></app-admin-breadcrumb>
+            <div *ngIf="settingLoading$ | async">
+              Loading settings....
+            </div>
+            <div *ngIf="!(settingLoading$ | async)">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+    
+          <footer class="footer">
+            © {{ year }} - Developed by
+            <a target="_blank" href="https://www.mediasoftpro.com">Mediasoft Pro</a>
+          </footer>
+        </div>-->
     </div>
   </div>
   <div *ngIf="!(auth$ | async).isAuthenticated">
@@ -71,19 +102,18 @@
         </div>
         <footer class="footer">
           © {{ year }} - Developed by
-          <a target="_blank" href="https://www.mediasoftpro.com">Mediasoft Pro</a>
+          <a target="_blank" href="https://www.mediasoftpro.com"
+            >Mediasoft Pro</a
+          >
         </footer>
       </div>
     </div>
     <div *ngIf="config.getGlobalVar('apptype') === 'search'">
-        <div class="container">
-          <div class="container-body">
-              <router-outlet></router-outlet>
-          </div>
-         
+      <div class="container">
+        <div class="container-body">
+          <router-outlet></router-outlet>
         </div>
       </div>
+    </div>
   </div>
-  
 </div>
-

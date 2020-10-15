@@ -1,8 +1,9 @@
 ﻿
 using Jugnoon.Utility;
-using Jugnoon.qa.Models;
 using System.Collections.Generic;
 using Jugnoon.Framework;
+using Jugnoon.qa.Models;
+
 /// <summary>
 /// User Profile Model View
 /// </summary>

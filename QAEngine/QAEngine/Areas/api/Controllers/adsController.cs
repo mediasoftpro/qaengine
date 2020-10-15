@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Caching.Memory;
 using Jugnoon.Framework;
 using Microsoft.Extensions.Localization;
-using QAEngine.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Jugnoon.Localize;

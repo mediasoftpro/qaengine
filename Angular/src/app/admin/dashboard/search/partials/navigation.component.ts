@@ -1,23 +1,25 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: "app-searchnavigation",
-  templateUrl: "./navigation.html"
+  selector: 'app-searchnavigation',
+  templateUrl: './navigation.html',
 })
 export class NavigationComponent implements OnInit {
   @Input() Type = 0; // 0: Horizontal Filter i: Top Filter
+  @Input() ListType = 0; // 0 Grid, 1: List
   @Input() Options: any;
   @Input() FilterOptions: any;
   @Output() OnFilterSelected = new EventEmitter<any>();
-
+  @Output() OnListTypeChanged = new EventEmitter<any>();
+  @Output() OnOrderChanged = new EventEmitter<any>();
   showFilterOptions = false;
   ngOnInit() {}
 
@@ -97,4 +99,13 @@ export class NavigationComponent implements OnInit {
     event.stopPropagation();
   }
 
+  toggleListView(listtype: number, event: any) {
+    this.ListType = listtype;
+    this.OnOrderChanged.emit(this.FilterOptions);
+    event.stopPropagation();
+  }
+
+  onOrderSelected() {
+     this.OnFilterSelected.emit(this.FilterOptions);
+  }
 }

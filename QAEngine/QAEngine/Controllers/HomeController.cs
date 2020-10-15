@@ -17,6 +17,9 @@ using Jugnoon.Meta;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Jugnoon.Localize;
+using ActiveCampaignApiClient;
+using ZendeskApi_v2.Models.Tickets;
+using System.Collections.Generic;
 
 namespace QAEngine.Controllers
 {
@@ -25,6 +28,9 @@ namespace QAEngine.Controllers
         ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private ActiveCompaign _activeCompaignSettings;
+        private Zendesk _zendeskSettings;
+        private readonly IActiveCampaignClient _activeCampaignClient;
         public HomeController(
            IOptions<SiteConfiguration> settings,
            IMemoryCache memoryCache,
@@ -35,15 +41,20 @@ namespace QAEngine.Controllers
            IOptions<Features> featureSettings,
            IOptions<Smtp> smtpSettings,
            IOptions<Media> mediaSettings,
+           IOptions<ActiveCompaign> activeCompanySettings,
+           IOptions<Zendesk> zendeskSettings,
            IWebHostEnvironment _environment,
            IHttpContextAccessor _httpContextAccessor,
-           SignInManager<ApplicationUser> signInManager
+           SignInManager<ApplicationUser> signInManager,
+           IActiveCampaignClient activeCampaignClient
            )
         {
             _context = context;
             _emailSender = emailSender;
             _signInManager = signInManager;
-
+            _activeCompaignSettings = activeCompanySettings.Value;
+            _activeCampaignClient = activeCampaignClient;
+            _zendeskSettings = zendeskSettings.Value;
             // readable configuration
             Configs.GeneralSettings = generalSettings.Value;
             Configs.SmtpSettings = smtpSettings.Value;
@@ -59,12 +70,37 @@ namespace QAEngine.Controllers
 
         public async Task<ActionResult> Index(string page, string returnUrl = null)
         {
+
             // check for installation flag
             if (!Configs.GeneralSettings.init_wiz)
             {
                 return Redirect("/installation/configs/");
             }
-                      
+
+            // skip static pages
+            if (page != null)
+            {
+                var static_pages_extensions = new string[] { ".css", ".js", ".jpg", ".png", ".ico", ".gif", ".mp4" };
+                foreach (var extension in static_pages_extensions)
+                {
+                    if (page.EndsWith(extension))
+                    {
+                        return View();
+                    }
+                }
+                if (page == "404")
+                    Response.StatusCode = 404;
+
+                ViewData["Page"] = page;
+            }
+            else
+            {
+                ViewData["Page"] = "index";
+            }
+
+            string referer = Request.Headers["Referer"];
+            if (referer != null)
+                ViewData["referrer"] = referer.ToString();
 
             /* Update culture */
             if (HttpContext.Request.Query["lng"].Count > 0)
@@ -79,25 +115,12 @@ namespace QAEngine.Controllers
 
 
             /* Update demo themes */
-            if (HttpContext.Request.Query["theme"].Count > 0)
+            /*if (HttpContext.Request.Query["theme"].Count > 0)
             {
                 Jugnoon.Utility.Helper.Cookie.WriteCookie("VSKTheme", HttpContext.Request.Query["theme"].ToString());
 
                 return Redirect(Config.GetUrl());
-            }
-                    
-
-
-            ViewData["ReturnUrl"] = returnUrl;
-            if (page == null)
-                ViewData["Page"] = "index";
-            else
-            {
-                if (page == "404")
-                    Response.StatusCode = 404;
-
-                ViewData["Page"] = page;
-            }
+            }*/
 
             // authorization check
             if (page != null)
@@ -125,15 +148,131 @@ namespace QAEngine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult contact(ContactUsViewModel model, string action)
+        public ActionResult contact(ContactUsViewModel model)
         {
             ViewData["Page"] = "contact";
             if (ModelState.IsValid)
             {
-                _emailSender.ContactUsEmailAsync(_context, Configs.GeneralSettings.admin_mail, model);
+                if (_zendeskSettings.enable)
+                {
+                    ZendeskApi_v2.ZendeskApi api = new ZendeskApi_v2.ZendeskApi(_zendeskSettings.url, _zendeskSettings.user,
+                     _zendeskSettings.token, _zendeskSettings.locale);
 
-                model.Message = SiteConfig.generalLocalizer["_message_sent"].Value;
-                model.AlertType = AlertTypes.Success;
+                    string encodedEmail = System.Net.WebUtility.UrlEncode(model.EmailAddress);
+                    long id = 0;
+                    /*ZendeskApi_v2.Models.Search.SearchResults resultsOld = api.Search.SearchFor(string.Format("requester:{0}", encodedEmail));
+
+                    if (resultsOld != null && resultsOld.Count > 0)
+                        id = resultsOld.Results[0].Id;*/
+
+                    // Ticket is not already created. lets create it now.
+                    try
+                    {
+                        IndividualTicketResponse response = api.Tickets.CreateTicket
+                        (
+                            new ZendeskApi_v2.Models.Tickets.Ticket
+                            {
+
+                                Status = "new",
+                                Subject = "Contact Us",
+                                Tags = new List<string>() { "contactus" },
+                                Comment = new ZendeskApi_v2.Models.Tickets.Comment
+                                {
+                                    Body = model.Message,
+                                    Public = false,
+                                },
+                                Requester = new Requester()
+                                {
+                                    LocaleId = 1,
+                                    Name = model.SenderName,
+                                    Email = model.EmailAddress
+                                },
+                                Priority = "normal"
+
+                            }
+                         );
+
+                        if (response == null || response.Ticket == null)
+                            return null;
+                        else
+                            id = (long)response.Ticket.Id;
+
+                        model.Message = "Thank you for your request!  A member of the our team will be in touch with you shortly.";
+                        model.AlertType = AlertTypes.Success;
+                    }
+                    catch (Exception ex)
+                    {
+                        // generate log
+                        Jugnoon.BLL.ErrorLgBLL.Add(_context, "Problem occured while submitting your request, please try again.", "/contact", ex.Message);
+
+                        model.Message = "Problem occured while submitting your request, please try again.";
+                    }
+
+                }
+                else
+                {
+                    // Normal Email Sending Procedure
+                    _emailSender.ContactUsEmailAsync(_context, Configs.GeneralSettings.admin_mail, model);
+
+                    model.Message = SiteConfig.generalLocalizer["_message_sent"].Value;
+                    model.AlertType = AlertTypes.Success;
+                }
+              
+
+                return View("~/Views/Home/index.cshtml", model);
+            }
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> newsletter(NewsLetterViewModel model)
+        {
+            ViewData["Page"] = "index";
+            if (model.page != null)
+                ViewData["Page"] = model.page;
+
+            if (ModelState.IsValid)
+            {
+                if (_activeCompaignSettings.enable)
+                {
+                    var tags = "NewsLetter";
+                    var listId = _activeCompaignSettings.listId;
+                    try
+                    {
+                        var contact = new Dictionary<string, string> {
+                            { "email", model.EmailAddress },
+                            { "tags", tags },
+                            { "p[{" + listId + "}]", listId.ToString() },
+                            { "status[{" + listId + "}]", "1" },
+                        };
+
+                        var activeCampaignClientResult = await _activeCampaignClient.Call(
+                                "contact/sync",
+                                contact
+                        );
+
+                        model.Message = "Thank you for your request!  A member of our team will be in touch with you shortly.";
+                        model.AlertType = AlertTypes.Success;
+                    }
+                    catch (Exception ex)
+                    {
+                        Jugnoon.BLL.ErrorLgBLL.Add(_context, "Problem occured while submitting your request, please try again.", "/newsletter", ex.Message);
+
+                        model.Message = "Problem occured while submitting your request, please try again.";
+                    }
+                }
+
+                else
+                {
+                    // active compaign not enabled
+                    // add / customize newletter management with your own custom logic
+                    model.Message = "Thank you for your request!  A member of the our team will be in touch with you shortly.";
+                    model.AlertType = AlertTypes.Success;
+                }
+
 
                 return View("~/Views/Home/index.cshtml", model);
             }

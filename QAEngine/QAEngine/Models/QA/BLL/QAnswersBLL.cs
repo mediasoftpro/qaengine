@@ -146,7 +146,7 @@ namespace Jugnoon.qa
 
         private static async Task<bool> Update_Stats(ApplicationDbContext context, string userid, bool isincrement)
         {
-            var value = UserStatsBLL.Get_Field_Value(context, userid, "stat_qanswers");
+            var value = await UserStatsBLL.Get_Field_Value(context, userid, "stat_qanswers");
             if (value != null && value != "")
             {
                 short count = Convert.ToInt16(value);

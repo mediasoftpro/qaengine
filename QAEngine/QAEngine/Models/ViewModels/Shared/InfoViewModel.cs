@@ -6,6 +6,7 @@ namespace Jugnoon.Models
 {
     public class InfoViewModel
     {
+        public bool ShowRating { get; set; } = true;
         public string PostedCaption { get; set; } = "Posted on";
         /// <summary>
         /// Filter data based on 0: Video, 1: Audio

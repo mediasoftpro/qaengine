@@ -1,14 +1,14 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit, Input } from "@angular/core";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../../services/settings.service";
@@ -18,10 +18,24 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 // shared services
 import { CoreService } from "../../../../admin/core/coreService";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../../reducers/core/actions";
 import { fadeInAnimation } from "../../../../animations/core";
-import { AbuseReportActions } from "../../../../reducers/reports/abuse/actions";
+//import { AbuseReportActions } from "../../../../reducers/reports/abuse/actions";
 import { PermissionService } from "../../../../admin/users/services/permission.service";
+
+// reducer actions
+import * as selectors from "../../../../reducers/reports/abuse/selectors";
+import {
+  applyFilter,
+  updateItemsSelectionStatus,
+  selectAll,
+  updateFilterOptions,
+  refresh_pagination,
+} from "../../../../reducers/reports/abuse/actions";
+
+import { Notify, refreshListStats } from "../../../../reducers/core/actions";
+import { auth } from "../../../../reducers/users/selectors";
+import * as configSelectors from "../../../../reducers/configs/selectors";
 
 @Component({
   selector: "app-mainabuse",
@@ -31,19 +45,29 @@ import { PermissionService } from "../../../../admin/users/services/permission.s
 })
 export class MainAbuseReportComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     public permission: PermissionService,
-    private coreActions: CoreAPIActions,
-    private actions: AbuseReportActions,
     private router: Router,
     private route: ActivatedRoute,
     private coreService: CoreService
   ) {}
 
   @Input() route_path = "/reports/abuse/";
-
-  @select(["abuse", "filteroptions"])
+  readonly filteroptions$ = this._store.pipe(
+    select(selectors.filteroptions)
+  );
+  readonly isloaded$ = this._store.pipe(select(selectors.isloaded));
+  
+  readonly isItemSelected$ = this._store.pipe(
+    select(selectors.itemsselected)
+  );
+  readonly records$ = this._store.pipe(select(selectors.records));
+  readonly pagination$ = this._store.pipe(select(selectors.pagination));
+  readonly auth$ = this._store.pipe(select(auth));
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
+  /*@select(["abuse", "filteroptions"])
   readonly filteroptions$: Observable<any>;
 
   @select(["abuse", "itemsselected"])
@@ -55,8 +79,7 @@ export class MainAbuseReportComponent implements OnInit {
   @select(["abuse", "pagination"])
   readonly pagination$: Observable<any>;
 
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+ readonly auth$ = this._store.pipe(select(auth));*/
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -91,7 +114,7 @@ export class MainAbuseReportComponent implements OnInit {
     });
 
     this.filteroptions$.subscribe(options => {
-      this.FilterOptions = options;
+      this.FilterOptions = Object.assign({}, options);
     });
 
     this.isItemSelected$.subscribe((selectedItems: boolean) => {
@@ -116,7 +139,7 @@ export class MainAbuseReportComponent implements OnInit {
         this.FilterOptions.contentid = this.coreService.decrypt(params["id"]);
         this.FilterOptions.track_filter = true; // to force triggering load event via obvervable subscription
         console.log('contentid exist');
-        this.actions.updateFilterOptions(this.FilterOptions);
+        this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
 
     });
@@ -131,16 +154,16 @@ export class MainAbuseReportComponent implements OnInit {
 
   refreshStats() {
     console.log(this.Records + "records");
-    this.actions.refresh_pagination({
+     this._store.dispatch(new refresh_pagination({
       type: 0,
       totalrecords: this.Records,
       pagesize: this.FilterOptions.pagesize
-    });
+    }));
     // refresh list states
-    this.coreActions.refreshListStats({
+    this._store.dispatch(new refreshListStats({
       totalrecords: this.Records,
       pagesize: this.FilterOptions.pagesize,
       pagenumber: this.Pagination.currentPage
-    });
+    }));
   }
 }

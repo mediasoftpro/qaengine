@@ -1,0 +1,17 @@
+﻿@model Jugnoon.Blogs.Models.BlogItemViewModel
+@using Jugnoon.Blogs
+@*
+    Blog Item Cover Processing
+*@
+
+@{
+
+    if (Model.Data.cover_url != null && Model.Data.cover_url != "")
+    {
+        <div class="m-b-5">
+            <img class="img-responsive" src="@Model.Data.cover_url" alt="@Model.Data.title" />
+        </div>
+    }
+
+}
+

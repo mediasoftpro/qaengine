@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -8,6 +8,11 @@
 
 import { Component,  ViewEncapsulation, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../reducers/store/model";
+import { Notify } from "../../reducers/core/actions";
+import { Authenticate } from "../../reducers/users/actions";
 // services
 import { SettingsService } from "../../admin/users/services/settings.service";
 import { DataService } from "../../admin/users/services/data.service";
@@ -15,10 +20,8 @@ import { FormService } from "../../admin/users/services/form.service";
 
 // shared services
 import { CoreService } from "../../admin/core/coreService";
-import { CoreAPIActions } from "../../reducers/core/actions";
 
 // reducer actions
-import { UserAPIActions } from "../../reducers/users/actions";
 import { fadeInAnimation } from "../../animations/core";
 import { CookieService } from "ngx-cookie-service";
 
@@ -31,7 +34,6 @@ import { CookieService } from "ngx-cookie-service";
   providers: [
     DataService,
     SettingsService,
-    UserAPIActions,
     FormService,
     CookieService
   ]
@@ -43,11 +45,10 @@ export class LoginComponent implements OnInit {
   submitCss =
     "btn btn-info btn-lg btn-block text-uppercase ";
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: UserAPIActions,
     private formService: FormService,
     private router: Router,
     private cookieService: CookieService
@@ -68,25 +69,25 @@ export class LoginComponent implements OnInit {
     this.dataService.Authenticate(payload).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
-            title: data.message,
+          this._store.dispatch(new Notify({
+            title:  data.message,
             text: "",
-            css: "bg-error"
-          });
+            css: "bg-danger"
+          }));
         } else {
           if (data.user === undefined) {
-            this.coreActions.Notify({
-              title: "User Object Missing",
+            this._store.dispatch(new Notify({
+              title:  "User Missing",
               text: "",
-              css: "bg-error"
-            });
+              css: "bg-danger"
+            }));
           }
-
-          this.coreActions.Notify({
-            title: "Authenticated...",
+          this._store.dispatch(new Notify({
+            title:  "Authenticated...",
             text: "",
             css: "bg-success"
-          });
+          }));
+        
 
           const Auth_Obj = {
             userid: data.user.userid,
@@ -106,7 +107,8 @@ export class LoginComponent implements OnInit {
             User: Auth_Obj
           };
 
-          this.actions.Authenticate(obj);
+          this._store.dispatch(new Authenticate(true));
+          // this.actions.Authenticate(obj);
           // redirect
           this.router.navigate(["dashboard"]);
           // document.location.href = '/';
@@ -115,11 +117,11 @@ export class LoginComponent implements OnInit {
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

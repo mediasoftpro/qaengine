@@ -19,10 +19,11 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon.png">
     <title>Control Panel</title>
 
-    <link rel="stylesheet" href="~/css/bootswatch/flatly/bootstrap.min.css">
-    <link rel="stylesheet" href="~/css/bootswatch/flatly/theme.css">
+    <link href="/sb-admin-2/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="/sb-admin-2/css/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/utility.css">
 
 </head>
 
@@ -32,9 +33,13 @@
         var info = await UserManager.GetUserAsync(User);
         var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     }
+
     <script>
         var URL = '@SiteConfiguration.URL'; // API URL
         var Ang_UID = '@info.Id';
+        var UserType = 0; // 0: normal user
+        var themeName = '@SiteConfiguration.Theme'; // add multi themplate support
+        var Ang_AppMessage = "";
         var Ang_Culture = '@requestCulture.RequestCulture.UICulture.Name'
         var AppType = 'admin';
         var setupType = 0;
@@ -47,6 +52,7 @@
         };
         var SerachContentType = 0;
     </script>
+
     <app-root>
         <div id="loader">
             <div class="dot"></div>
@@ -62,17 +68,16 @@
     </app-root>
 
     <script src="~/tinymce/tinymce.min.js"></script>
+    <script src="~/sb-admin-2/vendor/jquery/jquery.min.js"></script>
+    <script src="~/sb-admin-2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/sb-admin-2/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="~/sb-admin-2/js/sb-admin-2.min.js"></script>
+  
+    @* Angular App Dependencies *@
+    <script src="/app/@SiteConfiguration.Theme/runtime.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/polyfills.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/scripts.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/main.js" defer></script>
 
-    <script src="~/js/popper.min.js"></script>
-    <script src="~/plugins/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-
-    <script src="/app/angular/runtime-es2015.js" type="module"></script>
-    <script src="/app/angular/runtime-es5.js" nomodule defer></script>
-    <script src="/app/angular/polyfills-es5.js" nomodule defer></script>
-    <script src="/app/angular/polyfills-es2015.js" type="module"></script>
-    <script src="/app/angular/scripts.js" defer></script>
-    <script src="/app/angular/main-es2015.js" type="module"></script>
-    <script src="/app/angular/main-es5.js" nomodule defer></script>
 </body>
 </html>

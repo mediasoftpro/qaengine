@@ -113,15 +113,6 @@ namespace Jugnoon.BLL
             return collectionQuery;
         }
 
-        private static IQueryable<JGN_BlockIP> AddSortOption(IQueryable<JGN_BlockIP> collectionQuery, string field, string direction)
-        {
-            var reverse = false;
-            if (direction == "desc")
-                reverse = true;
-
-            return (IQueryable<JGN_BlockIP>)collectionQuery.Sort(field, reverse);
-
-        }
 
         private static System.Linq.Expressions.Expression<Func<JGN_BlockIP, bool>> returnWhereClause(BlockIPEntity entity)
         {

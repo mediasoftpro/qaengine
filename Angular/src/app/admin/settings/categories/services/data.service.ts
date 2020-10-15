@@ -1,24 +1,27 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: VideoEngine                         */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
-
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 import { Injectable } from "@angular/core";
-import { CategoriesAPIActions } from "../../../../reducers/settings/categories/actions";
+//import { CategoriesAPIActions } from "../../../../reducers/settings/categories/actions";
 import { HttpClient } from "@angular/common/http";
 import { SettingsService } from "./settings.service";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../../reducers/core/actions";
+import { loadStarted, loadSucceeded, loadFailed, loaddropdowncategories, applyChanges} from "../../../../reducers/settings/categories/actions";
+import { refreshListStats } from "../../../../reducers/core/actions";
+import { Notify } from "../../../../reducers/core/actions";
 
 @Injectable()
 export class DataService {
   constructor(
+    private _store: Store<IAppState>,
     private settings: SettingsService,
-    private http: HttpClient,
-    private actions: CategoriesAPIActions,
-    private coreActions: CoreAPIActions
+    private http: HttpClient
   ) {}
 
   /* -------------------------------------------------------------------------- */
@@ -26,21 +29,21 @@ export class DataService {
   /* -------------------------------------------------------------------------- */
   LoadRecords(FilterOptions) {
     const URL = this.settings.getApiOptions().load;
-    this.actions.loadStarted();
+    this._store.dispatch(new loadStarted({}));
     this.http.post(URL, JSON.stringify(FilterOptions)).subscribe(
       (data: any) => {
         // update core data
-        this.actions.loadSucceeded(data);
+        this._store.dispatch(new loadSucceeded(data));
 
         // update list stats
-        this.coreActions.refreshListStats({
+        this._store.dispatch(new refreshListStats({
           totalrecords: data.records,
           pagesize: FilterOptions.pagesize,
           pagenumber: FilterOptions.pagenumber
-        });
+        }));
       },
       err => {
-        this.actions.loadFailed(err);
+        this._store.dispatch(new loadFailed(err));
       }
     );
   }
@@ -50,10 +53,10 @@ export class DataService {
     this.http.post(URL, { type }).subscribe(
       (data: any) => {
         // update core data
-        this.actions.loadDropdownCategories(data);
+        this._store.dispatch(new loaddropdowncategories(data));
       },
       err => {
-        this.actions.loadFailed(err);
+        this._store.dispatch(new loadFailed(err));
       }
     );
   }
@@ -84,10 +87,10 @@ export class DataService {
   /* -------------------------------------------------------------------------- */
   ProcessActions(SelectedItems, isenabled) {
     // apply changes directory instate
-    this.actions.applyChanges({
+     this._store.dispatch(new applyChanges({
       SelectedItems,
       isenabled
-    });
+    }));
 
    
     this.http
@@ -99,18 +102,18 @@ export class DataService {
           if (isenabled === "delete") {
             message = "Record Removed";
           }
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: message,
             text: "",
             css: "bg-success"
-          });
+          }));
         },
         err => {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: "Error Occured",
             text: "",
             css: "bg-danger"
-          });
+          }));
         }
       );
   }

@@ -1,7 +1,7 @@
 
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -9,18 +9,20 @@
 
 import { Component, ViewEncapsulation, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../reducers/store/model";
+
 import { FormService } from "../../admin/users/services/form.service";
 import { DataService } from "../../admin/users/services/data.service";
 import { SettingsService } from "../../admin/users/services/settings.service";
 // shared services
-import { CoreAPIActions } from "../../reducers/core/actions";
+//import { CoreAPIActions } from "../../reducers/core/actions";
 import { CoreService } from "../../admin/core/coreService";
 
 // reducer actions
-import { UserAPIActions } from "../../reducers/users/actions";
 import { CookieService } from "ngx-cookie-service";
+import { auth } from "../../reducers/users/selectors";
+import { Notify } from "../../reducers/core/actions";
 
 @Component({
   selector: "app-profilesetup",
@@ -29,7 +31,6 @@ import { CookieService } from "ngx-cookie-service";
   providers: [
     DataService,
     SettingsService,
-    UserAPIActions,
     FormService,
     CookieService,
     CoreService
@@ -43,14 +44,14 @@ export class ProfileSetupComponent implements OnInit {
   User: any = {};
   uploadedFiles = [];
   constructor(
+    private _store: Store<IAppState>,
     private dataService: DataService,
-    private coreActions: CoreAPIActions,
     private formService: FormService,
     private router: Router,
     private coreService: CoreService
   ) {}
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+
+   readonly auth$ = this._store.pipe(select(auth));
 
   ngOnInit() {
     this.auth$.subscribe(Info => {
@@ -72,11 +73,11 @@ export class ProfileSetupComponent implements OnInit {
     this.showLoader = true;
     this.dataService.GetInfo(UserId).subscribe((data: any) => {
       if (data.status === "error") {
-        this.coreActions.Notify({
-          title: data.message,
-          text: "",
-          css: "bg-success"
-        });
+          this._store.dispatch(new Notify({
+            title:  data.message,
+            text: "",
+            css: "bg-success"
+          }));
         // redirect to user page
         this.router.navigate(["/"]);
       } else {
@@ -116,18 +117,18 @@ export class ProfileSetupComponent implements OnInit {
     this.dataService.AddRecord(this.User).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: data.message,
             text: "",
             css: "bg-danger"
-          });
+          }));
         } else {
           const message = "Profile Updated";
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: message,
             text: "",
             css: "bg-success"
-          });
+          }));
 
           this.router.navigate(["/"]);
         }
@@ -135,11 +136,11 @@ export class ProfileSetupComponent implements OnInit {
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

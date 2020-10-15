@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Jugnoon.Utility;
 using Microsoft.Extensions.Caching.Memory;
 using Jugnoon.Framework;
+using QAEngine.Models;
 using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,7 @@ namespace QAEngine.Areas.api.Controllers
             IOptions<SiteConfiguration> settings,
             IMemoryCache memoryCache,
             ApplicationDbContext context,
-            IStringLocalizer<GeneralResource> generalLocalizer,
+           IStringLocalizer<GeneralResource> generalLocalizer,
             IWebHostEnvironment _environment,
             IHttpContextAccessor _httpContextAccessor,
            IOptions<General> generalSettings

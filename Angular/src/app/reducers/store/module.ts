@@ -1,15 +1,32 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { NgModule } from "@angular/core";
-import { provideReduxForms } from "@angular-redux/form";
-import { NgReduxRouter, NgReduxRouterModule } from "@angular-redux/router";
-import {
+import { StoreModule } from "@ngrx/store";
+import { StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreRouterConnectingModule } from "@ngrx/router-store";
+
+import { appReducers } from "./reducers";
+
+@NgModule({
+  imports: [
+    StoreModule.forRoot(appReducers),
+    StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
+    StoreDevtoolsModule.instrument()
+  ],
+  providers: []
+})
+export class AppStoreModule {
+}
+//import { provideReduxForms } from "@angular-redux/form";
+//import { NgReduxRouter, NgReduxRouterModule } from "@angular-redux/router";
+/*import {
   DevToolsExtension,
   NgRedux,
   NgReduxModule
@@ -20,8 +37,8 @@ import { FluxStandardAction } from "flux-standard-action";
 import { createLogger } from "redux-logger";
 import { createEpicMiddleware } from "redux-observable";
 
-// The top-level reducers and epics that make up our app's logic.
-
+// The top-level reducers and epics that make up our app's logic.*/
+/*
 import { AppState, initialAppState } from "./model";
 import { rootReducer } from "./reducers";
 
@@ -43,7 +60,7 @@ export class StoreModule {
       FluxStandardAction<any, any>,
       AppState
     >();*/
-
+/*
     store.configureStore(
       rootReducer,
       initialAppState(),
@@ -60,4 +77,4 @@ export class StoreModule {
     // Enable syncing of Angular form state with our Redux store.
     provideReduxForms(store);
   }
-}
+}*/

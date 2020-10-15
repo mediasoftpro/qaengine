@@ -1,0 +1,33 @@
+﻿@model Jugnoon.Models.ArchiveListModelView
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject Jugnoon.Framework.ApplicationDbContext _context
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Features> featureSettings
+@using Jugnoon.Blogs
+@if (featureSettings.Value.enable_archives)
+{
+    <div class="box">
+        @{
+            var _list = BlogsBLL.Load_Arch_List(_context, Model.TotalRecords, Model.isAll);
+
+            if (_list.Count > 0)
+            {
+                <h3 class="m-b-10">@Model.HeadingTitle</h3>
+                <ul class="horizontal_nav">
+                    @foreach (var Item in _list)
+                    {
+                        <li class="m-b-5">
+                            <a href="@ArchiveUrlConfig.PrepareUrl(Item.MonthName, Item.Year, Model.Path)">@Item.MonthName @Item.Year</a>
+                        </li>
+                    }
+                    @if (_list.Count > Model.TotalRecords)
+                    {
+                        <li class="m-b-5">
+                            <a class="item-title-sm" href="@CategoryUrlConfig.BrowseAllUrl(Model.Path)">@GeneralResource["_see_all"].Value</a>
+                        </li>
+                    }
+                </ul>
+            }
+        }
+
+    </div>
+}

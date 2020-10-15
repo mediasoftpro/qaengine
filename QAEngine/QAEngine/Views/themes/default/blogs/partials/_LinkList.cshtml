@@ -1,0 +1,45 @@
+﻿@inject Jugnoon.Framework.ApplicationDbContext _context
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Features> featureSettings
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Registration> registrationSettings
+@model Jugnoon.Blogs.Models.BlogListViewModel
+@using Jugnoon.Blogs;
+@using Jugnoon.Blogs.Models;
+@*
+    Generate List of Articles (Only Links) based on Query => BlogEngtity (Params)
+*@
+@if (featureSettings.Value.enable_blogs)
+{
+    <!-- Contents Section Started -->
+    var _list = await BlogsBLL.LoadItems(_context, Model.QueryOptions);
+    if (_list.Count > 0)
+    {
+        var PartialPath = "~/Views/themes/default/blogs/partials";
+        var listObject = new ListItems()
+        {
+            ListType = ListType.Links
+        };
+    <div class="m-b-5 vertical-menu-light">
+        <ul>
+            @foreach (var Item in _list)
+            {
+
+                <li class="m-b-5 truncate">
+                    @await Html.PartialAsync(PartialPath + "/item/Item.cshtml", new BlogItemViewModel()
+                    {
+                        Data = Item,
+                        ListObject = listObject,
+                        AuthorUrl = UserUrlConfig.ProfileUrl(Item.author, registrationSettings.Value.uniqueFieldOption),
+                        ProfileUrl = BlogUrlConfig.Generate_Post_Url(Item)
+                    })
+                </li>
+            }
+
+        </ul>
+            @if (Model.BrowseText != "" && _list.Count >= Model.QueryOptions.pagesize)
+            {                
+                <p class="m-b-10"><a class="m-b-5 text-right" href="@Model.BrowseUrl">@Model.BrowseText</a></p>
+            }
+        
+    </div>
+    }
+}

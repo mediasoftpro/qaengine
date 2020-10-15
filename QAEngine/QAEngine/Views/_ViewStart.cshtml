@@ -1,3 +1,10 @@
 ﻿@{
-    Layout = "~/Views/Shared/layouts/_Layout.cshtml";
+    if (SiteConfiguration.Theme != null && SiteConfiguration.Theme != "")
+    {
+        Layout = "~/Views/themes/" + SiteConfiguration.Theme + "/layouts/index.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
 }

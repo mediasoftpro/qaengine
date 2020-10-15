@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -44,11 +44,22 @@ export class SettingsService {
         smtp: APIURL + "api/configuration/smtp",
         comment: APIURL + "api/configuration/comment",
         location: APIURL + "api/configuration/location",
-        rechapcha: APIURL + "api/configuration/rechapcha"
+        rechapcha: APIURL + "api/configuration/rechapcha",
+        stripe: APIURL + "api/configuration/stripe",
+        elasticsearch: APIURL + "api/configuration/elasticsearch",
+        activecompaign: APIURL + "api/configuration/activecompaign",
+        zendesk: APIURL + "api/configuration/zendesk",
       },
-      qa: {
-        general: APIURL + "api/qa/configs_general"
+      blogs: {
+        general: APIURL + "api/blogs/configs_general",
+        aws: APIURL + "api/blogs/configs_aws"
+      },
+      
+      classified: {
+        general: APIURL + "api/adlisting/configs_general",
+        aws: APIURL + "api/adlisting/configs_aws"
       }
+     
     };
 
     this.init_toolbar_options();

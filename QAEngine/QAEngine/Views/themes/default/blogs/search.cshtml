@@ -1,0 +1,68 @@
+﻿@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.General> generalSettings
+@model Jugnoon.Blogs.Models.BlogListViewModel
+@{
+
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+}
+<partial name="~/Views/Shared/_BreadCrumb.cshtml" model="new BreadViewModel() { BreadItems = Model.BreadItems }" />
+
+
+<div class="row">
+    <div class="col-md-8 m-b-10" style="min-height: 500px;">
+        <div class="m-b-10">
+            <script>
+                var URL = '@SiteConfiguration.URL'; // API URL
+                var Ang_UID = '';
+                var UserType = 0; // 0: normal user
+                var themeName = '@SiteConfiguration.Theme'; // add multi themplate support
+                var Ang_UserName = '';
+                var Ang_AppMessage = '';
+                var Ang_Culture = '@requestCulture.RequestCulture.UICulture.Name'
+                var Ang_VideoUploaderOption = 0;
+                var AppType = 'search'; // account, admin, setup, search
+                var setupType = 0; // 0: database setup, 1: user, data & configuration setup
+                var ImageDirectory = '/images/'; // /assets/images/
+                var AppTitle = '@generalSettings.Value.website_title';
+                // search parameters
+                var SearchParams = {
+                    term: '@Model.QueryOptions.term',
+                    type: 'blogs'
+                };
+                var SerachContentType = 0;
+            </script>
+            <app-root></app-root>
+        </div>
+
+        @await Html.PartialAsync("~/Views/partials/ads/ad_728.cshtml", new AdsModelView() { isAdult = false })
+
+    </div>
+    <div class="col-md-4">
+        @await Html.PartialAsync("~/Views/themes/default/blogs/partials/_Nav.cshtml", new Jugnoon.Blogs.Models.BlogNavViewModel()
+        {
+           hideAds = false,
+           hideSearch = true,
+           hideArchives = false,
+           hideCategories = false,
+           hideTags = false,
+           //searchTitle = SharedLocalizer["Search Articles"].Value,
+           //searchAction = "/blogs/queryresult",
+           //searchPlaceHolder = SharedLocalizer["Search Articles"].Value,
+           //searchAdvanceUrl = "/blogs/searchoptions",
+           //Path = "blogs/"
+        })
+    </div>
+</div>
+
+
+
+@section Styles {
+    <base href="/blogs/search/@Model.QueryOptions.term">
+}
+
+@section Scripts {
+    <script src="/app/@SiteConfiguration.Theme/runtime.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/polyfills.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/scripts.js" defer></script>
+    <script src="/app/@SiteConfiguration.Theme/main.js" defer></script>
+}

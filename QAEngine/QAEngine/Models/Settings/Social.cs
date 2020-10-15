@@ -64,16 +64,6 @@ namespace Jugnoon.Settings
         public string instagram_url { get; set; }
 
         /// <summary>
-        /// Enable addthis plugin for sharing content option for more information visit: https://www.addthis.com/
-        /// </summary>
-        public string addthis_pubid { get; set; }
-
-        /// <summary>
-        /// Enable sharethis property id for sharing content option for more information visit: https://sharethis.com/
-        /// </summary>
-        public string sharethis_propertyId { get; set; }
-
-        /// <summary>
         /// This will include Facebook Javascript SDK, that can be used with variety of facebook apps including facebook comments, like box and others
         /// </summary>
         public string fb_appId { get; set; }

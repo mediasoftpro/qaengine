@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -24,10 +24,10 @@ import { FormService } from "../../admin/settings/configurations/services/form.s
 
 // shared services
 import { CoreService } from "../../admin/core/coreService";
-import { CoreAPIActions } from "../../reducers/core/actions";
+//import { CoreAPIActions } from "../../reducers/core/actions";
 
 // reducer actions
-import { ConfigurationsAPIActions } from "../../reducers/settings/configurations/actions";
+//import { ConfigurationsAPIActions } from "../../reducers/settings/configurations/actions";
 
 
 @NgModule({
@@ -44,6 +44,6 @@ import { ConfigurationsAPIActions } from "../../reducers/settings/configurations
   exports: [
     MainSetupComponent
   ],
-  providers: [SettingsService, DataService, FormService, ConfigurationsAPIActions, CoreService, CoreAPIActions]
+  providers: [SettingsService, DataService, FormService, CoreService]
 })
 export class SharedSetupModule {}

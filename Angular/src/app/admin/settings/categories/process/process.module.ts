@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: VideoEngine                         */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -17,7 +17,7 @@ import { SettingsService } from "../services/settings.service";
 import { DataService } from "../services/data.service";
 import { FormService } from "../services/form.service";
 /* actions */
-import { CategoriesAPIActions } from "../../../../reducers/settings/categories/actions";
+// import { CategoriesAPIActions } from "../../../../reducers/settings/categories/actions";
 
 import { PartialModule } from "../../../../partials/shared.module";
 
@@ -25,6 +25,6 @@ import { PartialModule } from "../../../../partials/shared.module";
   imports: [CommonModule, PartialModule, FormsModule],
   declarations: [ProcCategoriesComponent],
   exports: [ProcCategoriesComponent],
-  providers: [SettingsService, DataService, FormService, CategoriesAPIActions]
+  providers: [SettingsService, DataService, FormService]
 })
 export class ProcCategoriesModule {}

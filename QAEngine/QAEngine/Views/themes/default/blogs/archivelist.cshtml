@@ -1,0 +1,32 @@
+﻿@model Jugnoon.Models.ArchiveListModelView
+@inject IStringLocalizer<GeneralResource> GeneralResource
+@{
+    // activate header menu
+    ViewBag.BlogsTabCss = "active";
+    // setup search with articles
+    ViewBag.SearchType = 6;
+   
+}
+    <partial name="~/Views/Shared/_BreadCrumb.cshtml" model="new BreadViewModel() { BreadItems = Model.BreadItems }" />
+
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="m-b-10">
+            <partial name="~/Views/themes/default/blogs/partials/_Archives.cshtml" />
+        </div>
+
+        @await Html.PartialAsync("~/Views/partials/ads/ad_728.cshtml", new AdsModelView() { isAdult = false })
+    </div>
+    <div class="col-md-4">
+        @await Html.PartialAsync("~/Views/themes/default/blogs/partials/_Nav.cshtml", new Jugnoon.Blogs.Models.BlogNavViewModel()
+        {
+            hideAds = false,
+            hideSearch = true,
+            hideArchives = true,
+            hideCategories = false,
+            hideTags = false,
+            Path = "blogs/"
+        })
+    </div>
+</div>

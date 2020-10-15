@@ -77,7 +77,8 @@ namespace Jugnoon.BLL
             if (await CategoryBLL.Count(context, new CategoryEntity() { type = (byte)CategoryBLL.Types.AbuseReport }) == 0)
             {
                 var Categories = new List<JGN_Categories>
-                {new JGN_Categories { title = "General", type = (byte)CategoryBLL.Types.qa, priority = 100, isenabled = 1  },
+                {    new JGN_Categories { title = "General", type = (byte)CategoryBLL.Types.qa, priority = 100, isenabled = 1  },
+                     new JGN_Categories { title = "General", type = (byte)CategoryBLL.Types.Blogs, priority = 100, isenabled = 1  },
                      new JGN_Categories { title = "Sexual Content", type = 4, priority = 100, isenabled = 1  },
                      new JGN_Categories { title = "Voilent or Repulsive Contents", type = 4, priority = 99, isenabled = 1  },
                      new JGN_Categories { title = "Hateful or Abusive Content", type = 4, priority = 98, isenabled = 1  },
@@ -365,10 +366,10 @@ namespace Jugnoon.BLL
                         tags = "[username],[ptitle],[purl],[pdescription]",
                         subject = "Asked Question on [website]",
                         contents = "<p>Hello,<br /><br />[username] asked new question on <a href='[website_url]' title='[website]'>[website]</a>.</p>" +
-                         "<p>[purl]</p>" +
-                         "<p>[ptitle]</p>" +
-                         "<p>[pdescription]</p>" +
-                         return_template_signature()
+                        "<p>[purl]</p>" +
+                        "<p>[ptitle]</p>" +
+                        "<p>[pdescription]</p>" +
+                        return_template_signature()
                     });
 
                     MailTemplates.Add(new JGN_MailTemplates
@@ -386,7 +387,6 @@ namespace Jugnoon.BLL
                     });
                 }
 
-             
 
                 foreach (var Template in MailTemplates)
                 {

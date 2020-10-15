@@ -1,14 +1,14 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 import { Component, OnInit, Input } from "@angular/core";
 
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../../../admin/settings/configurations/services/settings.service";
@@ -17,10 +17,24 @@ import { FormService } from "../../../admin/settings/configurations/services/for
 
 // shared services
 import { CoreService } from "../../../admin/core/coreService";
-import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../reducers/core/actions";
 
 // reducer actions
-import { ConfigurationsAPIActions } from "../../../reducers/settings/configurations/actions";
+//import { ConfigurationsAPIActions } from "../../../reducers/settings/configurations/actions";
+
+// reducer actions
+import * as selectors from "../../../reducers/settings/configurations/selectors";
+/*import {
+  applyFilter,
+  updateItemsSelectionStatus,
+  selectAll,
+  updateFilterOptions,
+  refresh_pagination,
+} from "../../../reducers/settings/configurations/actions";*/
+
+import { Notify, refreshListStats } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+
 
 @Component({
   selector: "app-setup",
@@ -28,22 +42,25 @@ import { ConfigurationsAPIActions } from "../../../reducers/settings/configurati
 })
 export class MainSetupComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: ConfigurationsAPIActions,
     private formService: FormService
   ) {}
 
-  @select(["configurations", "configurations"])
+  readonly Configurations$ = this._store.pipe(select(selectors.configurations));
+  readonly loading$ = this._store.pipe(select(selectors.loading));
+  readonly isloaded$ = this._store.pipe(select(selectors.isloaded));
+  
+  /*@select(["configurations", "configurations"])
   readonly Configurations$: Observable<any>;
 
   @select(["configurations", "loading"])
   readonly loading$: Observable<boolean>;
 
   @select(["configurations", "isloaded"])
-  readonly isloaded$: Observable<any>;
+  readonly isloaded$: Observable<any>;*/
 
   @Input() SetupType = 0; // 0: Database Setup, 1: User Setup
   Configs = [];
@@ -67,7 +84,8 @@ export class MainSetupComponent implements OnInit {
     "general",
     "general",
     "general",
-    "qa"
+    "classified",
+    "classified"
   ];
   child_prop_steps: any = [
     "dbusersetup",
@@ -80,7 +98,8 @@ export class MainSetupComponent implements OnInit {
     "social",
     "contact",
     "smtp",
-    "general"
+    "general",
+    "aws"
   ];
   stepIndex = 0;
   ngOnInit() {
@@ -116,8 +135,8 @@ export class MainSetupComponent implements OnInit {
     this.child_prop = sub_prop;
 
     this.formHeading = sub_prop[0].toUpperCase() + sub_prop.slice(1) + " Settings";
-    if (primary_prop === 'qa') {
-      this.formHeading = "[QA] " + this.formHeading;
+    if (primary_prop === 'classified') {
+      this.formHeading = "[Classified] " + this.formHeading;
     }
     if (sub_prop === "dbsetup") {
       entity = {
@@ -168,17 +187,17 @@ export class MainSetupComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (data.status === "error") {
-            this.coreActions.Notify({
+            this._store.dispatch(new Notify({
               title: data.message,
               text: "",
-              css: "bg-success"
-            });
+              css: "bg-danger"
+            }));
           } else {
-            this.coreActions.Notify({
+            this._store.dispatch(new Notify({
               title: "Settings Updated",
               text: "",
               css: "bg-success"
-            });
+            }));
           }
           this.showProcessing = false;
           if (this.SetupType === 1) {
@@ -188,11 +207,11 @@ export class MainSetupComponent implements OnInit {
           }
         },
         err => {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: "Error Occured",
             text: "",
             css: "bg-danger"
-          });
+          }));
           this.showProcessing = false;
         }
       );

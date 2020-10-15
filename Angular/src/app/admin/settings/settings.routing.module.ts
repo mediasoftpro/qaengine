@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -29,6 +29,11 @@ import { ProcMailTemplateComponent } from "./mailtemplates/process/process.compo
 
 
 import { TagsComponent } from "./tags/tags.components";
+
+// gamify
+import { GamifyComponent } from "./gamify/gamify.component";
+import { ProcGamifyComponent } from "./gamify/process/process.component";
+import { GamifyCategoriesComponent } from "./gamify/categories/categories.component";
 
 const settingRoutes: Routes = [
   {
@@ -75,6 +80,50 @@ const settingRoutes: Routes = [
           ]
         }
       },
+      {
+        path: "gamify",
+        children: [
+          { path: "", component: GamifyComponent },
+          { path: "process/:id/:type", component: ProcGamifyComponent },
+          { path: "process", component: ProcGamifyComponent },
+          {
+            path: "categories/:type",
+            component: GamifyCategoriesComponent,
+            data: {
+              title: "Manage Gamify",
+              urls: [
+                { title: "Dashboard", url: "/" },
+                { title: "Settings", url: "/settings" },
+                { title: "Gamify", url: "/settings/gamify" },
+                { title: "Manage Categories" }
+              ]
+            }
+          },
+          {
+            path: "categories",
+            component: GamifyCategoriesComponent,
+            data: {
+              title: "Manage Gamify",
+              urls: [
+                { title: "Dashboard", url: "/" },
+                { title: "Settings", url: "/settings" },
+                { title: "Gamify", url: "/settings/gamify" },
+                { title: "Manage Categories" }
+              ]
+            }
+          }
+        ],
+        data: {
+          title: "Gamify Management",
+          urls: [
+            { title: "Dashboard", url: "/" },
+            { title: "Settings", url: "/settings" },
+            { title: "Gamify", url: "/settings/gamify" },
+            { title: "Management" }
+          ]
+        }
+      },
+     
       {
         path: "configurations",
         children: [
@@ -163,6 +212,7 @@ const settingRoutes: Routes = [
           ]
         }
       },
+      
       {
         path: "tags",
         children: [{ path: "", component: TagsComponent }],

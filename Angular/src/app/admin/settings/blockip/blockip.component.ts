@@ -1,14 +1,14 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, ViewEncapsulation, OnInit } from "@angular/core";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 /* modal popup */
 import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
 
@@ -20,10 +20,20 @@ import { DataService } from "./services/data.service";
 import { ViewComponent } from "./partials/modal.component";
 
 // shared services
-import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../reducers/core/actions";
 
 // reducer actions
-import { BlockIPAPIActions } from "../../../reducers/settings/blockip/actions";
+import * as blockIPSelectors from "../../../reducers/settings/blockip/selectors";
+import {
+  applyFilter,
+  updateItemsSelectionStatus,
+  addRecord,
+  updateFilterOptions,
+  refresh_pagination,
+} from "../../../reducers/settings/blockip/actions";
+import { Notify, refreshListStats } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+//import { BlockIPAPIActions } from "../../../reducers/settings/blockip/actions";
 import { fadeInAnimation } from "../../../animations/core";
 
 import { PermissionService } from "../../../admin/users/services/permission.service";
@@ -32,35 +42,28 @@ import { PermissionService } from "../../../admin/users/services/permission.serv
   templateUrl: "./blockip.html",
   encapsulation: ViewEncapsulation.None,
   animations: [fadeInAnimation],
-  host: { "[@fadeInAnimation]": "" }
+  host: { "[@fadeInAnimation]": "" },
 })
 export class BlockIPComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private modalService: NgbModal,
-    public permission: PermissionService,
-    private coreActions: CoreAPIActions,
-    private actions: BlockIPAPIActions
+    public permission: PermissionService
   ) {}
 
-  @select(["blockip", "filteroptions"])
-  readonly filteroptions$: Observable<any>;
+  readonly filteroptions$ = this._store.pipe(
+    select(blockIPSelectors.filteroptions)
+  );
+  readonly isloaded$ = this._store.pipe(select(blockIPSelectors.isloaded));
+  readonly isItemSelected$ = this._store.pipe(
+    select(blockIPSelectors.itemsselected)
+  );
+  readonly records$ = this._store.pipe(select(blockIPSelectors.records));
+  readonly pagination$ = this._store.pipe(select(blockIPSelectors.pagination));
 
-  @select(["blockip", "itemsselected"])
-  readonly isItemSelected$: Observable<any>;
-
-  @select(["blockip", "isloaded"])
-  readonly isloaded$: Observable<any>;
-
-  @select(["blockip", "records"])
-  readonly records$: Observable<any>;
-
-  @select(["blockip", "pagination"])
-  readonly pagination$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+  readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -100,21 +103,21 @@ export class BlockIPComponent implements OnInit {
     this.SearchOptions = this.settingService.getSearchOptions();
     this.ToolbarOptions = this.settingService.getToolbarOptions();
 
-    this.filteroptions$.subscribe(options => {
-      this.FilterOptions = options;
+    this.filteroptions$.subscribe((options) => {
+      this.FilterOptions = Object.assign({}, options);
       if (options.track_filter) {
         this.dataService.LoadRecords(options);
         // reset track filter to false again
-        options.track_filter = false;
-        this.actions.updateFilterOptions(options);
+        this.FilterOptions.track_filter = false;
+        this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
     });
 
-    this.records$.subscribe(records => {
+    this.records$.subscribe((records) => {
       this.Records = records;
     });
 
-    this.pagination$.subscribe(pagination => {
+    this.pagination$.subscribe((pagination) => {
       this.Pagination = pagination;
     });
 
@@ -135,11 +138,13 @@ export class BlockIPComponent implements OnInit {
   /* toolbar actions */
   toolbaraction(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(
+        new Notify({
+          title: "Permission Denied",
+          text: "",
+          css: "bg-danger",
+        })
+      );
       return;
     }
     switch (selection.action) {
@@ -157,29 +162,29 @@ export class BlockIPComponent implements OnInit {
     const _filterOptions = filters.filters;
     _filterOptions.pagenumber = 1;
     _filterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-    this.actions.updateFilterOptions(_filterOptions);
+    this._store.dispatch(new updateFilterOptions(_filterOptions));
   }
 
   /* Add Record */
   AddRecord() {
     const _options: NgbModalOptions = {
-      backdrop: false
+      backdrop: false,
     };
     const modalRef = this.modalService.open(ViewComponent, _options);
     modalRef.componentInstance.Info = {
       title: "Block IP Address",
-      data: this.settingService.getInitObject()
+      data: this.settingService.getInitObject(),
     };
     modalRef.result.then(
-      result => {
-        this.actions.addRecord({
+      (result) => {
+        this._store.dispatch(new addRecord({
           id: 0,
           ipaddress: result.data.ipaddress,
-          created_at: new Date()
-        });
-        // this.closeResult = `Closed with: ${result}`;
+          created_at: new Date(),
+        }));
+       
       },
-      dismissed => {
+      (dismissed) => {
         console.log("dismissed");
       }
     );
@@ -191,9 +196,10 @@ export class BlockIPComponent implements OnInit {
     if (this.SelectedItems.length > 0) {
       _selection = true;
     }
-    this.actions.updateItemsSelectionStatus(_selection);
-    console.log("items selected");
-    console.log(this.SelectedItems);
+    
+    
+    this._store.dispatch(new updateItemsSelectionStatus(_selection));
+    
   }
 
   ProcessActions(selection: any) {
@@ -206,16 +212,16 @@ export class BlockIPComponent implements OnInit {
   }
 
   refreshStats() {
-    this.actions.refresh_pagination({
+    this._store.dispatch(new refresh_pagination({
       type: 0, // 0: my , 1: favorites, 2: liked, 3: playlist
       totalrecords: this.Records,
-      pagesize: this.FilterOptions.pagesize
-    });
-    // refresh list states
-    this.coreActions.refreshListStats({
+      pagesize: this.FilterOptions.pagesize,
+    }));
+   
+    this._store.dispatch(new refreshListStats({
       totalrecords: this.Records,
       pagesize: this.FilterOptions.pagesize,
-      pagenumber: this.Pagination.currentPage
-    });
+      pagenumber: this.Pagination.currentPage,
+    }));
   }
 }

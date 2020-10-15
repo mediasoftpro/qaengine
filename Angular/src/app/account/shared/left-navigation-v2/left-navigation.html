@@ -1,0 +1,17 @@
+
+<div class="sidebar left" *ngIf="config.getGlobalVar('theme') === 'default'">
+  <div class="my-account-nav-container">
+    <ul class="my-account-nav">
+      <li class="sub-nav-title">Manage Account</li>
+     
+      <li *ngFor="let menu of MyAccount_Menu">
+        <a
+          [ngClass]="{ current: menu.index == leftMenuIndex }"
+          routerLink="{{ menu.value }}"
+        >
+          <i class="{{ menu.icon }}"></i> {{ menu.title }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -10,6 +10,39 @@ namespace Jugnoon.Services
     public static class EmailSenderExtensions
     {
 
+        public static Task SendMessage(this IEmailSender emailSender, ApplicationDbContext context, string email)
+        {
+            if (Settings.Configs.SmtpSettings.enable_email)
+            {
+                /*var lst = MailTemplateBLL.Get_Template(context, "ENQUIRY").Result;
+                if (lst.Count > 0)
+                {
+                    string subject = MailProcess.Process2(lst[0].subject, "\\[fullname\\]", entity.fullName);
+                    subject = MailProcess.Prepare_Email_Signature(subject);
+
+                    string contents = MailProcess.Process2(lst[0].contents, "\\[fullname\\]", entity.fullName);
+                    contents = MailProcess.Process2(contents, "\\[phone\\]", entity.phoneNumber);
+                    contents = MailProcess.Process2(contents, "\\[email\\]", entity.emailAddress);
+                    contents = MailProcess.Process2(contents, "\\[message\\]", entity.Message);
+                    var adUrl = Jugnoon.Classified.ClassifiedUrl.Preview_URL(new JGN_AdListings()
+                    {
+                        id = entity.AdId,
+                        title = entity.AdTitle
+                    });
+                    contents = MailProcess.Process2(contents, "\\[AdUrl\\]", "<a href='" + adUrl + "'>" + entity.AdTitle + "</a>");
+                    // attach signature
+                    contents = MailProcess.Process2(contents, "\\[website\\]", Settings.Configs.GeneralSettings.website_title);
+                    contents = MailProcess.Process2(contents, "\\[website_url\\]", SiteConfiguration.URL);
+
+                    contents = MailProcess.Prepare_Email_Signature(contents);
+
+                    return emailSender.SendEmailAsync(email, subject, contents);
+                }*/
+            }
+
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Send email through contact us form
         /// </summary>

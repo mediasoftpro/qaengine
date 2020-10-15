@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -12,18 +12,22 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot
 } from "@angular/router";
-import { Observable } from "rxjs/Observable";
+
 import { Router } from "@angular/router";
-import { select } from "@angular-redux/store";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "./reducers/store/model";
+import {auth} from "./reducers/users/selectors";
+import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class JMediaLazyGuard implements CanActivate {
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+
+ readonly auth$ = this._store.pipe(select(auth));
 
   isAuth: any;
 
-  constructor(private router: Router) {
+  constructor(private _store: Store<IAppState>,
+    private router: Router) {
     this.auth$.subscribe(auth => {
       this.isAuth = auth;
     });
@@ -33,8 +37,7 @@ export class JMediaLazyGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    console.log("reached");
-    console.log(this.isAuth);
+    
     if (this.isAuth.isAuthenticated) {
       return true;
     } else {

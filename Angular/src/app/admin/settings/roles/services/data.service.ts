@@ -1,50 +1,65 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
-
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 import { Injectable } from "@angular/core";
-import { ROLEAPIActions } from "../../../../reducers/settings/roles/actions";
+//import { ROLEAPIActions } from "../../../../reducers/settings/roles/actions";
 import { HttpClient } from "@angular/common/http";
 
 import { SettingsService } from "./settings.service";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../../reducers/core/actions";
+import {
+  loadStarted,
+  loadSucceeded,
+  loadFailed,
+  loadObjectStarted,
+  loadObjectSucceeded,
+  loadObjectFailed,
+  addRole,
+  updateObject,
+  addObject,
+  applyRoleChanges,
+  applyObjectChanges
+} from "../../../../reducers/settings/roles/actions";
+import { refreshListStats } from "../../../../reducers/core/actions";
+import { Notify } from "../../../../reducers/core/actions";
 
 @Injectable()
 export class DataService {
   constructor(
+    private _store: Store<IAppState>,
     private settings: SettingsService,
-    private http: HttpClient,
-    private actions: ROLEAPIActions,
-    private coreActions: CoreAPIActions
+    private http: HttpClient
   ) {}
 
   LoadRoles() {
     const URL = this.settings.getApiOptions().load_roles;
-    this.actions.loadStarted();
+    this._store.dispatch(new loadStarted({}));
     this.http.post(URL, {}).subscribe(
       (data: any) => {
         // update core data
-        this.actions.loadSucceeded(data);
+        this._store.dispatch(new loadSucceeded(data));
       },
-      err => {
-        this.actions.loadFailed(err);
+      (err) => {
+        this._store.dispatch(new loadFailed(err));
       }
     );
   }
   LoadObjects() {
     const URL = this.settings.getApiOptions().load_objects;
-    this.actions.loadObjectStarted();
+    this._store.dispatch(new loadObjectStarted({}));
     this.http.post(URL, {}).subscribe(
       (data: any) => {
         // update core data
-        this.actions.loadObjectSucceeded(data);
+        this._store.dispatch(new loadObjectSucceeded(data));
       },
-      err => {
-        this.actions.loadObjectFailed(err);
+      (err) => {
+        this._store.dispatch(new loadObjectFailed(err));
       }
     );
   }
@@ -56,10 +71,10 @@ export class DataService {
       .subscribe(
         (data: any) => {
           // update core data
-          this.actions.addRole(data.record);
+          this._store.dispatch(new addRole(data.record));
         },
-        err => {
-          this.actions.loadObjectFailed(err);
+        (err) => {
+          this._store.dispatch(new loadObjectFailed(err));
         }
       );
   }
@@ -71,13 +86,13 @@ export class DataService {
         (data: any) => {
           // update core data
           if (obj.id > 0) {
-            this.actions.updateObject(data.record);
+            this._store.dispatch(new updateObject(data.record));
           } else {
-            this.actions.addObject(data.record);
+            this._store.dispatch(new addObject(data.record));
           }
         },
-        err => {
-          this.actions.loadObjectFailed(err);
+        (err) => {
+          this._store.dispatch(new loadObjectFailed(err));
         }
       );
   }
@@ -102,18 +117,18 @@ export class DataService {
     this.ProcessActions(arr, "delete", url, type);
   }
 
-  
   ProcessActions(SelectedItems, isenabled, url, type) {
     if (type === 1) {
-      this.actions.applyRoleChanges({
+      this._store.dispatch(new applyRoleChanges({
         SelectedItems,
-        isenabled
-      });
+        isenabled,
+      }));
+     
     } else {
-      this.actions.applyObjectChanges({
+      this._store.dispatch(new applyObjectChanges({
         SelectedItems,
-        isenabled
-      });
+        isenabled,
+      }));
     }
     this.http.post(url, JSON.stringify(SelectedItems)).subscribe(
       (data: any) => {
@@ -122,18 +137,20 @@ export class DataService {
         if (isenabled === "delete") {
           message = "Record Removed";
         }
-        this.coreActions.Notify({
-          title: message,
-          text: "",
-          css: "bg-success"
-        });
+        this._store.dispatch(new Notify({
+            title: message,
+            text: "",
+            css: "bg-success"
+          }));
       },
-      err => {
-        this.coreActions.Notify({
-          title: "Error Occured",
-          text: "",
-          css: "bg-danger"
-        });
+      (err) => {
+        this._store.dispatch(
+          new Notify({
+            title: "Error Occured",
+            text: "",
+            css: "bg-danger",
+          })
+        );
       }
     );
   }

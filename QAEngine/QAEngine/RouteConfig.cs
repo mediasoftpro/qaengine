@@ -7,9 +7,7 @@ namespace Jugnoon.Core
     {
         public static IEndpointRouteBuilder Use(IEndpointRouteBuilder routeBuilder)
         {
-           
 
-          
 
             #region User Profile
             routeBuilder.MapControllerRoute(
@@ -18,18 +16,18 @@ namespace Jugnoon.Core
                     defaults: new { controller = "user", action = "profile" }
 
                 );
-           
+
             routeBuilder.MapControllerRoute(
                null,
                "user/qa/{username}",
                defaults: new { controller = "user", action = "qa" }
 
            );
-           routeBuilder.MapControllerRoute(
-                   null,
-                   "user/qa/{username}/{id}",
-                   defaults: new { controller = "user", action = "qa" }
-           );
+            routeBuilder.MapControllerRoute(
+                    null,
+                    "user/qa/{username}/{id}",
+                    defaults: new { controller = "user", action = "qa" }
+            );
 
             routeBuilder.MapControllerRoute(
                 null,
@@ -39,7 +37,7 @@ namespace Jugnoon.Core
              );
             #endregion
 
-          
+
 
             #region qa
             routeBuilder.MapControllerRoute(
@@ -52,67 +50,67 @@ namespace Jugnoon.Core
                     null,
                     "qa/remove/",
                     defaults: new { controller = "qa", action = "remove" }
-                    
+
             );
             routeBuilder.MapControllerRoute(
                     null,
                     "qa/ask/{id}",
                     defaults: new { controller = "qa", action = "ask" }
-                    
+
              );
             // qa category processing routes
             routeBuilder.MapControllerRoute(
                      null,
                      "qa/category/filter/{title}/{filter}",
                      defaults: new { controller = "qa", action = "category" }
-                     
+
               );
             routeBuilder.MapControllerRoute(
                    null,
                    "qa/category/filter/{title}/{filter}/{pagenumber}",
                    defaults: new { controller = "qa", action = "category" }
-                   
+
             );
 
             routeBuilder.MapControllerRoute(
                       null,
                       "qa/category/filter/{title}/{filter}/{order}",
                       defaults: new { controller = "qa", action = "category" }
-                      
+
             );
 
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/category/filter/{title}/{filter}/{order}/{pagenumber}",
                   defaults: new { controller = "qa", action = "category" }
-                  
+
             );
 
             routeBuilder.MapControllerRoute(
                     null,
                     "qa/category/{title}/{order}",
                     defaults: new { controller = "qa", action = "category" }
-                    
+
               );
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/category/{title}/{order}/{pagenumber}",
                   defaults: new { controller = "qa", action = "category" }
-                  
+
             );
 
             routeBuilder.MapControllerRoute(
                    null,
                    "qa/category/{title}",
                    defaults: new { controller = "qa", action = "category" }
-                   
+
             );
 
             routeBuilder.MapControllerRoute(
                  null,
                  "qa/category/{title}/{pagenumber}",
                  defaults: new { controller = "qa", action = "category" }
-                 
+
             );
 
 
@@ -120,37 +118,37 @@ namespace Jugnoon.Core
                   null,
                   "qa/label/filter/{title}/{filter}",
                   defaults: new { controller = "qa", action = "label" }
-                  
+
             );
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/label/filter/{title}/{filter}/{pagenumber}",
                   defaults: new { controller = "qa", action = "label" }
-                  
+
             );
             routeBuilder.MapControllerRoute(
                  null,
                  "qa/label/filter/{title}/{filter}/{order}",
                  defaults: new { controller = "qa", action = "label" }
-                 
+
             );
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/label/filter/{title}/{filter}/{order}/{pagenumber}",
                   defaults: new { controller = "qa", action = "label" }
-                  
+
             );
             routeBuilder.MapControllerRoute(
                null,
                "qa/label/{title}/{order}/{pagenumber}",
                defaults: new { controller = "qa", action = "label" }
-               
+
             );
             routeBuilder.MapControllerRoute(
                null,
                "qa/label/{title}/{order}",
                defaults: new { controller = "qa", action = "label" }
-               
+
             );
             routeBuilder.MapControllerRoute(
                null,
@@ -169,7 +167,7 @@ namespace Jugnoon.Core
                "qa/label/{title}/{pagenumber}",
                defaults: new { controller = "qa", action = "label" }
             );
-            
+
             routeBuilder.MapControllerRoute(
                null,
                "qa/archive/{month}/{year}/{order}",
@@ -186,7 +184,7 @@ namespace Jugnoon.Core
               null,
               "qa/archive/{month}/{year}",
               defaults: new { controller = "qa", action = "archive" }
-              
+
            );
 
             routeBuilder.MapControllerRoute(
@@ -199,80 +197,80 @@ namespace Jugnoon.Core
                   null,
                   "qa/categories",
                   defaults: new { controller = "qa", action = "categories" }
-                  
+
             );
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/categories/{pagenumber}",
                   defaults: new { controller = "qa", action = "categories" }
-                  
+
             );
 
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/archivelist",
                   defaults: new { controller = "qa", action = "archivelist" }
-                  
+
             );
 
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/labels",
                   defaults: new { controller = "qa", action = "labels" }
-                  
+
             );
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/labels/{pagenumber}",
                   defaults: new { controller = "qa", action = "labels" }
-                  
+
             );
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/labels/search/{term}",
                   defaults: new { controller = "qa", action = "labels" }
-                  
+
             );
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/labels/search/{term}/{pagenumber}",
                   defaults: new { controller = "qa", action = "labels" }
-                  
+
             );
 
             routeBuilder.MapControllerRoute(
                    null,
                    "qa/queryresult",
                    defaults: new { controller = "qa", action = "queryresult" }
-                   
+
             );
 
             routeBuilder.MapControllerRoute(
                   null,
                   "qa/search/filter/{filter}/{term}",
                   defaults: new { controller = "qa", action = "search" }
-                  
+
               );
 
             routeBuilder.MapControllerRoute(
                 null,
                 "qa/search/filter/{filter}/{term}/{pagenumber}",
                 defaults: new { controller = "qa", action = "search" }
-                
+
             );
 
             routeBuilder.MapControllerRoute(
                 null,
                 "qa/search/{term}",
                 defaults: new { controller = "qa", action = "search" }
-                
+
             );
 
             routeBuilder.MapControllerRoute(
                 null,
                 "qa/search/{term}/{pagenumber}",
                 defaults: new { controller = "qa", action = "search" }
-                
+
             );
 
 
@@ -280,35 +278,35 @@ namespace Jugnoon.Core
                 null,
                 "qa/page/{pagenumber}",
                 defaults: new { controller = "qa", action = "Index" }
-                
+
             );
 
             routeBuilder.MapControllerRoute(
                 null,
                 "qa/added/{filter}",
                 defaults: new { controller = "qa", action = "Index" }
-                
+
             );
 
             routeBuilder.MapControllerRoute(
                    null,
                    "qa/added/{filter}/{pagenumber}",
                    defaults: new { controller = "qa", action = "Index" }
-                   
+
              );
 
             routeBuilder.MapControllerRoute(
                  null,
                  "qa/{order}",
                  defaults: new { controller = "qa", action = "Index" }
-                 
+
             );
 
             routeBuilder.MapControllerRoute(
                  null,
                  "qa/{order}/{pagenumber}",
                  defaults: new { controller = "qa", action = "Index" }
-                 
+
             );
 
             routeBuilder.MapControllerRoute(
@@ -325,32 +323,247 @@ namespace Jugnoon.Core
                     null,
                     "question/editanswer/{qid}/{id}",
                     defaults: new { controller = "question", action = "editanswer" }
-                    
+
                 );
 
             routeBuilder.MapControllerRoute(
                      null,
                      "question/{pid}/{title}/{id}",
                      defaults: new { controller = "question", action = "Index" }
-                     
+
                  );
 
             routeBuilder.MapControllerRoute(
                      null,
                      "question/{pid}/{title}",
                      defaults: new { controller = "question", action = "Index" }
-                     
+
                  );
 
             #endregion
 
-          
+            #region Blogs
 
+            // blog post detail
+            routeBuilder.MapControllerRoute(
+                    null,
+                    "post/{id}/{title}",
+                    defaults: new { controller = "post", action = "Index" }
+            );
+
+            // blogs category processing routes
+            routeBuilder.MapControllerRoute(
+                     null,
+                     "blogs/category/filter/{title}/{filter}",
+                     defaults: new { controller = "blogs", action = "category" }
+
+            );
+
+            routeBuilder.MapControllerRoute(
+                   null,
+                   "blogs/category/filter/{title}/{filter}/{pagenumber}",
+                   defaults: new { controller = "blogs", action = "category" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                      null,
+                      "blogs/category/filter/{title}/{filter}/{order}",
+                      defaults: new { controller = "blogs", action = "category" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/category/filter/{title}/{filter}/{order}/{pagenumber}",
+                  defaults: new { controller = "blogs", action = "category" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                    null,
+                    "blogs/category/{title}/{order}",
+                    defaults: new { controller = "blogs", action = "category" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/category/{title}/{order}/{pagenumber}",
+                  defaults: new { controller = "blogs", action = "category" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                   null,
+                   "blogs/category/{title}",
+                   defaults: new { controller = "blogs", action = "category" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                 null,
+                 "blogs/category/{title}/{pagenumber}",
+                 defaults: new { controller = "blogs", action = "category" }
+            );
+
+            // blogs tag processing routes
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/label/filter/{title}/{filter}",
+                  defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/label/filter/{title}/{filter}/{pagenumber}",
+                  defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                 null,
+                 "blogs/label/filter/{title}/{filter}/{order}",
+                 defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/label/filter/{title}/{filter}/{order}/{pagenumber}",
+                  defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               null,
+               "blogs/label/{title}/{order}/{pagenumber}",
+               defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               null,
+               "blogs/label/{title}/{order}",
+               defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               null,
+               "blogs/label/{title}/{order}/{pagenumber}",
+               defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               null,
+               "blogs/label/{title}",
+               defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               null,
+               "blogs/label/{title}/{pagenumber}",
+               defaults: new { controller = "blogs", action = "label" }
+            );
+
+            routeBuilder.MapControllerRoute(
+              null,
+              "blogs/archive/{month}/{year}",
+              defaults: new { controller = "blogs", action = "archive" }
+           );
+
+            routeBuilder.MapControllerRoute(
+               null,
+               "blogs/archive/{month}/{year}/{pagenumber}",
+               defaults: new { controller = "blogs", action = "archive" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                null,
+                "blogs/categories",
+                defaults: new { controller = "blogs", action = "categories" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/categories/{pagenumber}",
+                  defaults: new { controller = "blogs", action = "categories" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/archivelist",
+                  defaults: new { controller = "blogs", action = "archivelist" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/labels",
+                  defaults: new { controller = "blogs", action = "labels" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/labels/{pagenumber}",
+                  defaults: new { controller = "blogs", action = "labels" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/labels/search/{term}",
+                  defaults: new { controller = "blogs", action = "labels" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                  null,
+                  "blogs/labels/search/{term}/{pagenumber}",
+                  defaults: new { controller = "blogs", action = "labels" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                   null,
+                   "blogs/queryresult",
+                   defaults: new { controller = "blogs", action = "queryresult" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                null,
+                "blogs/search/{term}",
+                defaults: new { controller = "blogs", action = "search" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                null,
+                "blogs/page/{pagenumber}",
+                defaults: new { controller = "blogs", action = "Index" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                null,
+                "blogs/added/{filter}",
+                defaults: new { controller = "blogs", action = "Index" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                   null,
+                   "blogs/added/{filter}/{pagenumber}",
+                   defaults: new { controller = "blogs", action = "Index" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                 null,
+                 "blogs/{order}",
+                 defaults: new { controller = "blogs", action = "Index" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                 null,
+                 "blogs/{order}/{pagenumber}",
+                 defaults: new { controller = "blogs", action = "Index" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                 null,
+                 "blogs/",
+                 defaults: new { controller = "blogs", action = "Index" }
+            );
+
+            #endregion
+                     
             routeBuilder.MapControllerRoute(
                 name: "ActionApi",
                 pattern: "api/{controller}/{action}/{name?}"
             );
-
             routeBuilder.MapControllerRoute(
                 null,
                 "/account/{*url}",
@@ -362,7 +575,6 @@ namespace Jugnoon.Core
               "/admin/{*url}",
               defaults: new { controller = "admin", action = "Index" }
             );
-
             routeBuilder.MapFallbackToController("account/", "Index", "account");
             routeBuilder.MapFallbackToController("admin/", "Index", "admin");
 

@@ -5,10 +5,12 @@
         public string From { get; set; }
         public string To { get; set; }
         public long reply_id { get; set; }
+        public bool loadReply { get; set; } = true;
         public bool isSent { get; set; }
         public bool isRead { get; set; }
         public bool isDeleted { get; set; }
         public bool loadUserList { get; set; }
+        public bool loadReceiverUserList { get; set; }
     }
 }
 

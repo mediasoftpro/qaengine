@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -16,7 +16,7 @@ import { SettingsService } from "../services/settings.service";
 import { DataService } from "../services/data.service";
 import { FormService } from "../services/form.service";
 /* actions */
-import { ROLEAPIActions } from "../../../../reducers/settings/roles/actions";
+//import { ROLEAPIActions } from "../../../../reducers/settings/roles/actions";
 
 import { PartialModule } from "../../../../partials/shared.module";
 
@@ -24,6 +24,6 @@ import { PartialModule } from "../../../../partials/shared.module";
   imports: [CommonModule, PartialModule, FormsModule],
   declarations: [ProcRoleComponent],
   exports: [ProcRoleComponent],
-  providers: [SettingsService, DataService, FormService, ROLEAPIActions]
+  providers: [SettingsService, DataService, FormService]
 })
 export class ProcRoleModule {}

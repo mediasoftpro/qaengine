@@ -43,6 +43,12 @@
         public string logo_path { get; set; }
 
         /// <summary>
+        /// Setup default logo footer path
+        /// </summary>
+        public string logo_footer_path { get; set; }
+
+              
+        /// <summary>
         /// Setup default user avator path (to be used if user not updated its avator)
         /// </summary>
         public string user_default_path { get; set; }
@@ -52,6 +58,13 @@
         /// </summary>
         public string category_default_path { get; set; }
 
+        /// <summary>
+        /// Setup default location image path (to be used if category have no photo)
+        /// </summary>
+        public string location_default_path { get; set; }
+
+
+        
         /// <summary>
         /// Setup default gamify badge image path (to be used if badge have no image)
         /// </summary>

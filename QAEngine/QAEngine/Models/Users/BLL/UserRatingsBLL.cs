@@ -12,10 +12,9 @@ namespace Jugnoon.BLL
         // Note: Rating Important Terms
 
         // Rating:
-        // ........... video | audio,  0: liked, 1: disliked
         public enum Types
         {
-            QA = 70,
+            QA = 70
         };
 
         public enum Ratings

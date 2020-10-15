@@ -1,11 +1,11 @@
-<alert></alert>
+
 <app-loader *ngIf="loading$ | async"></app-loader>
 <div *ngIf="!(loading$ | async)">
-  <div *ngIf="(Data$ | async).length > 0">
+  <div *ngIf="Data.length > 0">
     <div class="videolist">
       <div
         class="m-b-20"
-        *ngFor="let item of Data$ | async; trackBy: getKey; let i = index"
+        *ngFor="let item of Data; trackBy: getKey; let i = index"
       >
         <div class="row">
           <div class="col-md-12">
@@ -35,7 +35,7 @@
       </div>
     </div>
   </div>
-  <app-norecord *ngIf="(Data$ | async).length === 0"></app-norecord>
+  <app-norecord *ngIf="Data.length === 0"></app-norecord>
 </div>
 
 <div class="text-center content-group-lg pt-20">

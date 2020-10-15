@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -15,8 +15,12 @@ import "rxjs/add/operator/mergeMap";
 import { ConfigDataService } from "../../../configs/services/data.service";
 import { TranslateService } from "@ngx-translate/core";
 
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
+import * as configSelectors from "../../../reducers/configs/selectors";
+import { auth } from "../../../reducers/users/selectors";
+
+
 @Component({
   selector: "app-account-topnavigation",
   templateUrl: "./topnav-component.html",
@@ -26,6 +30,7 @@ export class AccountTopNavigationComponent implements OnInit {
   MyAccount_Menu: any = [];
 
   constructor(
+    private _store: Store<IAppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private configdata: ConfigDataService,
@@ -34,9 +39,9 @@ export class AccountTopNavigationComponent implements OnInit {
 
   topMenuIndex = 0;
 
-  @select(["configuration", "configs"])
-  readonly configs$: Observable<any>;
-
+  /*@select(["configuration", "configs"])
+  readonly configs$: Observable<any>;*/
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
   Configs: any = {};
 
   ngOnInit(): void {
@@ -66,76 +71,13 @@ export class AccountTopNavigationComponent implements OnInit {
   prepareNavList() {
     if (this.Configs.general) {
       const conf = this.Configs.general.features;
-
-      if (conf.enable_videos) {
-        this.MyAccount_Menu.push({
-          id: 1,
-          title: "Videos",
-          value: "/my-videos",
-          index: 1
-        });
-      }
-
-      if (conf.enable_audio) {
-        this.MyAccount_Menu.push({
-          id: 2,
-          title: "Audio",
-          value: "/my-audio",
-          index: 2
-        });
-      }
-
-      if (conf.enable_photos) {
-        this.MyAccount_Menu.push({
-          id: 3,
-          title: "Photos",
-          value: "/my-photos",
-          index: 3
-        });
-      }
-
-      if (conf.enable_qa) {
-        this.MyAccount_Menu.push({
-          id: 4,
-          title: "Q&A",
-          value: "/my-qa",
-          index: 4
-        });
-      }
-
-      if (conf.enable_forums) {
-        this.MyAccount_Menu.push({
-          id: 5,
-          title: "Forums",
-          value: "/my-topics",
-          index: 5
-        });
-      }
-
-      if (conf.enable_polls) {
-        this.MyAccount_Menu.push({
-          id: 6,
-          title: "Polls",
-          value: "/my-polls",
-          index: 6
-        });
-      }
-
+     
       if (conf.enable_classified) {
         this.MyAccount_Menu.push({
           id: 7,
           title: "Listings",
-          value: "/my-listings",
-          index: 8
-        });
-      }
-
-      if (conf.enable_blogs) {
-        this.MyAccount_Menu.push({
-          id: 8,
-          title: "Blogs",
-          value: "/my-blogs",
-          index: 7
+          value: "/listings",
+          index: 1
         });
       }
 

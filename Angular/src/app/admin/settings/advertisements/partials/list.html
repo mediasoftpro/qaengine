@@ -1,7 +1,7 @@
 <app-loader *ngIf="loading$ | async"></app-loader>
 
 <div style="padding:15px 10px;">
-  <alert></alert>
+  
 
   <div *ngIf="!(loading$ | async)">
     <div class="row row-wrap" *ngIf="(Data$ | async).length > 0">

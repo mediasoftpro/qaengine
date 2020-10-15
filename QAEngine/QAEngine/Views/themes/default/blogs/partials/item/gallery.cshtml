@@ -1,0 +1,80 @@
+﻿@model Jugnoon.Blogs.Models.BlogItemViewModel
+@using Jugnoon.Blogs
+@*
+    Blog Item Gallery Processing
+*@
+
+@{
+
+    if (Model.Data.picture_url != null && Model.Data.picture_url != "")
+    {
+        if (Model.Data.picture_url.Contains(","))
+        {
+            // multiple images found
+            string[] arr = Model.Data.picture_url.ToString().Split(char.Parse(","));
+            if (arr.Length > 0)
+            {
+                var isAWS = false;
+                if (Jugnoon.Settings.Configs.AwsSettings.enable && Jugnoon.Blogs.Configs.AwsSettings.bucket != null && Jugnoon.Blogs.Configs.AwsSettings.bucket != "")
+                {
+                    isAWS = true;
+                }
+                    <div class="m-b-10">
+                        <ul id="blogGallery">
+                            @foreach (var Item in arr)
+                            {
+                                string imgUrl = BlogUtil.Return_Blog_Image(Item, Jugnoon.Blogs.Configs.BlogSettings.default_path);
+                                string source_img_url = "";
+                                if (isAWS)
+                                {
+                                    @* AWS Cloud Enabled *@
+                                    source_img_url = @imgUrl.Replace(Jugnoon.Blogs.Configs.AwsSettings.thumb_directory_path, Jugnoon.Blogs.Configs.AwsSettings.original_directory_path);
+                                }
+                                else
+                                {
+                                    @* local storage *@
+                                    source_img_url = @imgUrl.Replace("thumbs/", "");
+                                }
+                                <li data-thumb="@imgUrl" data-src="@source_img_url">
+                                    <img src="@imgUrl" />
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    @if (Model.Data.picture_caption != "")
+                    {
+                        <div class="m-b-10">
+                            @Model.Data.picture_caption
+                        </div>
+                    }
+            }
+        }
+        else
+        {
+            // single image
+            string imgUrl = BlogUtil.Return_Blog_Single_Image(Model.Data, Jugnoon.Blogs.Configs.BlogSettings.default_path);
+
+            <img src="@imgUrl" alt="@Model.Data.title" title="@Model.Data.title" />
+        }
+    }
+    else
+    {
+        // check for youtube
+        var YtUrls = UtilityBLL.Fetch_Youtube_Url(Model.Data.description);
+        if (YtUrls.Count > 0)
+        {
+            <iframe src="@YtUrls[0].ToString()" frameborder="0" allowfullscreen></iframe>
+        }
+        else
+        {
+            // check for vimeo
+            var VMUrls = UtilityBLL.Fetch_Vimeo_URL(Model.Data.description);
+            if (VMUrls.Count > 0)
+            {
+                <iframe src="@VMUrls[0].ToString()" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+            }
+        }
+    }
+
+}
+

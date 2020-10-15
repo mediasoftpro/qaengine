@@ -26,6 +26,8 @@ namespace Jugnoon.Entity
         public ChartTypes chartType { get; set; } = ChartTypes.ColumnChart;
 
         public List<dynamic[]> dataTable { get; set; }
+
+        public List<ReportEntity> report { get; set; }
     }
 
 }

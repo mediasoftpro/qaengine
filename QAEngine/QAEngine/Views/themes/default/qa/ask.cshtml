@@ -1,0 +1,53 @@
+﻿@inject IStringLocalizer<GeneralResource> GeneralResource
+@{
+    // activate qa tabs
+    ViewBag.qaTabCss = "active";
+    // setup search with qa
+    ViewBag.SearchType = 4;
+
+}
+    <partial name="~/Views/Shared/_BreadCrumb.cshtml" model="new BreadViewModel() { BreadItems = Model.BreadItems }" />
+
+<div class="row">
+
+    <div class="col-md-8">
+        <partial name="~/Views/themes/@SiteConfiguration.Theme/qa/partials/_ask.cshtml" />
+    </div>
+
+    <div class="col-md-4">
+        @await Html.PartialAsync("~/Views/themes/" + SiteConfiguration.Theme + "/qa/partials/_Nav.cshtml", new Jugnoon.qa.Models.qaNavViewModel()
+       {
+           hideAds = false,
+           hideSearch = false,
+           hideArchives = true,
+           hideCategories = false,
+           hideTags = false,
+           searchTitle = GeneralResource["_search"].Value,
+               searchAction = "/qa/queryresult",
+               searchPlaceHolder = GeneralResource["_search"].Value,
+           Path = "qa/"
+       })
+    </div>
+</div>
+
+
+@section Styles {
+    @await Html.PartialAsync("~/views/shared/styles/wysibb.cshtml")
+    @await Html.PartialAsync("~/views/shared/styles/chosen.cshtml")
+}
+
+@section Scripts {
+    @await Html.PartialAsync("~/views/shared/scripts/chosen.cshtml")
+    @await Html.PartialAsync("~/views/shared/scripts/wysibb.cshtml")
+    <script>
+        $(function () {
+            $('.form-control-chosen').chosen();
+            var textarea = document.getElementById('editor1');
+            sceditor.create(textarea, {
+                format: 'bbcode',
+                toolbar: 'bold,italic,underline|font,size,color|bulletlist,orderedlist,quote|code,link,image',
+            });
+        });
+    </script>
+
+}

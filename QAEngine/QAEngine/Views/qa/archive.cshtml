@@ -1,34 +1,4 @@
-﻿@model Jugnoon.qa.Models.qaListViewModel
-@inject IStringLocalizer<GeneralResource> GeneralResource
-@{
-    // activate qa tabs
-    ViewBag.qaTabCss = "active";
-    // setup search with qa
-    ViewBag.SearchType = 4;
-
+﻿@if (SiteConfiguration.Theme != null && SiteConfiguration.Theme != "")
+{
+    <partial name="~/Views/themes/@SiteConfiguration.Theme/qa/archive.cshtml" />
 }
-    <partial name="~/Views/Shared/_BreadCrumb.cshtml" model="new BreadViewModel() { BreadItems = Model.BreadItems }" />
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="m-b-10">
-            <partial name="~/Views/qa/partials/_List.cshtml" />
-        </div>
-
-        @await Html.PartialAsync("~/Views/partials/ads/ad_728.cshtml", new AdsModelView() { isAdult = false })
-    </div>
-    <div class="col-md-4">
-        @await Html.PartialAsync("~/Views/qa/partials/_Nav.cshtml", new Jugnoon.qa.Models.qaNavViewModel()
-        {
-               hideAds = false,
-               hideSearch = false,
-               hideArchives = true,
-               hideCategories = false,
-               hideTags = false,
-               searchTitle = GeneralResource["_search"].Value,
-               searchAction = "/qa/queryresult",
-               searchPlaceHolder = GeneralResource["_search"].Value,
-               Path = "qa/"
-        })
-    </div>
-</div>

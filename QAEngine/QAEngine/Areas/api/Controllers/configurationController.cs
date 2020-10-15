@@ -15,6 +15,9 @@ using Jugnoon.BLL;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Jugnoon.Models;
+using Jugnoon.Framework;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace QAEngine.Areas.api.Controllers
 {
@@ -27,6 +30,7 @@ namespace QAEngine.Areas.api.Controllers
         // Injectors for Writable (General) Configurations
         private IApplicationLifetime ApplicationLifetime { get; set; }
         private readonly IWritableOptions<General> _general_options;
+        private readonly IWritableOptions<Comments> _comment_options;
         private readonly IWritableOptions<Smtp> _smtp_options;
         private readonly IWritableOptions<Media> _media_options;
         private readonly IWritableOptions<Features> _features_options;
@@ -38,9 +42,14 @@ namespace QAEngine.Areas.api.Controllers
         private readonly IWritableOptions<Contact> _contact_options;
         private readonly IWritableOptions<Database> _database_options;
         private readonly IWritableOptions<Rechapcha> _rechapcha_options;
+       
+        private readonly IWritableOptions<ElasticSearch> _elasticsearch_options;
+        private readonly IWritableOptions<ActiveCompaign> _activecompaign_options;
+        private readonly IWritableOptions<Zendesk> _zendesk_options;
 
         // Injectors for Reading Configurations
         General _generalSettings;
+        Comments _commentSettings;
         Smtp _smtpSettings;
         Media _mediaSettings;
         Features _featureSettings;
@@ -51,13 +60,20 @@ namespace QAEngine.Areas.api.Controllers
         Social _socialSettings;
         Contact _contactSettings;
         Rechapcha _rechapchaSettings;
+      
+        ElasticSearch _elasticSearchSettings;
+        Zendesk _zendeskSettings;
+        ActiveCompaign _activeSettings;
 
-        Jugnoon.qa.Settings.General _qa_general_Settings;
-        
+        Jugnoon.Blogs.Settings.General _blogs_general_Settings;
+        Jugnoon.Blogs.Settings.Aws _blogs_aws_Settings;
+
+        ApplicationDbContext _context;
         public configurationController(
             IApplicationLifetime applicationLifetime,
             IWritableOptions<General> general_options,
             IWritableOptions<Database> database_options,
+            IWritableOptions<Comments> comment_options,
             IWritableOptions<Smtp> smtp_options,
             IWritableOptions<Media> media_options,
             IWritableOptions<Features> features_options,
@@ -68,7 +84,11 @@ namespace QAEngine.Areas.api.Controllers
             IWritableOptions<Social> social_options,
             IWritableOptions<Contact> contact_options,
             IWritableOptions<Rechapcha> rechapcha_options,
+            IWritableOptions<ElasticSearch> elasticsearch_options,
+            IWritableOptions<ActiveCompaign> activecompany_options,
+            IWritableOptions<Zendesk> zendesk_options,
             IOptions<General> generalSettings,
+            IOptions<Comments> commentSettings,
             IOptions<Smtp> smtpSettings,
             IOptions<Media> mediaSettings,
             IOptions<Features> featureSettings,
@@ -79,12 +99,20 @@ namespace QAEngine.Areas.api.Controllers
             IOptions<Social> socialSettings,
             IOptions<Contact> contactSettings,
             IOptions<Rechapcha> rechapchaSettings,
-            IOptions<Jugnoon.qa.Settings.General> qa_general_Settings
+            IOptions<ElasticSearch> elasticSearchSettings,
+            IOptions<Zendesk> zendeskSettings,
+            IOptions<ActiveCompaign> activeSettings,
+            IOptions<Jugnoon.Blogs.Settings.General> blogs_general_Settings,
+            IOptions<Jugnoon.Blogs.Settings.Aws> blogs_aws_Settings,
+            ApplicationDbContext context
+
          )
         {
+            _context = context;
             // writable injectors
             _database_options = database_options;
             _general_options = general_options;
+            _comment_options = comment_options;
             _smtp_options = smtp_options;
             _media_options = media_options;
             _features_options = features_options;
@@ -95,8 +123,14 @@ namespace QAEngine.Areas.api.Controllers
             _social_options = social_options;
             _contact_options = contact_options;
             _rechapcha_options = rechapcha_options;
+            _elasticsearch_options = elasticsearch_options;
+            _activecompaign_options = activecompany_options;
+            _zendesk_options = zendesk_options;
+
             ApplicationLifetime = applicationLifetime;
+            // readable injectors
             _generalSettings = generalSettings.Value;
+            _commentSettings = commentSettings.Value;
             _smtpSettings = smtpSettings.Value;
             _mediaSettings = mediaSettings.Value;
             _featureSettings = featureSettings.Value;
@@ -104,10 +138,17 @@ namespace QAEngine.Areas.api.Controllers
             _authenticationSettings = authenticationSettings.Value;
             _registrationSettings = registrationSettings.Value;
             _awsSettings = awsSettings.Value;
+
             _socialSettings = socialSettings.Value;
             _contactSettings = contactSettings.Value;
             _rechapchaSettings = rechapchaSettings.Value;
-            _qa_general_Settings = qa_general_Settings.Value;
+            _elasticSearchSettings = elasticSearchSettings.Value;
+            _zendeskSettings = zendeskSettings.Value;
+            _activeSettings = activeSettings.Value;
+
+            _blogs_general_Settings = blogs_general_Settings.Value;
+            _blogs_aws_Settings = blogs_aws_Settings.Value;
+
         }
 
         [HttpPost("load")]
@@ -120,6 +161,7 @@ namespace QAEngine.Areas.api.Controllers
                     general = new
                     {
                         general = _generalSettings,
+                        comment = _commentSettings,
                         smtp = _smtpSettings,
                         media = _mediaSettings,
                         features = _featureSettings,
@@ -129,20 +171,24 @@ namespace QAEngine.Areas.api.Controllers
                         aws = _awsSettings,
                         social = _socialSettings,
                         contact = _contactSettings,
-                        rechapcha = _rechapchaSettings
+                        rechapcha = _rechapchaSettings,
+                        zendesk = _zendeskSettings,
+                        elasticsearch = _elasticSearchSettings,
+                        activecompaign = _activeSettings
                     },
-                    qa = new
+                    blogs = new
                     {
-                        general = _qa_general_Settings
+                        general = _blogs_general_Settings,
+                        aws = _blogs_aws_Settings
                     }
                 }
             });
         }
 
-        [HttpPost("load_settings")]
-        public ActionResult load_settings()
+        [HttpPost("load_settings_admin")]
+        public async Task<ActionResult> load_settings_admin()
         {
-            // Pass only settings may be needed in front application.
+
             return Ok(new
             {
                 configurations = new
@@ -155,7 +201,37 @@ namespace QAEngine.Areas.api.Controllers
                         media = _mediaSettings,
                         category = ((CategoryBLL.Types[])Enum.GetValues(typeof(CategoryBLL.Types))).ToDictionary(k => k.ToString(), v => (int)v),
                         tag = ((TagsBLL.Types[])Enum.GetValues(typeof(TagsBLL.Types))).ToDictionary(k => k.ToString(), v => (int)v),
+                        categories = await CategoryBLL.LoadItems(_context, new Jugnoon.Entity.CategoryEntity()
+                        {
+                            type = (int)CategoryBLL.Types.qa,
+                            isenabled = EnabledTypes.All,
+                            iscache = true,
+                            parentid = -1,
+                            order = "title asc", // don't change this
+                            issummary = false,
+                            isdropdown = true,
+                            loadall = true // load all data
+                        }),
                         mailtemplates = ((MailTemplateTypes[])Enum.GetValues(typeof(MailTemplateTypes))).ToDictionary(k => k.ToString(), v => (int)v)
+                    }
+                }
+            });
+        }
+
+        [HttpPost("load_settings")]
+        public ActionResult load_settings()
+        {           
+            // Pass only settings may be needed in front application.
+            return Ok(new
+            {
+                configurations = new
+                {
+                    general = new
+                    {
+                        //general = _generalSettings,
+                        features = _featureSettings,
+                        listings = _listingSettings,
+                        media = _mediaSettings,
                     }
                 }
             });
@@ -201,7 +277,6 @@ namespace QAEngine.Areas.api.Controllers
             });
         }
 
-
         [HttpPost("general")]
         public ActionResult general()
         {
@@ -213,7 +288,7 @@ namespace QAEngine.Areas.api.Controllers
             var data = JsonConvert.DeserializeObject<General>(json);
 
             _general_options.Update(opt => {
-                opt.site_theme = data.site_theme;
+               
                 opt.website_title = data.website_title;
                 opt.website_description = UtilityBLL.processNull(data.website_description, 0);
                 opt.page_caption = UtilityBLL.processNull(data.page_caption, 0);
@@ -251,6 +326,87 @@ namespace QAEngine.Areas.api.Controllers
             });
         }
 
+    
+
+        [HttpPost("elasticsearch")]
+        public ActionResult elasticsearch()
+        {
+            var json = new StreamReader(Request.Body).ReadToEnd();
+            if (json == "")
+            {
+                return Ok(new { status = "Error", message = SiteConfig.generalLocalizer["_invalid_data"].Value });
+            }
+            var data = JsonConvert.DeserializeObject<ElasticSearch>(json);
+
+            _elasticsearch_options.Update(opt => {
+                opt.enable = data.enable;
+                opt.index = data.index;
+                opt.adlisting_index = data.adlisting_index;
+                opt.blogs_index = data.blogs_index;
+                opt.url = data.url;
+                opt.username = data.username;
+                opt.password = data.password;
+            });
+
+            //ApplicationLifetime.StopApplication();
+
+            return Ok(new
+            {
+                status = 200
+            });
+        }
+
+        [HttpPost("activecompaign")]
+        public ActionResult activecompaign()
+        {
+            var json = new StreamReader(Request.Body).ReadToEnd();
+            if (json == "")
+            {
+                return Ok(new { status = "Error", message = SiteConfig.generalLocalizer["_invalid_data"].Value });
+            }
+            var data = JsonConvert.DeserializeObject<ActiveCompaign>(json);
+
+            _activecompaign_options.Update(opt => {
+                opt.enable = data.enable;
+                opt.BaseUri = data.BaseUri;
+                opt.ApiKey = data.ApiKey;
+                opt.listId = data.listId;
+            });
+
+            //ApplicationLifetime.StopApplication();
+
+            return Ok(new
+            {
+                status = 200
+            });
+        }
+
+        [HttpPost("zendesk")]
+        public ActionResult zendesk()
+        {
+            var json = new StreamReader(Request.Body).ReadToEnd();
+            if (json == "")
+            {
+                return Ok(new { status = "Error", message = SiteConfig.generalLocalizer["_invalid_data"].Value });
+            }
+            var data = JsonConvert.DeserializeObject<Zendesk>(json);
+
+            _zendesk_options.Update(opt => {
+                opt.enable = data.enable;
+                opt.url = data.url;
+                opt.user = data.user;
+                opt.token = data.token;
+                opt.locale = data.locale;
+            });
+
+            //ApplicationLifetime.StopApplication();
+
+            return Ok(new
+            {
+                status = 200
+            });
+        }
+
         [HttpPost("media")]
         public ActionResult media()
         {
@@ -272,6 +428,7 @@ namespace QAEngine.Areas.api.Controllers
                 opt.photo_max_size = data.photo_max_size;
                 opt.quality = data.quality;
                 opt.logo_path = data.logo_path;
+                opt.logo_footer_path = data.logo_footer_path;
                 opt.user_default_path = data.user_default_path;
                 opt.category_default_path = data.category_default_path;
                 opt.gamify_default_path = data.gamify_default_path;
@@ -296,6 +453,7 @@ namespace QAEngine.Areas.api.Controllers
             var data = JsonConvert.DeserializeObject<Features>(json);
 
             _features_options.Update(opt => {
+                opt.enable_blogs = data.enable_blogs;
                 opt.enable_qa = data.enable_qa;
                 opt.enable_categories = data.enable_categories;
                 opt.enable_tags = data.enable_tags;
@@ -397,6 +555,30 @@ namespace QAEngine.Areas.api.Controllers
             });
         }
 
+        [HttpPost("comment")]
+        public ActionResult comment()
+        {
+            var json = new StreamReader(Request.Body).ReadToEnd();
+            if (json == "")
+            {
+                return Ok(new { status = "Error", message = SiteConfig.generalLocalizer["_invalid_data"].Value });
+            }
+            var data = JsonConvert.DeserializeObject<Comments>(json);
+
+            _comment_options.Update(opt => {
+                opt.enable = data.enable;
+                opt.comment_option = data.comment_option;
+                opt.discus_src = data.discus_src;
+            });
+
+            // ApplicationLifetime.StopApplication();
+
+            return Ok(new
+            {
+                status = 200
+            });
+        }
+
         [HttpPost("aws")]
         public ActionResult aws()
         {
@@ -450,8 +632,6 @@ namespace QAEngine.Areas.api.Controllers
                 opt.instagram_url = data.instagram_url;
                 opt.github_url = data.github_url;
                 opt.rss_url = data.rss_url;
-                opt.addthis_pubid = data.addthis_pubid;
-                opt.sharethis_propertyId = data.sharethis_propertyId;
                 opt.fb_appId = data.fb_appId;
             });
 

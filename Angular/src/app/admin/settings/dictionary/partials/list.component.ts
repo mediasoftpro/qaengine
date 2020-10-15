@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -14,11 +14,14 @@ import {
   animate,
   keyframes
 } from "@angular/animations";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
-import { DictionaryAPIActions } from "../../../../reducers/settings/dictionary/actions";
+
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+
+import * as dicionarySelectors from "../../../../reducers/settings/dictionary/selectors";
+import { applyFilter, updatePaginationCurrentPage, selectAll} from "../../../../reducers/settings/dictionary/actions";
+import { Notify } from "../../../../reducers/core/actions";
 import { DataService } from "../services/data.service";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
 
 @Component({
   selector: "app-list",
@@ -41,78 +44,38 @@ import { CoreAPIActions } from "../../../../reducers/core/actions";
 })
 export class ListComponent implements OnInit {
   constructor(
-    private actions: DictionaryAPIActions,
-    private coreActions: CoreAPIActions,
+    private _store: Store<IAppState>,
     private dataService: DataService
   ) {}
 
+  
+  readonly Data$ = this._store.pipe(select(dicionarySelectors.posts));
+  readonly loading$ = this._store.pipe(select(dicionarySelectors.loading));
+  readonly pagination$ = this._store.pipe(select(dicionarySelectors.pagination));
+  readonly selectAll$ = this._store.pipe(select(dicionarySelectors.selectall));
+
   @Input() isActionGranded = false;
-  @select(["dictionary", "posts"])
-  readonly Data$: Observable<any>;
-
-  @select(["dictionary", "loading"])
-  readonly loading$: Observable<boolean>;
-
-  @select(["dictionary", "pagination"])
-  readonly pagination$: Observable<any>;
-
-  @select(["dictionary", "selectall"])
-  readonly selectAll$: Observable<any>;
-
+  
   @Output() View = new EventEmitter<any>();
   @Output() SelectedItems = new EventEmitter<any>();
-
-  sortedFields: any = {
-    value: {
-      sort: "value",
-      direction: "desc"
-    },
-    type: {
-      sort: "type",
-      direction: "desc"
-    }
-  };
+  
   selectall = false;
-  fieldstates = {
-    value: false,
-    type: false
-  };
-
+  
+  Data: any = [];
   ngOnInit() {
+
+    this.Data$.subscribe((data: any) => {
+      this.Data = data.map(item => {
+        return Object.assign({}, item);
+      });
+    });
+
     this.selectAll$.subscribe((selectall: boolean) => {
       this.selectall = selectall;
       this.checkChange();
     });
   }
-  Sort(field: string) {
-    if (this.sortedFields[field] === undefined) {
-      this.sortedFields[field] = {
-        sort: field,
-        direction: "desc"
-      };
-    } else {
-      if (this.sortedFields[field].direction === "desc") {
-        this.sortedFields[field].direction = "asc";
-      } else {
-        this.sortedFields[field].direction = "desc";
-      }
-    }
-
-    for (const st in this.fieldstates) {
-      if (st === field) {
-        this.fieldstates[st] = true;
-      } else {
-        this.fieldstates[st] = false;
-      }
-    }
-
-    // update filter
-    this.actions.applyFilter({
-      attr: "order",
-      value:
-        this.sortedFields[field].sort + " " + this.sortedFields[field].direction
-    });
-  }
+ 
   /* action trigger */
   viewRecord(obj, event) {
     this.View.emit({ action: "view", value: obj });
@@ -129,9 +92,9 @@ export class ListComponent implements OnInit {
   /* pagination click event */
   PaginationChange(value: number) {
     // update filter option to query database
-    this.actions.applyFilter({ attr: "pagenumber", value: value });
+    this._store.dispatch(new applyFilter({ attr: "pagenumber", value: value }));
     // update pagination current page (to hightlight selected page)
-    this.actions.updatePaginationCurrentPage({ currentpage: value });
+    this._store.dispatch(new updatePaginationCurrentPage({ currentpage: value }));
   }
 
   toggleEditView(item: any, event) {
@@ -145,11 +108,11 @@ export class ListComponent implements OnInit {
 
   _UpdateRecord(item: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     item.editview = false;
@@ -161,15 +124,15 @@ export class ListComponent implements OnInit {
   }
 
   processChange() {
-    this.actions.selectAll(this.selectall);
+   this._store.dispatch(new selectAll(this.selectall));
   }
   delete(item: any, index: number, event) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     const r = confirm("Are you sure you want to delete selected record?");
@@ -178,14 +141,12 @@ export class ListComponent implements OnInit {
     }
   }
   checkChange() {
-    this.Data$.subscribe(items => {
-      const _items = [];
-      for (const item of items) {
-        if (item.Selected) {
-          _items.push(item);
-        }
+    const _items = [];
+    for (const item of this.Data) {
+      if (item.Selected) {
+        _items.push(item);
       }
-      this.SelectedItems.emit(_items);
-    });
+    }
+    this.SelectedItems.emit(_items);
   }
 }

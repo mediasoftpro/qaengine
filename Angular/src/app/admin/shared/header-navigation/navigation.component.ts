@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -11,12 +11,16 @@ import { AppState } from "../../../configs/themeSettings";
 import { TranslateService } from "@ngx-translate/core";
 import { CookieService } from "ngx-cookie-service";
 import { Router } from "@angular/router";
-import { select, select$ } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+
 // reducer actions
 import { UserService } from "../../../admin/users/services/auth.service";
 import { AppConfig } from "../../../configs/app.config";
 import { CoreService } from "../../../admin/core/coreService";
+import { IAppState } from "../../../reducers/store/model";
+import { auth } from "../../../reducers/users/selectors";
+import * as configSelectors from "../../../reducers/configs/selectors";
+
 @Component({
   selector: "app-admin-header",
   templateUrl: "./navigation.component.html",
@@ -27,13 +31,12 @@ export class NavigationComponent {
   DefaultLanguage = "en";
   DefaultLanguageComponent: any;
 
+  /*
   @select(["configuration", "configs"])
-  readonly configs$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+  readonly configs$: Observable<any>;*/
 
   constructor(
+    private _store: Store<IAppState>,
     private translate: TranslateService,
     private coreService: CoreService,
     public config: AppConfig,
@@ -45,6 +48,9 @@ export class NavigationComponent {
     this.initialize();
   }
 
+  readonly auth$ = this._store.pipe(select(auth));
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
+  
   initialize() {
     this.DefaultLanguage = AppState.DEFAULT_LANG;
     for (const lang of this.LanguageList) {

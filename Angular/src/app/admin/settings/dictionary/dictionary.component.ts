@@ -1,14 +1,15 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
+
 /* modal popup */
 import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
 
@@ -21,12 +22,21 @@ import { ViewComponent } from "./partials/modal.component";
 
 // shared services
 import { CoreService } from "../../core/coreService";
-import { CoreAPIActions } from "../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../reducers/core/actions";
 
 // reducer actions
-import { DictionaryAPIActions } from "../../../reducers/settings/dictionary/actions";
-import { fadeInAnimation } from "../../../animations/core";
+import * as selectors from "../../../reducers/settings/dictionary/selectors";
+import {
+  addRecord,
+  updateFilterOptions,
+  refresh_pagination,
+} from "../../../reducers/settings/dictionary/actions";
 
+import { Notify, refreshListStats } from "../../../reducers/core/actions";
+import { auth } from "../../../reducers/users/selectors";
+
+//import { DictionaryAPIActions } from "../../../reducers/settings/dictionary/actions";
+import { fadeInAnimation } from "../../../animations/core";
 import { PermissionService } from "../../../admin/users/services/permission.service";
 
 @Component({
@@ -37,32 +47,26 @@ import { PermissionService } from "../../../admin/users/services/permission.serv
 })
 export class DictionaryComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private modalService: NgbModal,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    public permission: PermissionService,
-    private actions: DictionaryAPIActions
+    public permission: PermissionService
   ) {}
 
-  @select(["dictionary", "filteroptions"])
-  readonly filteroptions$: Observable<any>;
-
-  @select(["dictionary", "itemsselected"])
-  readonly isItemSelected$: Observable<any>;
-
-  @select(["dictionary", "isloaded"])
-  readonly isloaded$: Observable<any>;
-
-  @select(["dictionary", "records"])
-  readonly records$: Observable<any>;
-
-  @select(["dictionary", "pagination"])
-  readonly pagination$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+  readonly filteroptions$ = this._store.pipe(
+    select(selectors.filteroptions)
+  );
+  
+  readonly isloaded$ = this._store.pipe(select(selectors.isloaded));
+  readonly isItemSelected$ = this._store.pipe(
+    select(selectors.itemsselected)
+  );
+  readonly records$ = this._store.pipe(select(selectors.records));
+  readonly pagination$ = this._store.pipe(select(selectors.pagination));
+ 
+  readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -102,12 +106,12 @@ export class DictionaryComponent implements OnInit {
     this.ToolbarOptions = this.settingService.getToolbarOptions();
 
     this.filteroptions$.subscribe(options => {
-      this.FilterOptions = options;
+      this.FilterOptions = Object.assign({}, options);
       if (options.track_filter) {
         this.dataService.LoadRecords(options);
         // reset track filter to false again
-        options.track_filter = false;
-        this.actions.updateFilterOptions(options);
+        this.FilterOptions.track_filter = false;
+         this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
     });
 
@@ -136,11 +140,11 @@ export class DictionaryComponent implements OnInit {
   /* toolbar actions */
   toolbaraction(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     switch (selection.action) {
@@ -158,7 +162,7 @@ export class DictionaryComponent implements OnInit {
     const _filterOptions = filters.filters;
     _filterOptions.pagenumber = 1;
     _filterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-    this.actions.updateFilterOptions(_filterOptions);
+      this._store.dispatch(new updateFilterOptions(_filterOptions));
   }
 
   /* Add Record */
@@ -173,9 +177,7 @@ export class DictionaryComponent implements OnInit {
     };
     modalRef.result.then(
       result => {
-        console.log("back result");
-        console.log(result);
-        this.actions.addRecord(result.data);
+        this._store.dispatch(new addRecord(result.data));
         // this.closeResult = `Closed with: ${result}`;
       },
       dismissed => {
@@ -203,16 +205,16 @@ export class DictionaryComponent implements OnInit {
   }
 
   refreshStats() {
-    this.actions.refresh_pagination({
+     this._store.dispatch(new refresh_pagination({
       type: 0,
       totalrecords: this.Records,
       pagesize: this.FilterOptions.pagesize
-    });
+    }));
     // refresh list states
-    this.coreActions.refreshListStats({
+    this._store.dispatch(new refreshListStats({
       totalrecords: this.Records,
       pagesize: this.FilterOptions.pagesize,
       pagenumber: this.Pagination.currentPage
-    });
+    }));
   }
 }

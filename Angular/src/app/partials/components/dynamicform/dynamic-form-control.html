@@ -3,7 +3,7 @@
     <div class="row" *ngSwitchCase="'section'">
       <div class="col-md-12">
         <hr />
-        <h3>{{ control.label }}</h3>
+        <h5>{{ control.label }}</h5>
         <hr />
       </div>
     </div>
@@ -20,7 +20,22 @@
           *ngSwitchCase="'textbox'"
         >
           <label [attr.for]="control.key">{{ control.label }}</label>
+          <div class="input-group mb-3" *ngIf="control.append_text !== ''">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">{{control.append_text}}</span>
+            </div>
+            <input
+              placeholder="{{ control.placeholder }}"
+              [attr.disabled]="control.disabled ? '' : null"
+              class="form-control"
+              [formControlName]="control.key"
+              [id]="control.key"
+              [type]="control.type"
+            />
+          </div>
+
           <input
+           *ngIf="control.append_text === ''"
             placeholder="{{ control.placeholder }}"
             [attr.disabled]="control.disabled ? '' : null"
             class="form-control"
@@ -32,7 +47,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -40,7 +55,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -74,7 +89,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -82,7 +97,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -110,7 +125,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -118,7 +133,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -145,7 +160,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -153,7 +168,39 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
+                >{{ error }}</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- form button -->
+        <div
+          class="m-t-10"
+          [ngClass]="
+          form.controls[control.key].invalid && isSubmit
+            ? 'has-error has-danger'
+            : ''
+        "
+          *ngSwitchCase="'formButton'"
+        >
+          <label [attr.for]="control.key">{{ control.label }}</label>
+          <a href="#" (click)="toggleModelForm($event); false" class="{{control.formOptions.btncss}}">{{control.formOptions.btntext}}</a>
+          
+          <span *ngIf="control.helpblock" class="help-block text-muted"
+            ><small>{{ control.helpblock }}</small></span
+          >
+          <div *ngIf="shouldShowErrors()" class="help-block">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
+              <ul>
+                <li *ngFor="let error of listOfErrors()">
+                  <span>{{ error }}</span>
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="listOfErrors().length === 1">
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -185,7 +232,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -193,7 +240,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -217,6 +264,7 @@
             [formControlName]="control.key"
             [(ngModel)]="control.value"
             [settings]="control.multiselectOptions.dropdownSettings"
+            (onSelect)="onItemSelect($event)"
           >
           </ng-multiselect-dropdown>
 
@@ -224,7 +272,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -232,7 +280,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -253,6 +301,7 @@
 
           <div class="ng-autocomplete">
             <ng-autocomplete
+              #auto
               [data]="control.autocompleteOptions.data"
               [searchKeyword]="control.autocompleteOptions.keyword"
               [isLoading]="control.autocompleteOptions.isLoading"
@@ -261,6 +310,7 @@
               [placeHolder]="control.autocompleteOptions.placeHolder"
               [(ngModel)]="control.value"
               [formControlName]="control.key"
+              (inputFocused)="onInputFocused($event)"
               (inputChanged)="onChangeSearch($event)"
               [itemTemplate]="itemTemplate"
               [notFoundTemplate]="notFoundTemplate"
@@ -280,7 +330,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -288,7 +338,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -305,11 +355,12 @@
           "
           *ngSwitchCase="'dropdownlist'"
         >
-          <label [attr.for]="control.key" class="m-b-5">{{ control.label }}</label>
+          <label [attr.for]="control.key" class="m-b-5"
+            >{{ control.label }}</label
+          >
           <div class="row">
             <div class="col-md-4" *ngFor="let opt of control.checklist">
-             
-              <label [attr.for]="opt.key">{{ opt.label }}</label> 
+              <label [attr.for]="opt.key">{{ opt.label }}</label>
               <select
                 class="form-control"
                 [id]="opt.key"
@@ -326,7 +377,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -334,7 +385,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -360,7 +411,7 @@
             [formControlName]="control.key"
             [id]="control.key"
           />
-          
+
           <app-multiple-options
             [options]="control.value"
             (onChange)="changeOption($event)"
@@ -370,7 +421,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -378,7 +429,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -446,7 +497,7 @@
             ><small>{{ control.helpblock }}</small></span
           >
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -454,7 +505,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -520,7 +571,7 @@
             <small>{{ control.helpblock }}</small>
           </div>
           <div *ngIf="shouldShowErrors()" class="help-block">
-            <div *ngIf="listOfErrors().length > 1" style="color:red;">
+            <div *ngIf="listOfErrors().length > 1" style="color: red;">
               <ul>
                 <li *ngFor="let error of listOfErrors()">
                   <span>{{ error }}</span>
@@ -528,7 +579,7 @@
               </ul>
             </div>
             <div *ngIf="listOfErrors().length === 1">
-              <small style="color:red;" *ngFor="let error of listOfErrors()"
+              <small style="color: red;" *ngFor="let error of listOfErrors()"
                 >{{ error }}</small
               >
             </div>
@@ -558,26 +609,45 @@
 
           <div class="row">
             <div class="{{ control.colsize }}">
-              <div
+              <div class="form-check">
+                <label
+                  class="form-check-label m-r-20"
+                  style="margin-right: 40px;"
+                  *ngFor="let opt of control.options"
+                >
+                  <input
+                    class="form-check-input radio-inline"
+                    type="radio"
+                    value="{{ opt.key }}"
+                    [formControlName]="control.key"
+                    [checked]="control.value == opt.key"
+                    (change)="selectedDropdownValue(control.key, opt.key)"
+                  />
+                  {{ opt.value }}
+                </label>
+              </div>
+
+              <!--<div
                 class="form-check p-l-0 m-l-0"
                 *ngFor="let opt of control.options"
               >
+
                 <label class="form-check-label">
                   <input
                     type="radio"
                     value="{{ opt.key }}"
                     [formControlName]="control.key"
                     [checked]="control.value == opt.key"
-                    (change)="choose(opt.key, $event)"
+                    (change)="selectedDropdownValue(control.key, opt.key)"
                   />
                   {{ opt.value }}
                 </label>
-              </div>
+              </div> -->
               <span *ngIf="control.helpblock" class="help-block text-muted"
                 ><small>{{ control.helpblock }}</small></span
               >
               <div *ngIf="shouldShowErrors()" class="help-block">
-                <div *ngIf="listOfErrors().length > 1" style="color:red;">
+                <div *ngIf="listOfErrors().length > 1" style="color: red;">
                   <ul>
                     <li *ngFor="let error of listOfErrors()">
                       <span>{{ error }}</span>
@@ -585,7 +655,9 @@
                   </ul>
                 </div>
                 <div *ngIf="listOfErrors().length === 1">
-                  <small style="color:red;" *ngFor="let error of listOfErrors()"
+                  <small
+                    style="color: red;"
+                    *ngFor="let error of listOfErrors()"
                     >{{ error }}</small
                   >
                 </div>
@@ -614,7 +686,7 @@
           <div class="row">
             <div class="{{ control.colsize }}">
               <div
-                class="form-check  p-l-0 m-l-0"
+                class="form-check p-l-0 m-l-0"
                 *ngFor="let opt of control.checklist"
               >
                 <label class="form-check-label">
@@ -631,7 +703,7 @@
                 ><small>{{ control.helpblock }}</small></span
               >
               <div *ngIf="shouldShowErrors()" class="help-block">
-                <div *ngIf="listOfErrors().length > 1" style="color:red;">
+                <div *ngIf="listOfErrors().length > 1" style="color: red;">
                   <ul>
                     <li *ngFor="let error of listOfErrors()">
                       <span>{{ error }}</span>
@@ -639,7 +711,9 @@
                   </ul>
                 </div>
                 <div *ngIf="listOfErrors().length === 1">
-                  <small style="color:red;" *ngFor="let error of listOfErrors()"
+                  <small
+                    style="color: red;"
+                    *ngFor="let error of listOfErrors()"
                     >{{ error }}</small
                   >
                 </div>
@@ -673,7 +747,7 @@
               ><small>{{ control.helpblock }}</small></span
             >
             <div *ngIf="shouldShowErrors()" class="help-block">
-              <div *ngIf="listOfErrors().length > 1" style="color:red;">
+              <div *ngIf="listOfErrors().length > 1" style="color: red;">
                 <ul>
                   <li *ngFor="let error of listOfErrors()">
                     <span>{{ error }}</span>
@@ -681,7 +755,7 @@
                 </ul>
               </div>
               <div *ngIf="listOfErrors().length === 1">
-                <small style="color:red;" *ngFor="let error of listOfErrors()"
+                <small style="color: red;" *ngFor="let error of listOfErrors()"
                   >{{ error }}</small
                 >
               </div>

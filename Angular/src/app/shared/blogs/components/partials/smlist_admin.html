@@ -1,0 +1,97 @@
+<app-loader *ngIf="blog_loading$ | async"></app-loader>
+<div class="card shadow mb-4" *ngIf="!(blog_loading$ | async)">
+  <!-- Card Header - Dropdown -->
+  <div
+    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+  >
+    <h6 class="m-0 font-weight-bold text-primary">{{title}}</h6>
+    <div class="dropdown no-arrow">
+      <a
+        class="dropdown-toggle"
+        href="#"
+        role="button"
+        id="dropdownMenuLink"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+      </a>
+      <div
+        class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+        aria-labelledby="dropdownMenuLink"
+      >
+        <div class="dropdown-header">Dropdown Header:</div>
+        <a class="dropdown-item" href="#">Unapproved Listings</a>
+        <a class="dropdown-item" href="#">Featured Listings</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="[browse_url]">All Listings</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row m-b-10" *ngIf="(blogs$ | async).length > 0">
+      <div
+        class="col-md-12 videolist"
+        *ngFor="let item of (blogs$ | async); let i = index"
+      >
+        <div>
+          <a
+            class="lg-title"
+            *ngIf="isAdmin"
+            [routerLink]="['/blogs/profile/' + item.enc_id]"
+            >{{ item.title }}</a
+          >
+          <a class="lg-title" *ngIf="!isAdmin" href="{{item.url}}"
+            >{{ item.title }}</a
+          >
+        </div>
+        <p class="light-item">
+          Posted
+          <span class="light"> {{ item.created_at | date: "fullDate" }}</span>
+          <span
+            class="badge badge-danger m-r-5 m-b-5"
+            *ngIf="item.isenabled == 0"
+            >Blocked</span
+          >
+          <span
+            class="badge badge-success m-r-5 m-b-5"
+            *ngIf="item.isenabled == 1"
+            >Active</span
+          >
+          <span
+            class="badge badge-info m-r-5 m-b-5"
+            *ngIf="item.isapproved == 1"
+            >Approved</span
+          >
+          <span
+            class="badge badge-warning m-r-5 m-b-5"
+            *ngIf="item.isapproved == 0"
+            >Under Review</span
+          >
+          <span
+            class="badge badge-primary m-r-5 m-b-5"
+            *ngIf="item.isfeatured == 1"
+            >Featured</span
+          >
+          <span class="badge badge-danger m-r-5 m-b-5" *ngIf="item.isadult == 1"
+            >Adult</span
+          >
+          <a
+            class="m-l-5"
+            *ngIf="type === 0"
+            [routerLink]="[rout_url +'/process/' + item.enc_id]"
+          >
+            <i class="fa fa-pencil text-inverse m-r-10"></i>
+          </a>
+          <a class="m-l-5" (click)="delete(item, i, $event); (false)" href="#">
+            <i class="fa fa-close text-danger"></i>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="" *ngIf="(blogs$ | async).length === 0">
+      {{NoRecordText}}
+    </div>
+  </div>
+</div>

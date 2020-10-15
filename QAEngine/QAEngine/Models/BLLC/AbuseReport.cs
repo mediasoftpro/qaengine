@@ -19,7 +19,9 @@ namespace Jugnoon.BLL
        
         public enum Types
         {
-            qa = 11
+            qa = 11,
+            Blogs = 7,
+            BlogComments = 8
         };
 
         public enum Status

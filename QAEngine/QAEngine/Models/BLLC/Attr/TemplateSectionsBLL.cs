@@ -110,8 +110,8 @@ namespace Jugnoon.Attributes
         public static string GenerateKey(string key, AttrTemplateSectionEntity entity)
         {
             var str = new StringBuilder();
-            str.AppendLine(key + "_" + "" + entity.templateid + "" + entity.attr_type + "" +  entity.pagenumber + "" + entity.pagesize);
-           
+            str.AppendLine(key + "_" + "" + entity.templateid + "" + entity.attr_type + "" + entity.pagenumber + "" + entity.pagesize);
+
 
             return str.ToString();
         }
@@ -137,6 +137,7 @@ namespace Jugnoon.Attributes
         {
             if (query.order != "")
                 collectionQuery = (IQueryable<JGN_Attr_TemplateSections>)collectionQuery.Sort(query.order);
+
             // skip logic
             if (query.pagenumber > 1)
                 collectionQuery = collectionQuery.Skip(query.pagesize * (query.pagenumber - 1));

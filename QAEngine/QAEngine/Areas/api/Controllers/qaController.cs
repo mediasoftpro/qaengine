@@ -119,6 +119,15 @@ namespace QAEngine.Areas.api.Controllers
             return Ok(new { data = _reports });
         }
 
+        [HttpPost("generate_report")]
+        public async Task<ActionResult> generate_report()
+        {
+            var json = new StreamReader(Request.Body).ReadToEnd();
+            var data = JsonConvert.DeserializeObject<QAEntity>(json);
+            var _reports = await QAReports.GenerateReport(_context, data);
+            return Ok(new { data = _reports });
+        }
+
         [HttpPost("getinfo")]
         public async Task<ActionResult> getinfo()
         {

@@ -1,21 +1,26 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit } from "@angular/core";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 
 // services
 import { SettingsService } from "./services/settings.service";
 import { DataService } from "./services/data.service";
 
 // reducer actions
-import { AdvertisementAPIActions } from "../../../reducers/settings/advertisements/actions";
+// import { AdvertisementAPIActions } from "../../../reducers/settings/advertisements/actions";
+import * as advertismentSelectors from "../../../reducers/settings/advertisements/selectors";
+import { applyFilter, updateFilterOptions} from "../../../reducers/settings/advertisements/actions";
+import { Notify } from "../../../reducers/core/actions";
+import {auth} from "../../../reducers/users/selectors";
+
 import { PermissionService } from "../../../admin/users/services/permission.service";
 
 @Component({
@@ -23,23 +28,16 @@ import { PermissionService } from "../../../admin/users/services/permission.serv
 })
 export class AdvertisemntComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
-    public permission: PermissionService,
-    private actions: AdvertisementAPIActions
+    public permission: PermissionService
   ) {}
 
-  @select(["advertisement", "filteroptions"])
-  readonly filteroptions$: Observable<any>;
+  readonly filteroptions$ = this._store.pipe(select(advertismentSelectors.filteroptions));
+  readonly isloaded$ = this._store.pipe(select(advertismentSelectors.isloaded));
 
-  @select(["advertisement", "categories"])
-  readonly categories$: Observable<any>;
-
-  @select(["advertisement", "isloaded"])
-  readonly isloaded$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+ readonly auth$ = this._store.pipe(select(auth));
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -75,12 +73,12 @@ export class AdvertisemntComponent implements OnInit {
     this.ToolbarOptions = this.settingService.getToolbarOptions();
 
     this.filteroptions$.subscribe(options => {
-      this.FilterOptions = options;
+      this.FilterOptions = Object.assign({}, options);
       if (options.track_filter) {
         this.dataService.LoadRecords(options);
         // reset track filter to false again
-        options.track_filter = false;
-        this.actions.updateFilterOptions(options);
+        this.FilterOptions.track_filter = false;
+        this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
     });
     this.isloaded$.subscribe((loaded: boolean) => {
@@ -94,7 +92,7 @@ export class AdvertisemntComponent implements OnInit {
   toolbaraction(selection: any) {
     switch (selection.action) {
       case "f_type":
-        this.actions.applyFilter({ attr: "type", value: selection.value });
+         this._store.dispatch(new applyFilter({ attr: "type", value: selection.value }));
         break;
     }
   }
@@ -104,6 +102,6 @@ export class AdvertisemntComponent implements OnInit {
     const _filterOptions = filters.filters;
     _filterOptions.pagenumber = 1;
     _filterOptions.track_filter = true; // to force triggering load event via obvervable subscription
-    this.actions.updateFilterOptions(_filterOptions);
+      this._store.dispatch(new updateFilterOptions(_filterOptions));
   }
 }

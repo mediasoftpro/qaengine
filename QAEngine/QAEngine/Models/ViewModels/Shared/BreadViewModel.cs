@@ -6,8 +6,10 @@ namespace Jugnoon.Models
 {
     public class BreadViewModel
     {
+        public bool lightView { get; set; }
         public string Header { get; set; }
         public string HeaderTitle { get; set; }
+        public string subHeaderTitle { get; set; }
         public List<BreadItem> BreadItems { get; set; }
     }
 

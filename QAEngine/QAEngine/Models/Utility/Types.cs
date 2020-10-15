@@ -29,9 +29,11 @@ namespace Jugnoon.Utility
 
     public enum FeaturedTypes
     {
-        Normal = 0,
+        Basic = 0,
         Featured = 1,
         Premium = 2,
+        Hot = 3,
+        Super_Hot = 4,
         All = 3
     };
 
@@ -81,7 +83,17 @@ namespace Jugnoon.Utility
     {
         Yearly = 0,
         Last12Months = 1,
-        CurrentMonth = 2
+        CurrentMonth = 2,
+        Today = 7,
+        Yesterday = 9,
+        LastWeek = 10,
+        LastMonth = 11,
+        TodayYesterday = 3,
+        Week = 4,
+        Month = 5,
+        Year = 8,
+        AllTime = 6,
+        None = 12
     };
 
     public enum ChartTypes
@@ -90,6 +102,16 @@ namespace Jugnoon.Utility
         BarChart,
         LineChart,
         PieChart,
+    };
+
+    public enum ChartGroupBy
+    {
+        Day,
+        Week,
+        Month,
+        Year,
+        Country,
+        None
     };
 }
 

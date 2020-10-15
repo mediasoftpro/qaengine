@@ -1,15 +1,17 @@
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit, EventEmitter, Input, Output } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
-import { QAAPIActions } from "../../../../reducers/qa/actions";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+import * as selectors from "../../../../reducers/qa/selectors";
+import { applyFilter, updatePaginationCurrentPage, selectAll} from "../../../../reducers/qa/actions";
+import { Notify } from "../../../../reducers/core/actions";
 import { DataService } from "../../services/data.service";
 import {
   trigger,
@@ -19,7 +21,7 @@ import {
   keyframes
 } from "@angular/animations";
 import { Router } from "@angular/router";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
+
 
 @Component({
   selector: "app-qa-list",
@@ -41,10 +43,10 @@ import { CoreAPIActions } from "../../../../reducers/core/actions";
   ]
 })
 export class ListComponent implements OnInit {
+
   constructor(
-    private actions: QAAPIActions,
+    private _store: Store<IAppState>,
     private dataService: DataService,
-    private coreActions: CoreAPIActions,
     private router: Router
   ) {}
 
@@ -59,24 +61,24 @@ export class ListComponent implements OnInit {
   // Content Type for Abuse Reporting (QA) => api ref (AbuseReport.Types)
   AbuseContentType = 11;
 
-  @select(["qa", "posts"])
-  readonly Data$: Observable<any>;
+  readonly Data$ = this._store.pipe(select(selectors.posts));
+  readonly loading$ = this._store.pipe(select(selectors.loading));
+  readonly pagination$ = this._store.pipe(select(selectors.pagination));
+  readonly selectAll$ = this._store.pipe(select(selectors.selectall));
 
-  @select(["qa", "loading"])
-  readonly loading$: Observable<boolean>;
-
-  @select(["qa", "pagination"])
-  readonly pagination$: Observable<any>;
-
-  @select(["qa", "selectall"])
-  readonly selectAll$: Observable<any>;
 
   @Output() View = new EventEmitter<any>();
   @Output() SelectedItems = new EventEmitter<any>();
   
   selectall = false;
-  
+  Data: any = [];
   ngOnInit() {
+
+    this.Data$.subscribe((data: any) => {
+      this.Data = data.map(item => {
+        return Object.assign({}, item);
+      });
+    });
     this.selectAll$.subscribe((selectall: boolean) => {
       this.selectall = selectall;
       this.checkChange();
@@ -90,11 +92,11 @@ export class ListComponent implements OnInit {
 
   editRecord(obj, event) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
+      this._store.dispatch(new Notify({
         title: "Permission Denied",
         text: "",
         css: "bg-danger"
-      });
+      }));
       return;
     }
     this.router.navigate([this.route_path + "process/" + obj.enc_id]);
@@ -107,19 +109,19 @@ export class ListComponent implements OnInit {
 
   /* pagination click event */
   PaginationChange(value: number) {
-    // update filter option to query database
-    this.actions.applyFilter({ attr: "pagenumber", value: value });
-    // update pagination current page (to hightlight selected page)
-    this.actions.updatePaginationCurrentPage({ currentpage: value });
+     // update filter option to query database
+     this._store.dispatch(new applyFilter({ attr: "pagenumber", value: value }));
+     // update pagination current page (to hightlight selected page)
+     this._store.dispatch(new updatePaginationCurrentPage({ currentpage: value }));
   }
 
   delete(item: any, index: number, event) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
+      this._store.dispatch(new Notify({
         title: "Permission Denied",
         text: "",
         css: "bg-danger"
-      });
+      }));
       return;
     }
     const r = confirm("Are you sure you want to delete selected record?");
@@ -129,19 +131,18 @@ export class ListComponent implements OnInit {
   }
 
   processChange() {
-    this.actions.selectAll(this.selectall);
+    this._store.dispatch(new selectAll(this.selectall));
+  }
+  
+  checkChange() {
+    const _items = [];
+    for (const item of this.Data) {
+      if (item.Selected) {
+        _items.push(item);
+      }
+    }
+    this.SelectedItems.emit(_items);
   }
 
-  checkChange() {
-    this.Data$.subscribe(items => {
-      const _items = [];
-      for (const item of items) {
-        if (item.Selected) {
-          _items.push(item);
-        }
-      }
-      this.SelectedItems.emit(_items);
-    });
-  }
   
 }

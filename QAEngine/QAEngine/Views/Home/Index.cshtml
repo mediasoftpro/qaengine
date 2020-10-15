@@ -1,11 +1,21 @@
-﻿@{
+﻿
+@{
     // return all registered pages with root access
     var pages = Jugnoon.Meta.Data.ReturnStaticPagesData();
     foreach (var page in pages)
     {
         if (page.pagename == ViewData["Page"].ToString())
         {
+            if (page.layout != null)
+            {
+                Layout = page.layout.Replace("[THEME]", SiteConfiguration.Theme);
+            }
+
             var view_name = "~/Views/pages/" + page.viewname + ".cshtml";
+            if (SiteConfiguration.Theme != null && SiteConfiguration.Theme != "")
+            {
+                view_name = "~/Views/themes/" + SiteConfiguration.Theme + "/pages/" + page.viewname + ".cshtml";
+            }
             ViewBag.title = page.title;
             ViewBag.description = page.description;
             ViewBag.image_url = page.imageurl;
@@ -29,6 +39,10 @@
                 if (page.style_exists)
                 {
                     var view_name = "~/Views/pages/styles/" + page.viewname + ".cshtml";
+                    if (SiteConfiguration.Theme != null && SiteConfiguration.Theme != "")
+                    {
+                        view_name = "~/Views/themes/" + SiteConfiguration.Theme + "/pages/styles/" + page.viewname + ".cshtml";
+                    }
                     <partial name="@view_name" />
                 }
                 break;
@@ -47,6 +61,10 @@
                 if (page.script_exists)
                 {
                     var view_name = "~/Views/pages/scripts/" + page.viewname + ".cshtml";
+                    if (SiteConfiguration.Theme != null && SiteConfiguration.Theme != "")
+                    {
+                        view_name = "~/Views/themes/" + SiteConfiguration.Theme + "/pages/scripts/" + page.viewname + ".cshtml";
+                    }
                     <partial name="@view_name" />
                 }
                 break;

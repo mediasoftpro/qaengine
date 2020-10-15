@@ -1,99 +1,46 @@
 
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
-
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 import { Injectable } from "@angular/core";
-import { ConfigurationsAPIActions } from "../../../../reducers/settings/configurations/actions";
+//import { ConfigurationsAPIActions } from "../../../../reducers/settings/configurations/actions";
 import { HttpClient } from "@angular/common/http";
-
 import { SettingsService } from "./settings.service";
+import { loadStarted, loadFailed} from "../../../../reducers/settings/configurations/actions";
+import { loadSucceeded } from 'src/app/reducers/settings/configurations/actions';
 
 @Injectable()
 export class DataService {
   constructor(
+    private _store: Store<IAppState>,
     private settings: SettingsService,
-    private http: HttpClient,
-    private actions: ConfigurationsAPIActions
+    private http: HttpClient
   ) {}
 
   LoadRecords() {
     const URL = this.settings.getApiOptions().load;
-    this.actions.loadStarted();
+    this._store.dispatch(new loadStarted({}));
     this.http.post(URL, {}).subscribe(
       (data: any) => {
         // update core data
-        this.actions.loadSucceeded(data);
+        
+        this._store.dispatch(new loadSucceeded(data));
       },
       err => {
-        this.actions.loadFailed(err);
+        this._store.dispatch(new loadFailed(err));
       }
     );
   }
 
   /* global function for handling all configuration updated data and route to proper api call */
   UpdateConfigurations(entity: any, prop: string, child_prop: string) {
-    let URL = "";
-    switch (prop) {
-      case "general":
-        switch (child_prop) {
-          case "dbsetup":
-            URL = this.settings.getApiOptions().general.dbsetup;
-            break;
-          case "dbusersetup":
-            URL = this.settings.getApiOptions().general.dbusersetup;
-            break;
-          case "general":
-            URL = this.settings.getApiOptions().general.general;
-            break;
-         
-          case "media":
-            URL = this.settings.getApiOptions().general.media;
-            break;
-          case "features":
-            URL = this.settings.getApiOptions().general.features;
-            break;
-          case "listings":
-            URL = this.settings.getApiOptions().general.listings;
-            break;
-          case "authentication":
-            URL = this.settings.getApiOptions().general.authentication;
-            break;
-          case "registration":
-            URL = this.settings.getApiOptions().general.registration;
-            break;
-          case "aws":
-            URL = this.settings.getApiOptions().general.aws;
-            break;
-          case "social":
-            URL = this.settings.getApiOptions().general.social;
-            break;
-          case "contact":
-            URL = this.settings.getApiOptions().general.contact;
-            break;
-          case "smtp":
-            URL = this.settings.getApiOptions().general.smtp;
-            break;
-          case "rechapcha":
-            URL = this.settings.getApiOptions().general.rechapcha;
-            break;
-        }
-        break;
-    
-      case "qa":
-        switch (child_prop) {
-          case "general":
-            URL = this.settings.getApiOptions().qa.general;
-            break;
-        }
-        break;
-     
-    }
-   
+    let URL = this.settings.getApiOptions()[prop][child_prop];
     return this.http.post(URL, entity);
   }
 

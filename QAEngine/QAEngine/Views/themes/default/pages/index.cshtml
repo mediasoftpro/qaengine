@@ -1,0 +1,44 @@
+﻿@inject IStringLocalizer<GeneralResource> GeneralResource
+@inject IStringLocalizer<qaResource> qaResource
+<div class="row" style="min-height:500px;">
+    <div class="col-md-9">
+
+        <div class="m-b-10">
+
+            @await Html.PartialAsync("~/views/themes/" + SiteConfiguration.Theme + "/qa/partials/_smList01.cshtml", new Jugnoon.qa.Models.qaListViewModel()
+            {
+                  BrowseText = GeneralResource["_see_all"].Value,
+                  HeadingTitle = qaResource["_recent_questions"].Value,
+                  NoRecordFoundText = qaResource["no_questions"].Value,
+                  ListObject = new Jugnoon.Scripts.ListItems()
+                  {
+                      showUser = true,
+                      showViews = true,
+                      showDate = true,
+                      isHover = false
+                  },
+                  BrowseUrl = Config.GetUrl("qa/"),
+                  QueryOptions = new Jugnoon.qa.QAEntity()
+                  {
+                      order = "qa.created_at desc",
+                      ispublic = true,
+                      iscache = true,
+                      isfeatured = FeaturedTypes.All,
+                      pagesize = 20,
+                  }
+              })
+
+        </div>
+
+    </div>
+    <div class="col-md-3">
+        @await Html.PartialAsync("~/views/themes/" + SiteConfiguration.Theme + "/partials/_Nav.cshtml", new Jugnoon.Models.MainNavViewModel()
+        {
+           hideAds = false,
+           hideSearch = true,
+           hideArchives = false,
+           hideCategories = false,
+           hideTags = false
+        })
+    </div>
+</div>

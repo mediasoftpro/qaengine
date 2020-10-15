@@ -29,7 +29,7 @@ namespace QAEngine.Areas.api.Controllers
              IOptions<SiteConfiguration> settings,
              IMemoryCache memoryCache,
              ApplicationDbContext context,
-             IStringLocalizer<GeneralResource> generalLocalizer,
+            IStringLocalizer<GeneralResource> generalLocalizer,
              IWebHostEnvironment _environment,
              IHttpContextAccessor _httpContextAccessor,
              IOptions<General> generalSettings

@@ -109,13 +109,13 @@ namespace QAEngine.Areas.api.Controllers
             /* setup thumb path */
             foreach (var item in _posts)
             {
-                item.img_url = UserUrlConfig.ProfilePhoto(item.UserName, item.picturename, 0); // default set
+                item.img_url = UserUrlConfig.ProfilePhoto(item.Id, item.picturename, 0); // default set
                 item.url = UserUrlConfig.ProfileUrl(item, Configs.RegistrationSettings.uniqueFieldOption);
             }
 
             var _records = 0;
             if (data.id == "")
-                _records = UserBLL.Count(_context, data);
+                _records = await UserBLL.Count(_context, data);
 
             var _categories = new List<JGN_Categories>();
 
@@ -128,6 +128,15 @@ namespace QAEngine.Areas.api.Controllers
             var json = new StreamReader(Request.Body).ReadToEnd();
             var data = JsonConvert.DeserializeObject<MemberEntity>(json);
             var _reports = await UserBLL.LoadReport(_context, data);
+            return Ok(new { data = _reports });
+        }
+
+        [HttpPost("generate_report")]
+        public async Task<ActionResult> generate_report()
+        {
+            var json = new StreamReader(Request.Body).ReadToEnd();
+            var data = JsonConvert.DeserializeObject<MemberEntity>(json);
+            var _reports = await UserReports.GenerateReport(_context, data);
             return Ok(new { data = _reports });
         }
 
@@ -160,6 +169,8 @@ namespace QAEngine.Areas.api.Controllers
             _posts[0].img_url = UserUrlConfig.ProfilePhoto(_posts[0].UserName, _posts[0].picturename, 0); // default set
             _posts[0].url = UserUrlConfig.ProfileUrl(_posts[0], Configs.RegistrationSettings.uniqueFieldOption);
             _posts[0].customize_register_date = UtilityBLL.CustomizeDate((DateTime)_posts[0].created_at, DateTime.Now);
+                        
+
             if (_posts[0].last_login != null)
             {
                 _posts[0].customize_last_login = UtilityBLL.CustomizeDate((DateTime)_posts[0].last_login, DateTime.Now);
@@ -558,7 +569,8 @@ namespace QAEngine.Areas.api.Controllers
                     else
                     {
                         /* add attribute */
-                        await AttrValueBLL.Add(_context, attr);
+                        if (attr.value != "")
+                          await AttrValueBLL.Add(_context, attr);
                     }
                 }
 

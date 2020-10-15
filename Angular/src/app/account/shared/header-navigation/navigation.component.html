@@ -1,0 +1,92 @@
+<div *ngIf="config.getGlobalVar('theme') === 'default'">
+  <header>
+    <div
+      class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark d-none d-md-block d-lg-block d-xl-block"
+      style="z-index: 9999"
+    >
+      <div class="container">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav"></ul>
+
+          <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                data-toggle="dropdown"
+                href="/account/"
+                id="myaccount-nav"
+              >
+                <i class="ion-bag"></i>
+                My Account <span class="caret"></span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="myaccount-nav">
+                <a class="dropdown-item" href="#">My Profile</a>
+                <a class="dropdown-item" href="#">My Topics</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/signout">Sign Out</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col col-lg-3 col-md-4 col-sm-4 align-self-start">
+          <div class="logo">
+            <a href="/">
+              <img
+                class="img-responsive"
+                alt="ForumEngine"
+                src="{{ config.getGlobalVar('img_directory') }}logo.png"
+              />
+            </a>
+          </div>
+        </div>
+        <div class="col col-md-2 col-sm-2 hidden-xs"></div>
+        <div class="col col-md-6 col-sm-6 align-self-end">
+          <div class="search-container">
+            <div class="clearfix search-panel">
+              <div class="float-right button-bar">
+                <a
+                  routerLink="/forumtopics/process/0"
+                  class="btn btn-large btn-danger btn-block"
+                  ><i class="fa fa-book"></i>&nbsp;Post Topic</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-main">
+        <div class="flexnav-menu-button" id="flexnav-menu-button">Menu</div>
+        <nav>
+          <ul class="nav nav-pills flexnav" id="flexnav" data-breakpoint="800">
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="/forums/">Forums</a>
+            </li>
+            <li>
+              <a href="/blogs/">Blogs</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+</div>
+

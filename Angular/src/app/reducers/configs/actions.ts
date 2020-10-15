@@ -1,52 +1,46 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Injectable } from "@angular/core";
-import { dispatch } from "@angular-redux/store";
-import { FluxStandardAction } from "flux-standard-action";
+import { Action } from "@ngrx/store";
 
-type Payload = any;
-interface MetaData {}
-export type ConfigAPIAction = FluxStandardAction<Payload, MetaData>;
 
-@Injectable()
-export class ConfigAPIActions {
-  static readonly LOAD_STARTED = "CONFIG_LOAD_STARTED";
-  static readonly LOAD_SUCCEEDED = "CONFIG_LOAD_SUCCEEDED";
-  static readonly LOAD_FAILED = "CONFIG_LOAD_FAILED";
-  static readonly GET_CONFIG = "GET_CONFIGURATION_VALUE";
-
-  @dispatch()
-  loadStarted = (): ConfigAPIAction => ({
-    type: ConfigAPIActions.LOAD_STARTED,
-    //  meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  loadSucceeded = (payload: Payload): ConfigAPIAction => ({
-    type: ConfigAPIActions.LOAD_SUCCEEDED,
-    //  meta: { },
-    payload
-  });
-
-  @dispatch()
-  loadFailed = (error): ConfigAPIAction => ({
-    type: ConfigAPIActions.LOAD_FAILED,
-    //  meta: { },
-    payload: null,
-    error
-  });
-
-  @dispatch()
-  getConfig = (payload: Payload): ConfigAPIAction => ({
-    type: ConfigAPIActions.GET_CONFIG,
-    //  meta: { },
-    payload
-  });
+export enum ConfigAPIAction {
+  LOAD_STARTED = "CONFIG_LOAD_STARTED",
+  LOAD_SUCCEEDED = "CONFIG_LOAD_SUCCEEDED",
+  LOAD_FAILED = "CONFIG_LOAD_FAILED",
+  GET_CONFIG = "GET_CONFIGURATION_VALUE",
 }
+
+
+export class loadStarted implements Action {
+  public readonly type = ConfigAPIAction.LOAD_STARTED;
+  constructor(public payload: any) {}
+}
+
+export class loadSucceeded implements Action {
+  public readonly type = ConfigAPIAction.LOAD_SUCCEEDED;
+  constructor(public payload: any) {}
+}
+
+export class loadFailed implements Action {
+  public readonly type = ConfigAPIAction.LOAD_FAILED;
+  constructor(public payload: any) {}
+}
+
+export class getConfig implements Action {
+  public readonly type = ConfigAPIAction.GET_CONFIG;
+  constructor(public payload: any) {}
+}
+
+
+export type ConfigAPIActions =
+  | loadStarted
+  | loadSucceeded
+  | loadFailed
+  | getConfig;

@@ -28,6 +28,19 @@ namespace Jugnoon.Models
 
         public AlertTypes AlertType { get; set; }
     }
+
+    public class NewsLetterViewModel
+    {       
+        [Required(ErrorMessage = "Email Required")]
+        [Display(Name = "Email Address")]
+        [StringLength(80, ErrorMessage = "Email Address Max Length 80.")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email Address")]
+        public string EmailAddress { get; set; }
+
+        public string page { get; set; }
+        public string Message { get; set; }
+        public AlertTypes AlertType { get; set; }
+    }
 }
 
 /*

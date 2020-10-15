@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-     <AssemblyVersion>1.1.0</AssemblyVersion>
+     <AssemblyVersion>1.2.0</AssemblyVersion>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
     <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
@@ -18,122 +18,119 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Classified\**" />
     <Compile Remove="wwwroot\Angular\**" />
     <Compile Remove="wwwroot\contents\test\**" />
+    <Compile Remove="wwwroot\css\fonts\**" />
+    <Compile Remove="wwwroot\css\menu\**" />
     <Compile Remove="wwwroot\css\themes\**" />
     <Compile Remove="wwwroot\plugins\flexnav-master\**" />
+    <Compile Remove="wwwroot\plugins\font-awesome\**" />
+    <Content Remove="Models\Classified\**" />
     <Content Remove="wwwroot\Angular\**" />
     <Content Remove="wwwroot\contents\test\**" />
+    <Content Remove="wwwroot\css\fonts\**" />
+    <Content Remove="wwwroot\css\menu\**" />
     <Content Remove="wwwroot\css\themes\**" />
     <Content Remove="wwwroot\plugins\flexnav-master\**" />
+    <Content Remove="wwwroot\plugins\font-awesome\**" />
+    <EmbeddedResource Remove="Models\Classified\**" />
     <EmbeddedResource Remove="wwwroot\Angular\**" />
     <EmbeddedResource Remove="wwwroot\contents\test\**" />
+    <EmbeddedResource Remove="wwwroot\css\fonts\**" />
+    <EmbeddedResource Remove="wwwroot\css\menu\**" />
     <EmbeddedResource Remove="wwwroot\css\themes\**" />
     <EmbeddedResource Remove="wwwroot\plugins\flexnav-master\**" />
+    <EmbeddedResource Remove="wwwroot\plugins\font-awesome\**" />
+    <None Remove="Models\Classified\**" />
     <None Remove="wwwroot\Angular\**" />
     <None Remove="wwwroot\contents\test\**" />
+    <None Remove="wwwroot\css\fonts\**" />
+    <None Remove="wwwroot\css\menu\**" />
     <None Remove="wwwroot\css\themes\**" />
     <None Remove="wwwroot\plugins\flexnav-master\**" />
+    <None Remove="wwwroot\plugins\font-awesome\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.101.79" />
-    <PackageReference Include="AWSSDK.Core" Version="3.3.104.5" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.100.1" />
-    <PackageReference Include="AWSSDK.S3" Version="3.3.110" />
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.104.4" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.107.30" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.111.32" />
     <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.42.0" />
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.42.0.1758" />
-    <PackageReference Include="HtmlSanitizer" Version="4.0.217" />
+    <PackageReference Include="Google.Apis.Core" Version="1.48.0" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.47.0.2008" />
+    <PackageReference Include="GoogleMaps.LocationServices" Version="1.2.0.5" />
+    <PackageReference Include="HtmlSanitizer" Version="5.0.331" />
     <PackageReference Include="LinqKit.Core" Version="1.1.17" />
     <PackageReference Include="Mandrill" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0">
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
-    <PackageReference Include="reCAPTCHA.AspNetCore" Version="2.2.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="NEST" Version="7.9.0" />
+    <PackageReference Include="reCAPTCHA.AspNetCore" Version="3.0.10" />
+    <PackageReference Include="Stripe.net" Version="39.3.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.0" />
+    <PackageReference Include="Unitee.ActiveCampaign.ApiClient" Version="1.0.0" />
+    <PackageReference Include="ZendeskApi_v2" Version="3.10.9" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Areas\api\Data\" />
-    <Folder Include="Areas\api\Models\" />
     <Folder Include="Areas\api\Views\" />
-    <Folder Include="Views\partials\modules\" />
-    <Folder Include="wwwroot\app\" />
-    <Folder Include="wwwroot\contents\" />
-    <Folder Include="wwwroot\css\bootswatch\default\" />
-    <Folder Include="wwwroot\css\menu\" />
+    <Folder Include="Areas\gamify\Data\" />
+    <Folder Include="Areas\gamify\Models\" />
+    <Folder Include="Areas\gamify\Views\" />
+    <Folder Include="wwwroot\contents\category\" />
+    <Folder Include="wwwroot\contents\member\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Views\account\Index.cshtml" />
     <None Include="Views\admin\Index.cshtml" />
+    <None Include="Views\blogs\archive.cshtml" />
+    <None Include="Views\blogs\archivelist.cshtml" />
+    <None Include="Views\blogs\categories.cshtml" />
+    <None Include="Views\blogs\category.cshtml" />
+    <None Include="Views\blogs\Index.cshtml" />
+    <None Include="Views\blogs\label.cshtml" />
+    <None Include="Views\blogs\labels.cshtml" />
+    <None Include="Views\blogs\search.cshtml" />
+    <None Include="Views\forums\categories.cshtml" />
+    <None Include="Views\forums\category.cshtml" />
+    <None Include="Views\forums\Index.cshtml" />
+    <None Include="Views\forums\post.cshtml" />
+    <None Include="Views\forum\archive.cshtml" />
+    <None Include="Views\forum\Index.cshtml" />
+    <None Include="Views\forum\search.cshtml" />
+    <None Include="Views\forum\tag.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
-    <None Include="Views\Home\partials\_Nav.cshtml" />
     <None Include="Views\installation\Configs.cshtml" />
     <None Include="Views\installation\Index.cshtml" />
-    <None Include="Views\pages\about-us.cshtml" />
-    <None Include="Views\pages\access_denied.cshtml" />
-    <None Include="Views\pages\activate.cshtml" />
-    <None Include="Views\pages\change_email.cshtml" />
-    <None Include="Views\pages\confirm_email.cshtml" />
-    <None Include="Views\pages\contact.cshtml" />
-    <None Include="Views\pages\cookies.cshtml" />
-    <None Include="Views\pages\external_login.cshtml" />
-    <None Include="Views\pages\forgot_password.cshtml" />
-    <None Include="Views\pages\forgot_password_confirmation.cshtml" />
-    <None Include="Views\pages\gdpr.cshtml" />
-    <None Include="Views\pages\index.cshtml" />
-    <None Include="Views\pages\lockout.cshtml" />
-    <None Include="Views\pages\loginwith2fa.cshtml" />
-    <None Include="Views\pages\loginwithrecoverycode.cshtml" />
-    <None Include="Views\pages\privacy-policy.cshtml" />
-    <None Include="Views\pages\reset_password.cshtml" />
-    <None Include="Views\pages\reset_password_confirmation.cshtml" />
-    <None Include="Views\pages\scripts\forgot_password.cshtml" />
-    <None Include="Views\pages\scripts\index.cshtml" />
-    <None Include="Views\pages\scripts\signin.cshtml" />
-    <None Include="Views\pages\scripts\signup.cshtml" />
-    <None Include="Views\pages\security.cshtml" />
-    <None Include="Views\pages\signin.cshtml" />
-    <None Include="Views\pages\signout.cshtml" />
-    <None Include="Views\pages\signup.cshtml" />
-    <None Include="Views\pages\sitemap.cshtml" />
-    <None Include="Views\pages\styles\index.cshtml" />
-    <None Include="Views\pages\terms-of-use.cshtml" />
-    <None Include="Views\pages\thirdparties.cshtml" />
-    <None Include="Views\pages\validate_adult.cshtml" />
-    <None Include="Views\pages\Viewaccess_denied.cshtml" />
     <None Include="Views\partials\ads\ad_120_600.cshtml" />
     <None Include="Views\partials\ads\ad_160_600.cshtml" />
     <None Include="Views\partials\ads\ad_300.cshtml" />
     <None Include="Views\partials\ads\ad_336.cshtml" />
     <None Include="Views\partials\ads\ad_468.cshtml" />
     <None Include="Views\partials\ads\ad_728.cshtml" />
-    <None Include="Views\partials\category\categorylist.cshtml" />
-    <None Include="Views\partials\category\item\content.cshtml" />
-    <None Include="Views\partials\category\item\gridItem.cshtml" />
-    <None Include="Views\partials\category\item\Item.cshtml" />
-    <None Include="Views\partials\category\item\linkItem.cshtml" />
-    <None Include="Views\partials\category\item\listItem.cshtml" />
-    <None Include="Views\partials\category\item\thumbnail.cshtml" />
-    <None Include="Views\partials\category\_MenuList.cshtml" />
     <None Include="Views\partials\list\_ListStat.cshtml" />
     <None Include="Views\partials\list\_Pagination.cshtml" />
+    <None Include="Views\partials\utility\share.cshtml" />
     <None Include="Views\partials\utility\_norecord.cshtml" />
+    <None Include="Views\post\Index.cshtml" />
     <None Include="Views\qa\archive.cshtml" />
     <None Include="Views\qa\archivelist.cshtml" />
     <None Include="Views\qa\ask.cshtml" />
@@ -142,108 +139,151 @@
     <None Include="Views\qa\Index.cshtml" />
     <None Include="Views\qa\label.cshtml" />
     <None Include="Views\qa\labels.cshtml" />
-    <None Include="Views\qa\partials\Item\Item.cshtml" />
-    <None Include="Views\qa\partials\_Archives.cshtml" />
-    <None Include="Views\qa\partials\_ask.cshtml" />
-    <None Include="Views\qa\partials\_CategoryList.cshtml" />
-    <None Include="Views\qa\partials\_List.cshtml" />
-    <None Include="Views\qa\partials\_ListFilter.cshtml" />
-    <None Include="Views\qa\partials\_Nav.cshtml" />
-    <None Include="Views\qa\partials\_smList01.cshtml" />
     <None Include="Views\qa\search.cshtml" />
     <None Include="Views\question\editanswer.cshtml" />
     <None Include="Views\question\Index.cshtml" />
-    <None Include="Views\question\partials\_action.cshtml" />
-    <None Include="Views\question\partials\_ans.cshtml" />
-    <None Include="Views\question\partials\_ansection.cshtml" />
-    <None Include="Views\question\partials\_apost.cshtml" />
-    <None Include="Views\question\partials\_editans.cshtml" />
-    <None Include="Views\question\partials\_info.cshtml" />
-    <None Include="Views\question\partials\_post.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
-    <None Include="Views\Shared\layouts\_emptyLayout.cshtml" />
-    <None Include="Views\Shared\layouts\_Layout.cshtml" />
     <None Include="Views\Shared\scripts\chosen.cshtml" />
     <None Include="Views\Shared\scripts\fotorama.cshtml" />
     <None Include="Views\Shared\scripts\light_slider.cshtml" />
     <None Include="Views\Shared\scripts\logineye.cshtml" />
-    <None Include="Views\Shared\scripts\wysibb.cshtml" />
     <None Include="Views\Shared\styles\chosen.cshtml" />
     <None Include="Views\Shared\styles\fotorama.cshtml" />
     <None Include="Views\Shared\styles\light_slider.cshtml" />
-    <None Include="Views\Shared\styles\wysibb.cshtml" />
     <None Include="Views\Shared\_BreadCrumb.cshtml" />
     <None Include="Views\Shared\_Categories_Style_02.cshtml" />
     <None Include="Views\Shared\_ContactUs.cshtml" />
     <None Include="Views\Shared\_externalLoginProvider.cshtml" />
-    <None Include="Views\Shared\_Footer.cshtml" />
-    <None Include="Views\Shared\_Header.cshtml" />
     <None Include="Views\Shared\_Language.cshtml" />
-    <None Include="Views\Shared\_mainSearch.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_Search.cshtml" />
-    <None Include="Views\Shared\_searchBar.cshtml" />
     <None Include="Views\Shared\_TagList.cshtml" />
     <None Include="Views\Shared\_Tags.cshtml" />
-    <None Include="Views\Shared\_tMenu.cshtml" />
-    <None Include="Views\Shared\_TNav.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\themes\default\blogs\archive.cshtml" />
+    <None Include="Views\themes\default\blogs\archivelist.cshtml" />
+    <None Include="Views\themes\default\blogs\categories.cshtml" />
+    <None Include="Views\themes\default\blogs\category.cshtml" />
+    <None Include="Views\themes\default\blogs\Index.cshtml" />
+    <None Include="Views\themes\default\blogs\label.cshtml" />
+    <None Include="Views\themes\default\blogs\labels.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\item\cover.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\item\detail.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\item\gallery.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\item\Item.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\item\list.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\item\video.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\_Archives.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\_CategoryList.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\_LinkList.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\_List.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\_ListFilter.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\_List_SM_01.cshtml" />
+    <None Include="Views\themes\default\blogs\partials\_Nav.cshtml" />
+    <None Include="Views\themes\default\blogs\search.cshtml" />
+    <None Include="Views\themes\default\layouts\footer\footer.cshtml" />
+    <None Include="Views\themes\default\layouts\footer\partials\newsletter.cshtml" />
+    <None Include="Views\themes\default\layouts\header\header.cshtml" />
+    <None Include="Views\themes\default\layouts\index.cshtml" />
+    <None Include="Views\themes\default\pages\about-us.cshtml" />
+    <None Include="Views\themes\default\pages\access_denied.cshtml" />
+    <None Include="Views\themes\default\pages\activate.cshtml" />
+    <None Include="Views\themes\default\pages\change_email.cshtml" />
+    <None Include="Views\themes\default\pages\confirm_email.cshtml" />
+    <None Include="Views\themes\default\pages\contact.cshtml" />
+    <None Include="Views\themes\default\pages\cookies.cshtml" />
+    <None Include="Views\themes\default\pages\external_login.cshtml" />
+    <None Include="Views\themes\default\pages\forgot_password.cshtml" />
+    <None Include="Views\themes\default\pages\forgot_password_confirmation.cshtml" />
+    <None Include="Views\themes\default\pages\gdpr.cshtml" />
+    <None Include="Views\themes\default\pages\index.cshtml" />
+    <None Include="Views\themes\default\pages\lockout.cshtml" />
+    <None Include="Views\themes\default\pages\loginwith2fa.cshtml" />
+    <None Include="Views\themes\default\pages\loginwithrecoverycode.cshtml" />
+    <None Include="Views\themes\default\pages\privacy-policy.cshtml" />
+    <None Include="Views\themes\default\pages\reset_password.cshtml" />
+    <None Include="Views\themes\default\pages\reset_password_confirmation.cshtml" />
+    <None Include="Views\themes\default\pages\scripts\forgot_password.cshtml" />
+    <None Include="Views\themes\default\pages\scripts\index.cshtml" />
+    <None Include="Views\themes\default\pages\scripts\signin.cshtml" />
+    <None Include="Views\themes\default\pages\scripts\signup.cshtml" />
+    <None Include="Views\themes\default\pages\security.cshtml" />
+    <None Include="Views\themes\default\pages\signin.cshtml" />
+    <None Include="Views\themes\default\pages\signout.cshtml" />
+    <None Include="Views\themes\default\pages\signout_confirm.cshtml" />
+    <None Include="Views\themes\default\pages\signup.cshtml" />
+    <None Include="Views\themes\default\pages\sitemap.cshtml" />
+    <None Include="Views\themes\default\pages\styles\index.cshtml" />
+    <None Include="Views\themes\default\pages\terms-of-use.cshtml" />
+    <None Include="Views\themes\default\pages\thirdparties.cshtml" />
+    <None Include="Views\themes\default\pages\validate_adult.cshtml" />
+    <None Include="Views\themes\default\pages\Viewaccess_denied.cshtml" />
+    <None Include="Views\themes\default\partials\category\item\content.cshtml" />
+    <None Include="Views\themes\default\partials\category\item\gridItem.cshtml" />
+    <None Include="Views\themes\default\partials\category\item\Item.cshtml" />
+    <None Include="Views\themes\default\partials\category\item\linkItem.cshtml" />
+    <None Include="Views\themes\default\partials\category\item\listItem.cshtml" />
+    <None Include="Views\themes\default\partials\category\item\thumbnail.cshtml" />
+    <None Include="Views\themes\default\partials\_BreadCrumb.cshtml" />
+    <None Include="Views\themes\default\partials\_Categories.cshtml" />
+    <None Include="Views\themes\default\partials\_ContactUs.cshtml" />
+    <None Include="Views\themes\default\partials\_externalLogin.cshtml" />
+    <None Include="Views\themes\default\partials\_Language.cshtml" />
+    <None Include="Views\themes\default\partials\_mainSearch.cshtml" />
+    <None Include="Views\themes\default\partials\_norecord.cshtml" />
+    <None Include="Views\themes\default\partials\_Search.cshtml" />
+    <None Include="Views\themes\default\partials\_searchBar.cshtml" />
+    <None Include="Views\themes\default\partials\_TagList.cshtml" />
+    <None Include="Views\themes\default\partials\_Tags.cshtml" />
+    <None Include="Views\themes\default\partials\_tMenu.cshtml" />
+    <None Include="Views\themes\default\partials\_tnav.cshtml" />
+    <None Include="Views\themes\default\post\Index.cshtml" />
+    <None Include="Views\themes\default\post\partials\_Nav.cshtml" />
+    <None Include="Views\themes\default\qa\archive.cshtml" />
+    <None Include="Views\themes\default\qa\archivelist.cshtml" />
+    <None Include="Views\themes\default\qa\ask.cshtml" />
+    <None Include="Views\themes\default\qa\categories.cshtml" />
+    <None Include="Views\themes\default\qa\category.cshtml" />
+    <None Include="Views\themes\default\qa\Index.cshtml" />
+    <None Include="Views\themes\default\qa\label.cshtml" />
+    <None Include="Views\themes\default\qa\labels.cshtml" />
+    <None Include="Views\themes\default\qa\partials\Item\Item.cshtml" />
+    <None Include="Views\themes\default\qa\partials\_Archives.cshtml" />
+    <None Include="Views\themes\default\qa\partials\_ask.cshtml" />
+    <None Include="Views\themes\default\qa\partials\_CategoryList.cshtml" />
+    <None Include="Views\themes\default\qa\partials\_LinkList.cshtml" />
+    <None Include="Views\themes\default\qa\partials\_List.cshtml" />
+    <None Include="Views\themes\default\qa\partials\_ListFilter.cshtml" />
+    <None Include="Views\themes\default\qa\partials\_Nav.cshtml" />
+    <None Include="Views\themes\default\qa\partials\_smList01.cshtml" />
+    <None Include="Views\themes\default\qa\search.cshtml" />
+    <None Include="Views\themes\default\question\editanswer.cshtml" />
+    <None Include="Views\themes\default\question\Index.cshtml" />
+    <None Include="Views\themes\default\question\partials\_action.cshtml" />
+    <None Include="Views\themes\default\question\partials\_ans.cshtml" />
+    <None Include="Views\themes\default\question\partials\_ansection.cshtml" />
+    <None Include="Views\themes\default\question\partials\_apost.cshtml" />
+    <None Include="Views\themes\default\question\partials\_editans.cshtml" />
+    <None Include="Views\themes\default\question\partials\_info.cshtml" />
+    <None Include="Views\themes\default\question\partials\_post.cshtml" />
+    <None Include="Views\themes\default\user\Index.cshtml" />
+    <None Include="Views\themes\default\user\partials\_Connect.cshtml" />
+    <None Include="Views\themes\default\user\partials\_cProfile.cshtml" />
+    <None Include="Views\themes\default\user\partials\_Nav.cshtml" />
+    <None Include="Views\themes\default\user\profile.cshtml" />
+    <None Include="Views\topic\Index.cshtml" />
+    <None Include="Views\topic\post.cshtml" />
     <None Include="Views\user\Index.cshtml" />
-    <None Include="Views\user\partials\_Connect.cshtml" />
-    <None Include="Views\user\partials\_cProfile.cshtml" />
-    <None Include="Views\user\partials\_Nav.cshtml" />
     <None Include="Views\user\profile.cshtml" />
-    <None Include="Views\user\qa.cshtml" />
+    <None Include="Views\user\topics.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
-    <None Include="wwwroot\css\fonts\ionicons\ionicons.svg" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\.editorconfig" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\gulpfile.js" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\HISTORY.md" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\LICENSE" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\README.md" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\src\scss\build.scss" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\src\scss\_component-chosen.scss" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\src\scss\_component-variables.scss" />
-    <None Include="wwwroot\plugins\bootstrap4c-chosen\yarn.lock" />
     <None Include="wwwroot\plugins\chosen-js\chosen.jquery.js" />
     <None Include="wwwroot\plugins\chosen-js\chosen.jquery.min.js" />
     <None Include="wwwroot\plugins\chosen-js\chosen.proto.js" />
     <None Include="wwwroot\plugins\chosen-js\chosen.proto.min.js" />
     <None Include="wwwroot\plugins\chosen-js\LICENSE.md" />
     <None Include="wwwroot\plugins\chosen-js\README.md" />
-    <None Include="wwwroot\plugins\font-awesome\.npmignore" />
-    <None Include="wwwroot\plugins\font-awesome\css\font-awesome.css.map" />
-    <None Include="wwwroot\plugins\font-awesome\fonts\fontawesome-webfont.svg" />
-    <None Include="wwwroot\plugins\font-awesome\fonts\fontawesome-webfont.woff2" />
-    <None Include="wwwroot\plugins\font-awesome\less\animated.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\bordered-pulled.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\core.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\fixed-width.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\font-awesome.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\icons.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\larger.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\list.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\mixins.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\path.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\rotated-flipped.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\screen-reader.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\stacked.less" />
-    <None Include="wwwroot\plugins\font-awesome\less\variables.less" />
-    <None Include="wwwroot\plugins\font-awesome\README.md" />
-    <None Include="wwwroot\plugins\font-awesome\scss\font-awesome.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_animated.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_bordered-pulled.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_core.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_fixed-width.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_icons.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_larger.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_list.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_mixins.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_path.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_rotated-flipped.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_screen-reader.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_stacked.scss" />
-    <None Include="wwwroot\plugins\font-awesome\scss\_variables.scss" />
     <None Include="wwwroot\plugins\jquery\dist\core.js" />
     <None Include="wwwroot\plugins\jquery\dist\jquery.js" />
     <None Include="wwwroot\plugins\jquery\dist\jquery.min.js" />

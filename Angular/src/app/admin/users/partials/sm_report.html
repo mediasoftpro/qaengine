@@ -1,0 +1,43 @@
+<app-loader *ngIf="user_report_loading$ | async"></app-loader>
+<div class="card shadow mb-4" *ngIf="!(user_report_loading$ | async)">
+  <!-- Card Header - Dropdown -->
+  <div
+    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+  >
+    <h6 class="m-0 font-weight-bold text-primary">{{title}}</h6>
+    <div class="dropdown no-arrow">
+      <a
+        class="dropdown-toggle"
+        href="#"
+        role="button"
+        id="dropdownMenuLink"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+      </a>
+      <div
+        class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+        aria-labelledby="dropdownMenuLink"
+      >
+        <div class="dropdown-header">Report Types:</div>
+        <a class="dropdown-item" href="#" (click)="renderChart(0, $event); false">Column Chart</a>
+        <a class="dropdown-item" href="#" (click)="renderChart(1, $event); false">Bar Chart</a>
+        <a class="dropdown-item" href="#" (click)="renderChart(2, $event); false">Line Chart</a>
+        <a class="dropdown-item" href="#" (click)="renderChart(3, $event); false">Pie Chart</a>
+        <div class="dropdown-header">Data Filter:</div>
+        <a class="dropdown-item" href="#" (click)="filterData(0, $event); false">Month</a>
+        <a class="dropdown-item" href="#" (click)="filterData(1, $event); false">Year</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+      
+    <div class="row m-b-10" *ngIf="(is_user_report_loaded$ | async)">
+        <google-chart [data]="reportData"></google-chart>
+    </div>
+    
+  </div>
+</div>
+

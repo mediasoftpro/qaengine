@@ -5,6 +5,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
 using Jugnoon.Framework;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,7 @@ using System.Security.Claims;
 using Jugnoon.Services;
 using reCAPTCHA.AspNetCore;
 using Jugnoon.Localize;
+
 
 namespace QAEngine.Controllers
 {
@@ -29,13 +31,13 @@ namespace QAEngine.Controllers
 
         // Dependencies Injections
         public authController(
-            IRecaptchaService recaptcha,
+           IRecaptchaService recaptcha,
            IOptions<SiteConfiguration> settings,
            SignInManager<ApplicationUser> signInManager,
            ApplicationDbContext context,
            UserManager<ApplicationUser> userManager,
            RoleManager<ApplicationRole> roleManager,
-            IStringLocalizer<GeneralResource> generalLocalizer,
+           IStringLocalizer<GeneralResource> generalLocalizer,
            IWebHostEnvironment environment,
            IHttpContextAccessor _httpContextAccessor,
            IEmailSender emailSender,
@@ -107,14 +109,15 @@ namespace QAEngine.Controllers
                     UserName = model.Email;
                 }
 
-                var user = new ApplicationUser
+                 var user = new ApplicationUser
                 {
                     UserName = UserName,
                     Email = model.Email,
                     created_at = DateTime.Now,
                     firstname = model.FirstName,
                     lastname = model.LastName,
-                    isenabled = 1
+                    isenabled = 1,
+                    type = (byte)UserBLL.Types.NormalUser
                 };
                 var result = await SiteConfig.userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

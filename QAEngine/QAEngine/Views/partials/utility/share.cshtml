@@ -1,0 +1,84 @@
+﻿@*
+    Share Dialog Box UI / Implementation
+*@
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Social> socialSettings
+
+
+<div class="share-link">
+    <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content col-12">
+                <div class="modal-header">
+                    <h5 class="modal-title">Share</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="icon-container1 d-flex">
+                        <div class="smd">
+                            <a id="media_shr_twitter_link" href="#" target="_blank">
+                                <i class="img-thumbnail fab fa-twitter fa-2x" style="color:#4c6ef5;background-color: aliceblue"></i>
+                                <p>Twitter</p>
+                            </a>
+
+                        </div>
+                        <div class="smd">
+                            <a id="media_shr_fb_link" href="#" target="_blank">
+                                <i class="img-thumbnail fab fa-facebook fa-2x" style="color: #3b5998;background-color: #eceff5;"></i>
+                                <p>Facebook</p>
+                            </a>
+                        </div>
+                        <div class="smd">
+                            <a id="media_shr_reddit_link" href="#" target="_blank">
+                                <i class="img-thumbnail fab fa-reddit-alien fa-2x" style="color: #FF5700;background-color: #fdd9ce;"></i>
+                                <p>Reddit</p>
+                            </a>
+
+                        </div>
+                        <div class="smd">
+                            <a id="media_shr_linkedin_link" href="#" target="_blank">
+                                <i class="img-thumbnail fab fa-linkedin fa-2x " style="color: #738ADB;background-color: #d8d8d8;"></i>
+                                <p>Linkedin</p>
+                            </a>
+
+                        </div>
+                    </div>
+                    <div class="icon-container2 d-flex">
+
+                        <div class="smd">
+                            <a id="media_shr_google_link" href="#" target="_blank">
+                                <i class="img-thumbnail fab fa-google fa-2x" style="color: #7bb32e;background-color: #daf1bc;"></i>
+                                <p>Google</p>
+                            </a>
+                        </div>
+
+                        <div class="smd">
+                            <a id="media_shr_thumblr_link" href="#" target="_blank">
+                                <i class="img-thumbnail fab fa-thumblr fa-2x" style="color: #4c6ef5;background-color: aliceblue"></i>
+                                <p>Thumblr</p>
+                            </a>
+
+                        </div>
+                        <div class="smd">
+                            <a id="media_shr_whatsapp_link" href="#" data-action="share/whatsapp/share" target="_blank">
+                                <i class="img-thumbnail fab fa-whatsapp fa-2x" style="color: #25D366;background-color: #cef5dc;"></i>
+                                <p>Whatsapp</p>
+                            </a>
+
+                        </div>
+                        <div class="smd">
+                            <a id="media_shr_messenger_link" href="#" data-appid="@socialSettings.Value.fb_appId" target="_blank">
+                                <i class="img-thumbnail fab fa-facebook-messenger fa-2x" style="color: #3b5998;background-color: #eceff5;"></i>
+                                <p>Messenger</p>
+                            </a>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+

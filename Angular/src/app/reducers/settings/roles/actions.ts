@@ -1,178 +1,154 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Injectable } from "@angular/core";
-import { dispatch } from "@angular-redux/store";
-import { FluxStandardAction } from "flux-standard-action";
+import { Action } from "@ngrx/store";
 import { tassign } from "tassign";
 
 import { IRoles } from "./model";
-// Flux-standard-action gives us stronger typing of our actions.
-type Payload = any;
-interface MetaData {}
-export type ROLEAPIAction = FluxStandardAction<Payload, MetaData>;
 
-@Injectable()
-export class ROLEAPIActions {
-  static readonly LOAD_ROLE_STARTED = "ROLE_LOAD_STARTED";
-  static readonly LOAD_ROLE_SUCCEEDED = "ROLE_LOAD_SUCCEEDED";
-  static readonly LOAD_ROLE_FAILED = "ROLE_LOAD_FAILED";
 
-  static readonly LOAD_OBJECT_STARTED = "ROLE_OBJECT_LOAD_STARTED";
-  static readonly LOAD_OBJECT_SUCCEEDED = "ROLE_OBJECT_LOAD_SUCCEEDED";
-  static readonly LOAD_OBJECT_FAILED = "ROLE_OBJECT_LOAD_FAILED";
+export enum ROLEAPIAction {
+  LOAD_ROLE_STARTED = "ROLE_LOAD_STARTED",
+  LOAD_ROLE_SUCCEEDED = "ROLE_LOAD_SUCCEEDED",
+  LOAD_ROLE_FAILED = "ROLE_LOAD_FAILED",
+  LOAD_OBJECT_STARTED = "ROLE_OBJECT_LOAD_STARTED",
+  LOAD_OBJECT_SUCCEEDED = "ROLE_OBJECT_LOAD_SUCCEEDED",
+  LOAD_OBJECT_FAILED = "ROLE_OBJECT_LOAD_FAILED",
 
-  static readonly SELECT_ALL = "ROLE_SELECT_ALL";
-  static readonly IS_ITEM_SELECTED = "ROLE_IS_ITEM_SELECTED";
+  SELECT_ALL = "ROLE_SELECT_ALL",
+  IS_ITEM_SELECTED = "ROLE_IS_ITEM_SELECTED",
 
-  static readonly ADD_ROLE = "ROLE_ADD_RECORD";
-  static readonly REMOVE_ROLE = "ROLE_REMOVE_RECORD";
+  ADD_ROLE = "ROLE_ADD_RECORD",
+  REMOVE_ROLE = "ROLE_REMOVE_RECORD",
 
-  static readonly ADD_OBJECT = "ROLE_ADD_OBJECT";
-  static readonly UPDATE_OBJECT = "ROLE_UPDATE_RECORD";
-  static readonly REMOVE_OBJECT = "ROLE_REMOVE_OBJECT";
+  ADD_OBJECT = "ROLE_ADD_OBJECT",
+  UPDATE_OBJECT = "ROLE_UPDATE_RECORD",
+  REMOVE_OBJECT = "ROLE_REMOVE_OBJECT",
 
-  static readonly APPLY_ROLE_CHANGES = "ROLE_APPLY_ROLE_CHANGES";
-  static readonly APPLY_OBJECT_CHANGES = "ROLE_APPLY_OBJECT_CHANGES";
+  APPLY_ROLE_CHANGES = "ROLE_APPLY_ROLE_CHANGES",
+  APPLY_OBJECT_CHANGES = "ROLE_APPLY_OBJECT_CHANGES",
 
   // REFERESH LOAD
-  static readonly LOAD_END = "ROLE_YT_LOADEND";
-  static readonly REFRESH_DATA = "ROLE_REFRESH_DATA";
-  static readonly REFRESH_PAGINATION = "ROLE_REFRESH_PAGINATION";
-
-  @dispatch()
-  loadStarted = (): ROLEAPIAction => ({
-    type: ROLEAPIActions.LOAD_ROLE_STARTED,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  loadSucceeded = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.LOAD_ROLE_SUCCEEDED,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  loadFailed = (error): ROLEAPIAction => ({
-    type: ROLEAPIActions.LOAD_ROLE_FAILED,
-    // meta: { },
-    payload: null,
-    error
-  });
-
-  @dispatch()
-  loadObjectStarted = (): ROLEAPIAction => ({
-    type: ROLEAPIActions.LOAD_OBJECT_STARTED,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  loadObjectSucceeded = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.LOAD_OBJECT_SUCCEEDED,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  loadObjectFailed = (error): ROLEAPIAction => ({
-    type: ROLEAPIActions.LOAD_OBJECT_FAILED,
-    // meta: { },
-    payload: null,
-    error
-  });
-
-  @dispatch()
-  selectAll = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.SELECT_ALL,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateItemsSelectionStatus = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.IS_ITEM_SELECTED,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  addRole = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.ADD_ROLE,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  removeRole = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.REMOVE_ROLE,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  addObject = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.ADD_OBJECT,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  updateObject = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.UPDATE_OBJECT,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  removeObject = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.REMOVE_OBJECT,
-    // meta: { },
-    payload: payload
-  });
-
-  @dispatch()
-  applyRoleChanges = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.APPLY_ROLE_CHANGES,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  applyObjectChanges = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.APPLY_OBJECT_CHANGES,
-    // meta: { },
-    payload
-  });
-
-  @dispatch()
-  loadEnd = (): ROLEAPIAction => ({
-    type: ROLEAPIActions.LOAD_END,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  reloadList = (): ROLEAPIAction => ({
-    type: ROLEAPIActions.REFRESH_DATA,
-    // meta: { },
-    payload: null
-  });
-
-  @dispatch()
-  refresh_pagination = (payload: Payload): ROLEAPIAction => ({
-    type: ROLEAPIActions.REFRESH_PAGINATION,
-    // meta: { },
-    payload: payload
-  });
+  LOAD_END = "ROLE_YT_LOADEND",
+  REFRESH_DATA = "ROLE_REFRESH_DATA",
+  REFRESH_PAGINATION = "ROLE_REFRESH_PAGINATION"
 }
+
+export class loadStarted implements Action {
+  public readonly type = ROLEAPIAction.LOAD_ROLE_STARTED;
+  constructor(public payload: any) {}
+}
+
+export class loadSucceeded implements Action {
+  public readonly type = ROLEAPIAction.LOAD_ROLE_SUCCEEDED;
+  constructor(public payload: any) {}
+}
+
+export class loadFailed implements Action {
+  public readonly type = ROLEAPIAction.LOAD_ROLE_FAILED;
+  constructor(public payload: any) {}
+}
+
+export class loadObjectStarted implements Action {
+  public readonly type = ROLEAPIAction.LOAD_OBJECT_STARTED;
+  constructor(public payload: any) {}
+}
+
+export class loadObjectSucceeded implements Action {
+  public readonly type = ROLEAPIAction.LOAD_OBJECT_SUCCEEDED;
+  constructor(public payload: any) {}
+}
+
+export class loadObjectFailed implements Action {
+  public readonly type = ROLEAPIAction.LOAD_OBJECT_FAILED;
+  constructor(public payload: any) {}
+}
+
+export class selectAll implements Action {
+  public readonly type = ROLEAPIAction.SELECT_ALL;
+  constructor(public payload: any) {}
+}
+
+export class updateItemsSelectionStatus implements Action {
+  public readonly type = ROLEAPIAction.IS_ITEM_SELECTED;
+  constructor(public payload: any) {}
+}
+
+export class addRole implements Action {
+  public readonly type = ROLEAPIAction.ADD_ROLE;
+  constructor(public payload: any) {}
+}
+
+export class removeRole implements Action {
+  public readonly type = ROLEAPIAction.REMOVE_ROLE;
+  constructor(public payload: any) {}
+}
+
+export class addObject implements Action {
+  public readonly type = ROLEAPIAction.ADD_OBJECT;
+  constructor(public payload: any) {}
+}
+
+export class updateObject implements Action {
+  public readonly type = ROLEAPIAction.UPDATE_OBJECT;
+  constructor(public payload: any) {}
+}
+
+export class removeObject implements Action {
+  public readonly type = ROLEAPIAction.REMOVE_OBJECT;
+  constructor(public payload: any) {}
+}
+
+export class applyRoleChanges implements Action {
+  public readonly type = ROLEAPIAction.APPLY_ROLE_CHANGES;
+  constructor(public payload: any) {}
+}
+
+export class applyObjectChanges implements Action {
+  public readonly type = ROLEAPIAction.APPLY_OBJECT_CHANGES;
+  constructor(public payload: any) {}
+}
+
+export class loadEnd implements Action {
+  public readonly type = ROLEAPIAction.LOAD_END;
+  constructor(public payload: any) {}
+}
+
+export class reloadList implements Action {
+  public readonly type = ROLEAPIAction.REFRESH_DATA;
+  constructor(public payload: any) {}
+}
+
+export class refresh_pagination implements Action {
+  public readonly type = ROLEAPIAction.REFRESH_PAGINATION;
+  constructor(public payload: any) {}
+}
+
+export type ROLEAPIActions =
+  | loadStarted
+  | loadSucceeded
+  | loadFailed
+  | loadObjectStarted
+  | loadObjectSucceeded
+  | loadObjectFailed
+  | addRole
+  | removeRole
+  | addObject
+  | updateObject
+  | removeObject
+  | applyRoleChanges
+  | applyObjectChanges
+  | selectAll
+  | updateItemsSelectionStatus
+  | loadEnd
+  | refresh_pagination
+  | reloadList;
 
 export class RolesBLL {
   loadRoleSucceeded(state: IRoles, action: any) {
@@ -255,7 +231,7 @@ export class RolesBLL {
   }
 
   refreshpagination(state: IRoles, action: any) {
-    const pagination = state.pagination;
+    const pagination = Object.assign({}, state.pagination);
     pagination.totalRecords = action.payload.totalrecords;
     pagination.pageSize = action.payload.pagesize;
     return tassign(state, { pagination: pagination });

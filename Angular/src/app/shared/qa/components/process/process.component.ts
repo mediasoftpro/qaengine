@@ -1,14 +1,14 @@
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 import { Component, OnInit, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
 
 // services
 import { SettingsService } from "../../services/settings.service";
@@ -16,13 +16,21 @@ import { DataService } from "../../services/data.service";
 import { FormService } from "../../services/form.service";
 import { DataService as CategoryDataService } from "../../../../admin/settings/categories/services/data.service";
 import { SettingsService as CategorySettingService } from "../../../../admin/settings/categories/services/settings.service";
-import { CategoriesAPIActions } from "../../../../reducers/settings/categories/actions";
+
 // shared services
 import { CoreService } from "../../../../admin/core/coreService";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
 
 // reducer actions
-import { QAAPIActions } from "../../../../reducers/qa/actions";
+import * as selectors from "../../../../reducers/qa/selectors";
+import {
+  reloadList
+} from "../../../../reducers/qa/actions";
+
+import { Notify } from "../../../../reducers/core/actions";
+import { auth } from "../../../../reducers/users/selectors";
+import { dropdown_categories } from "../../../../reducers/settings/categories/selectors";
+import * as configSelectors from "../../../../reducers/configs/selectors";
+
 import { fadeInAnimation } from "../../../../animations/core";
 
 import { PermissionService } from "../../../../admin/users/services/permission.service";
@@ -31,15 +39,14 @@ import { PermissionService } from "../../../../admin/users/services/permission.s
   templateUrl: "./process.html",
   selector: "app-qa-process",
   animations: [fadeInAnimation],
-  providers: [CategoryDataService, CategorySettingService, CategoriesAPIActions]
+  providers: [CategoryDataService, CategorySettingService]
 })
 export class QAProcComponent implements OnInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private coreService: CoreService,
-    private coreActions: CoreAPIActions,
-    private actions: QAAPIActions,
     private route: ActivatedRoute,
     private permission: PermissionService,
     private formService: FormService,
@@ -61,20 +68,14 @@ export class QAProcComponent implements OnInit {
   Categories: any = [];
   Auth: any = {};
 
-  @select(["qa", "categories"])
-  readonly categories$: Observable<any>;
+  
+  readonly categories$ = this._store.pipe(select(selectors.categories));
+  readonly dropdown_categories$ = this._store.pipe(select(dropdown_categories));
+  readonly settings$ = this._store.pipe(select(selectors.settings));
+  readonly isloaded$ = this._store.pipe(select(selectors.isloaded));
+  readonly auth$ = this._store.pipe(select(auth));
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
 
-  @select(["categories", "dropdown_categories"])
-  readonly dropdown_categories$: Observable<any>;
-
-  @select(["qa", "isloaded"])
-  readonly isloaded$: Observable<any>;
-
-  @select(["qa", "settings"])
-  readonly settings$: Observable<any>;
-
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -200,11 +201,12 @@ export class QAProcComponent implements OnInit {
         // update post
         this.initializeControls(data.post);
       } else {
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: data.message,
           text: "",
-          css: "bg-error"
-        });
+          css: "bg-danger"
+        }));
+      
         this.initializeControls(this.settingService.getInitObject());
       }
       this.showLoader = false;
@@ -225,11 +227,11 @@ export class QAProcComponent implements OnInit {
 
   SubmitForm(payload) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
+      this._store.dispatch(new Notify({
         title: "Permission Denied",
         text: "",
         css: "bg-danger"
-      });
+      }));
       return;
     }
     this.showLoader = true;
@@ -248,20 +250,20 @@ export class QAProcComponent implements OnInit {
     this.dataService.AddRecord(payload).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
+          this._store.dispatch(new Notify({
             title: data.message,
             text: "",
-            css: "bg-error"
-          });
+            css: "bg-danger"
+          }));
         } else {
-          this.coreActions.Notify({
+          this._store.dispatch(new Notify({
             title: "Record " + _status + " Successfully",
             text: "",
             css: "bg-success"
-          });
+          }));
 
           // enable reload action to refresh data
-          this.actions.reloadList();
+          this._store.dispatch(new reloadList({}));
 
           // redirect
           if (this.isAdmin) {
@@ -278,11 +280,11 @@ export class QAProcComponent implements OnInit {
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

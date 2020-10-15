@@ -1,30 +1,33 @@
 /* -------------------------------------------------------------------------- */
 /*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
 
 import { Component, OnInit, Input } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
-import { QAAPIActions } from "../../../../reducers/qa/actions";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+
 import { DataService } from "../../services/data.service";
 import { SettingsService } from "../../services/settings.service";
 import { Router } from "@angular/router";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
 import { CoreService } from "../../../../admin/core/coreService";
+
+import { auth } from "../../../../reducers/users/selectors";
+import {
+  loadFailed
+} from "../../../../reducers/qa/actions";
 
 @Component({
   selector: "app-smqa-list",
   templateUrl: "./smlist.html",
-  providers: [QAAPIActions, DataService, SettingsService]
+  providers: [DataService, SettingsService]
 })
 export class SMQAListComponent implements OnInit {
   constructor(
-    private actions: QAAPIActions,
-    private coreActions: CoreAPIActions,
+    private _store: Store<IAppState>,
     private dataService: DataService,
     private router: Router,
     private coreService: CoreService
@@ -40,8 +43,7 @@ export class SMQAListComponent implements OnInit {
   @Input() pagesize = 4;
   @Input() orderby = "qa.created_at desc";
 
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+  readonly auth$ = this._store.pipe(select(auth));
 
   loaddata = false;
   Data: any =[];
@@ -85,7 +87,7 @@ export class SMQAListComponent implements OnInit {
           this.loaddata = false;
         },
         err => {
-          this.actions.loadFailed(err);
+          this._store.dispatch(new loadFailed(err));
         }
       );
   }

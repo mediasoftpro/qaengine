@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base href="/">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!-- Favicon icon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/assets/images/favicon.png"
+    />
+    <title>Application</title>
+  <link rel="stylesheet" href="/app/angular/styles.css"></head>
+
+  <body>
+    <script>
+      var URL = "https://localhost:44304/";
+      var Ang_UID = "a3efce04-7fea-47d5-8eb7-7950d53bba9c"; // admin: "62051f98-e1e3-4e50-a165-d7466ae81d2a"; // agency user: "a3efce04-7fea-47d5-8eb7-7950d53bba9c";
+      var UserType = 0; // 0: normal user
+      //var Ang_UserName = "mediasoftpro"; // demouser
+      var Ang_AppMessage = "";
+      var Ang_Culture = "en-US";
+      //var Ang_VideoUploaderOption = 0; // 0: ffmpeg upload, 1: youtube, 2: direct, 3: aws
+      var AppType = "account"; // account, admin, setup, search, create [upload / add / create etc]
+      var CreateType = "aws"; // general, youtube, direct, ffmpeg, aws
+      var setupType = 1; // 0: database setup, 1: user, data & configuration setup,
+      var ImageDirectory = "/assets/images/";
+      var AppTitle = "Forum Engine";
+      // search parameters
+      var SearchParams = {
+        term: "",
+        type: "forums"
+      };
+      var SerachContentType = 0; // 0: videos etc...
+      var themeName = 'default'; // add multi themplate support
+    </script>
+    <app-root>
+      <div id="loader">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="loading"></div></div
+    ></app-root>
+  <script src="/app/angular/runtime.js" defer></script><script src="/app/angular/polyfills.js" defer></script><script src="/app/angular/scripts.js" defer></script><script src="/app/angular/main.js" defer></script></body>
+</html>
+

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using Jugnoon.Utility;
 using Jugnoon.Framework;
 using Microsoft.Extensions.Localization;
-using QAEngine.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
@@ -98,7 +97,7 @@ namespace QAEngine.Areas.api.Controllers
 
             return Ok(new { status = "success", message = SiteConfig.generalLocalizer["_records_processed"].Value });
         }
-        
+      
     }
 }
 

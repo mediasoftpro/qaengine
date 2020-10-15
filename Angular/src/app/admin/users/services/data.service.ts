@@ -1,24 +1,42 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
 /* -------------------------------------------------------------------------- */
-
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../reducers/store/model";
 import { Injectable } from "@angular/core";
-import { UserAPIActions } from "../../../reducers/users/actions";
 import { HttpClient } from "@angular/common/http";
 import { SettingsService } from "./settings.service";
-import { CoreAPIActions } from "../../../reducers/core/actions";
+import { CoreService } from "../../../admin/core/coreService";
+
+import {
+  loadStarted,
+  loadSucceeded,
+  loadFailed,
+  applyChanges,
+  UpdateThumb
+} from "../../../reducers/users/actions";
+import {
+  loadUserStarted,
+  loadUserSucceeded,
+  loadUserFailed,
+  loadUserReportStarted,
+  loadUserReportFailed,
+  loadUserReportSucceeded,
+} from "../../../reducers/admin/dashboard/actions";
+import { refreshListStats } from "../../../reducers/core/actions";
+import { Notify } from "../../../reducers/core/actions";
 
 @Injectable()
 export class DataService {
   constructor(
+    private _store: Store<IAppState>,
     private settings: SettingsService,
     private http: HttpClient,
-    private actions: UserAPIActions,
-    private coreActions: CoreAPIActions
+    private coreService: CoreService
   ) {}
 
   /* -------------------------------------------------------------------------- */
@@ -26,25 +44,64 @@ export class DataService {
   /* -------------------------------------------------------------------------- */
   LoadRecords(FilterOptions) {
     const URL = this.settings.getApiOptions().load;
-    this.actions.loadStarted();
+    this._store.dispatch(new loadStarted({}));
     this.http.post(URL, JSON.stringify(FilterOptions)).subscribe(
       (data: any) => {
         // update core data
-        this.actions.loadSucceeded(data);
+        this.coreService.attachEncryptedId(data.posts);
+        this._store.dispatch(new loadSucceeded(data));
         if (data.categories.length > 0) {
           // if enabled, api send list of categories too
           // update categories in state
-          this.actions.updateCategories(data.categories);
+          // this._store.dispatch(new updateCategories(data.categories));
         }
         // update list stats
-        this.coreActions.refreshListStats({
-          totalrecords: data.records,
-          pagesize: FilterOptions.pagesize,
-          pagenumber: FilterOptions.pagenumber
-        });
+        this._store.dispatch(
+          new refreshListStats({
+            totalrecords: data.records,
+            pagesize: FilterOptions.pagesize,
+            pagenumber: FilterOptions.pagenumber,
+          })
+        );
       },
-      err => {
-        this.actions.loadFailed(err);
+      (err) => {
+        this._store.dispatch(new loadFailed(err));
+      }
+    );
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                       load few users (redux versio)                         */
+  /* -------------------------------------------------------------------------- */
+  LoadSmListReducer(queryOptions: any) {
+    const URL = this.settings.getApiOptions().load;
+    this._store.dispatch(new loadUserStarted({}));
+    this.http.post(URL, JSON.stringify(queryOptions)).subscribe(
+      (data: any) => {
+        // update core data
+        this.coreService.attachEncryptedId(data.posts);
+        this._store.dispatch(new loadUserSucceeded(data));
+      },
+      (err) => {
+        this._store.dispatch(new loadUserFailed(err));
+      }
+    );
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                      Generate Report                                       */
+  /* -------------------------------------------------------------------------- */
+  GenerateSummaryReport(queryOptions: any) {
+    const URL = this.settings.getApiOptions().generate_report;
+    this._store.dispatch(new loadUserReportStarted({}));
+      this.http.post(URL, JSON.stringify(queryOptions)).subscribe(
+      (data: any) => {
+        // update core data
+        let payload = this.coreService.initializeChartData(data.data.dataTable, data.data.chartType);
+        this._store.dispatch(new loadUserReportSucceeded(payload));
+      },
+      (err) => {
+        this._store.dispatch(new loadUserReportFailed(err));
       }
     );
   }
@@ -80,9 +137,12 @@ export class DataService {
           id: obj.id,
           firstname: obj.firstname,
           lastname: obj.lastname,
+          mobile: obj.mobile,
+          phoneNumber: obj.phoneNumber,
           attr_values: obj.attr_values,
           settings: obj.settings,
-          account: obj.account
+          account: obj.account,
+          isadmin: true,
         })
       );
     } else {
@@ -97,30 +157,32 @@ export class DataService {
     for (const image of images) {
       param.picturename = image.fname;
     }
-  
+
     this.http.post(URL, JSON.stringify(param)).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
-            title: data.message,
-            text: "",
-            css: "bg-danger"
-          });
+          this._store.dispatch(
+            new Notify({
+              title: data.message,
+              text: "",
+              css: "bg-danger",
+            })
+          );
         } else {
-          this.actions.UpdateThumb(data.record);
-          this.coreActions.Notify({
-            title: "Profile Photo Updated",
+          this._store.dispatch(new UpdateThumb(data.record));
+          this._store.dispatch(new Notify({
+            title: "Photo updated successfully",
             text: "",
-            css: "bg-success"
-          });
+            css: "bg-success",
+          }));
         }
       },
-      err => {
-        this.coreActions.Notify({
+      (err) => {
+        this._store.dispatch(new Notify({
           title: err,
           text: "",
-          css: "bg-danger"
-        });
+          css: "bg-danger",
+        }));
       }
     );
   }
@@ -130,26 +192,28 @@ export class DataService {
     this.http.post(URL, JSON.stringify(info)).subscribe(
       (data: any) => {
         if (data.status === "error") {
-          this.coreActions.Notify({
-            title: data.message,
-            text: "",
-            css: "bg-danger"
-          });
+          this._store.dispatch(
+            new Notify({
+              title: data.message,
+              text: "",
+              css: "bg-danger",
+            })
+          );
         } else {
-          this.actions.UpdateThumb(data.record);
-          this.coreActions.Notify({
-            title: "Avator Updated Successfully",
+          this._store.dispatch(new UpdateThumb(data.record));
+          this._store.dispatch(new Notify({
+            title: "Photo updated successfully",
             text: "",
-            css: "bg-success"
-          });
+            css: "bg-success",
+          }));
         }
       },
-      err => {
-        this.coreActions.Notify({
+      (err) => {
+        this._store.dispatch(new Notify({
           title: err,
           text: "",
-          css: "bg-danger"
-        });
+          css: "bg-danger",
+        }));
       }
     );
   }
@@ -166,11 +230,11 @@ export class DataService {
   /*                       load reports (no pagination)                      */
   /* -------------------------------------------------------------------------- */
   LoadReports(queryOptions: any) {
-  
-    return this.http.post(this.settings.getApiOptions().load_reports, JSON.stringify(queryOptions));
-
+    return this.http.post(
+      this.settings.getApiOptions().load_reports,
+      JSON.stringify(queryOptions)
+    );
   }
-
 
   Authenticate(user: any) {
     const URL = this.settings.getApiOptions().authenticate;
@@ -199,25 +263,27 @@ export class DataService {
     arr.push(item);
     this.ProcessActions(arr, "delete");
   }
-  
- /* -------------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------------- */
   /*               Perform actions (enable, disable, approve) etc               */
   /* -------------------------------------------------------------------------- */
   ProcessActions(SelectedItems, isenabled) {
     // apply changes directory instate
-    this.actions.applyChanges({
-      SelectedItems,
-      isenabled
-    });
+    this._store.dispatch(
+      new applyChanges({
+        SelectedItems,
+        isenabled,
+      })
+    );
 
     const arr = [];
     for (const item of SelectedItems) {
       arr.push({
         id: item.id,
-        actionstatus: item.actionstatus
+        actionstatus: item.actionstatus,
       });
     }
-   
+
     this.http
       .post(this.settings.getApiOptions().action, JSON.stringify(arr))
       .subscribe(
@@ -227,27 +293,32 @@ export class DataService {
           if (isenabled === "delete") {
             message = "Record Removed";
           }
-          this.coreActions.Notify({
-            title: message,
-            text: "",
-            css: "bg-success"
-          });
+          this._store.dispatch(
+            new Notify({
+              title: message,
+              text: "",
+              css: "bg-success",
+            })
+          );
         },
-        err => {
-          this.coreActions.Notify({
-            title: "Error Occured",
-            text: "",
-            css: "bg-danger"
-          });
+        (err) => {
+          this._store.dispatch(
+            new Notify({
+              title: "Error Occured",
+              text: "",
+              css: "bg-danger",
+            })
+          );
         }
       );
   }
-  
+
   ProcessLogActions(SelectedItems, isenabled) {
-    this.coreActions.Notify({
+    this._store.dispatch(new Notify({
       title: "Feature not yet implemented",
       text: "",
-      css: "bg-success"
-    });
+      css: "bg-success",
+    }));
+    
   }
 }

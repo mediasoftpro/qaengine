@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -25,6 +25,7 @@ export class SettingsService {
     this.apiOptions = {
       load: APIURL + "api/user/load",
       load_reports: APIURL + "api/adlisting/load_reports",
+      generate_report: APIURL + "api/adlisting/generate_report",
       getinfo: APIURL + "api/user/getinfo", // load user info along with role
       getinfo_auth: APIURL + "api/user/getUserAuth", // load user info along with role
       action: APIURL + "api/user/action",
@@ -37,7 +38,10 @@ export class SettingsService {
       userlog: APIURL + "api/user/userlog",
       authenticate: APIURL + "api/user/authenticate",
       updaterole: APIURL + "api/user/updaterole",
-      archive: APIURL + "api/user/archive"
+      archive: APIURL + "api/user/archive",
+      count_notifs: APIURL + "api/notification/check_notifs",
+      fetch_notifs:  APIURL + "api/notification/load_unread_notifs",
+      mark_as_read: APIURL + "api/notification/mark_as_read"
     };
 
     this.init_toolbar_options();

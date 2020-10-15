@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -18,7 +18,7 @@ import { SettingsService } from "./services/settings.service";
 import { DataService } from "./services/data.service";
 
 /* actions */
-import { AdvertisementAPIActions } from "../../../reducers/settings/advertisements/actions";
+//import { AdvertisementAPIActions } from "../../../reducers/settings/advertisements/actions";
 
 import { PartialModule } from "../../../partials/shared.module";
 
@@ -26,6 +26,6 @@ import { PartialModule } from "../../../partials/shared.module";
   imports: [CommonModule, PartialModule, FormsModule],
   declarations: [AdvertisemntComponent, ListComponent],
   exports: [AdvertisemntComponent],
-  providers: [SettingsService, DataService, AdvertisementAPIActions]
+  providers: [SettingsService, DataService]
 })
 export class AdverisementModule {}

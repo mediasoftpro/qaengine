@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: VideoEngine                         */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -39,6 +39,8 @@ export class DynamicModalFormComponent implements OnInit, OnChanges {
   @Output() OnSubmit = new EventEmitter<any>();
   @Output() OnDropdownSelection = new EventEmitter<any>();
   @Output() FileRemoved = new EventEmitter<any>();
+  @Output() onFeatures = new EventEmitter<any>();
+  
   @Input() showLoader = false;
 
   tempSubmitText = "";
@@ -72,8 +74,13 @@ export class DynamicModalFormComponent implements OnInit, OnChanges {
     this.OnDropdownSelection.emit(payload);
   }
 
+
   OnFileRemoved(payload: any) {
     this.FileRemoved.emit(payload);
+  }
+
+  onFeatureSubmit(payload: any) {
+    this.onFeatures.emit(payload);
   }
 
   uploadCompleted(files: any) {

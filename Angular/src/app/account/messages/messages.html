@@ -1,0 +1,151 @@
+
+<div class="container workscene-custom-holder workscene-messages-style">
+  <app-loader *ngIf="showLoader"></app-loader>
+  <div *ngIf="!showLoader" class="row">
+    <div class="col-sm-4">
+      <div class="workscene-form-group-title">
+        Inbox 
+      </div>
+      <input
+        type="text"
+        [(ngModel)]="query.term"
+        (keyup.enter)="LoadRecipents()"
+        placeholder="Search for..."
+        class="form-control"
+        style="width: 100%;"
+      />
+
+      <div class="workscene-inbox">
+        <ul class="border-top-gray">
+          <li [ngClass]="SelectedRecipent.user.id === recipent.user.id ? 'select-friend' : ''"  *ngFor="let recipent of Recipents; let i=index">
+            <a href="#" (click)="getMessageList(recipent, $event); false">
+              <div class="float-left">
+                <img [src]="recipent.user.img_url" width="60" height="60" />
+              </div>
+              <div class="float-left inbox-content">
+                <div class="workscene-small-title">
+                  {{recipent.user.firstname}} {{recipent.user.lastname}}
+                </div>
+                <p>
+                  {{recipent.message.subject}}
+                </p>
+              </div>
+              <div class="clear"></div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-sm-8">
+      <app-loader *ngIf="showMessageLoader"></app-loader>
+      <div *ngIf="!showMessageLoader">
+        <div
+          class="workscene-form-group-title"
+          *ngIf="MessageList.length === 0"
+        >
+          No Messages
+        </div>
+
+        <div class="workscene-chat" *ngIf="MessageList.length > 0">
+          
+          <ul>
+            <li>
+              <!-- hc view -->
+              <ul *ngIf="config.getGlobalVar('apptype')!=='account'">
+                <li [ngClass]="SelectedRecipent.user.id === message.message.user.id ? 'outgoing' : 'incoming'" *ngFor="let message of MessageList; let i=index">
+                  <div class="workscene-message-box">
+                    
+                    <div class="workscene-message-box-left" *ngIf="message.message.user.id === SelectedRecipent.user.id">
+                      <img
+                        src="{{message.message.user.img_url}}"
+                        width="40"
+                        height="40"
+                      />
+                    </div>
+                    <div class="workscene-message-box-middle">
+                      <div [ngClass]="SelectedRecipent.user.id === message.message.user.id ? 'arrow-left' : 'arrow-right'"></div>
+
+                      <span class="workscene-title-font">{{message.message.user.firstname}} {{message.message.user.lastname}}</span>
+                      <span class="date">{{message.msg_sent | date: 'MMM d, h:mm a'}}</span>
+                      <div [innerHTML]="message.message.body"></div>
+                    </div>
+                    <div class="workscene-message-box-right" *ngIf="message.message.user.id !== SelectedRecipent.user.id">
+                      <img
+                        src="{{message.message.user.img_url}}"
+                        width="40"
+                        height="40"
+                      />
+                    </div>
+                  </div>
+                </li>
+               
+              </ul>
+              <!-- job seeker view -->
+              <ul *ngIf="config.getGlobalVar('apptype')==='account'">
+                <li [ngClass]="SelectedRecipent.user.id === message.user.id ? 'outgoing' : 'incoming'" *ngFor="let message of MessageList; let i=index">
+                  <div class="workscene-message-box">
+                    
+                    <div class="workscene-message-box-left" *ngIf="message.user.id === SelectedRecipent.user.id">
+                      <img
+                        src="{{message.message.user.img_url}}"
+                        width="40"
+                        height="40"
+                      />
+                    </div>
+                    <div class="workscene-message-box-middle">
+                      <div [ngClass]="SelectedRecipent.user.id === message.user.id ? 'arrow-left' : 'arrow-right'"></div>
+
+                      <span class="workscene-title-font">{{message.message.user.firstname}} {{message.message.user.lastname}}</span>
+                      <span class="date">{{message.msg_sent | date: 'MMM d, h:mm a'}}</span>
+                      <div [innerHTML]="message.message.body"></div>
+                    </div>
+                    <div class="workscene-message-box-right" *ngIf="message.user.id !== SelectedRecipent.user.id">
+                      <img
+                        src="{{message.message.user.img_url}}"
+                        width="40"
+                        height="40"
+                      />
+                    </div>
+                  </div>
+                </li>
+               
+              </ul>
+            </li>
+            <li>
+
+              <div class="workscene-message-box-left"></div>
+              <div class="workscene-message-box-middle message-box">
+                <div *ngIf="showMessagePanel">
+                   sending...
+                </div>
+                <div *ngIf="!showMessagePanel">
+                  <div class="form-fields-light float-left">
+                    <input type="hidden" id="friend_id" value="" />
+                    <textarea
+                      rows="3"
+                      cols="80"
+                      [(ngModel)]="message"
+                      placeholder="Type your Message"
+                    ></textarea>
+                  </div>
+                  <div class="align-right float-right">
+                    <button
+                      type="button"
+                      (click)="sendMessage()"
+                      class="workscene-btn-success btn-long send-btn"
+                    >
+                      Send
+                    </button>
+                  </div>
+                </div>
+               
+              </div>
+              <div class="workscene-message-box-right"></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

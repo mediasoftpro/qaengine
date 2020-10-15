@@ -1,3 +1,4 @@
-﻿<div class="m-b-40 m-t-40 text-center">
-    <h3>@Model.Message</h3>
-</div>
+﻿@if (SiteConfiguration.Theme != null && SiteConfiguration.Theme != "")
+{
+    <partial name="~/Views/themes/@SiteConfiguration.Theme/partials/_norecord.cshtml" />
+}

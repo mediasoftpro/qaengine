@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -10,7 +10,10 @@ import { Component, OnInit, Input } from "@angular/core";
 import { FormService } from "../services/form.service";
 import { DataService } from "../services/data.service";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { CoreAPIActions } from "../../../../reducers/core/actions";
+//import { CoreAPIActions } from "../../../../reducers/core/actions";
+import { Store } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+import { Notify } from "../../../../reducers/core/actions";
 
 @Component({
   selector: "viewmodal",
@@ -28,10 +31,10 @@ export class ViewComponent implements OnInit {
 
   list: any[] = [];
   constructor(
+    private _store: Store<IAppState>,
     public activeModal: NgbActiveModal,
     private service: FormService,
-    private dataService: DataService,
-    private coreActions: CoreAPIActions
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
@@ -44,11 +47,11 @@ export class ViewComponent implements OnInit {
     // permission check
     if (this.Info.isActionGranded !== undefined) {
       if (!this.Info.isActionGranded) {
-        this.coreActions.Notify({
-          title: "Permission Denied",
-          text: "",
-          css: "bg-danger"
-        });
+        this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
         return;
       }
     }
@@ -57,29 +60,29 @@ export class ViewComponent implements OnInit {
       (data: any) => {
         this.showLoader = false;
         if (data.status === "success") {
-          this.coreActions.Notify({
-            title: "Record Added Successfully",
+          this._store.dispatch(new Notify({
+            title:  "Record added successfully",
             text: "",
             css: "bg-success"
-          });
+          }));
           this.activeModal.close({
             data: data.record
           });
         } else {
-          this.coreActions.Notify({
+           this._store.dispatch(new Notify({
             title: data.message,
             text: "",
             css: "bg-danger"
-          });
+          }));
         }
       },
       err => {
         this.showLoader = false;
-        this.coreActions.Notify({
+        this._store.dispatch(new Notify({
           title: "Error Occured",
           text: "",
           css: "bg-danger"
-        });
+        }));
       }
     );
   }

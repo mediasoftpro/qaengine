@@ -1,0 +1,99 @@
+<app-loader *ngIf="user_loading$ | async"></app-loader>
+<div class="card shadow mb-4" *ngIf="!(user_loading$ | async)">
+  <!-- Card Header - Dropdown -->
+  <div
+    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+  >
+    <h6 class="m-0 font-weight-bold text-primary">{{title}}</h6>
+    <div class="dropdown no-arrow">
+      <a
+        class="dropdown-toggle"
+        href="#"
+        role="button"
+        id="dropdownMenuLink"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+      </a>
+      <div
+        class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+        aria-labelledby="dropdownMenuLink"
+      >
+        <div class="dropdown-header">Dropdown Header:</div>
+        <a class="dropdown-item" href="#">Unapproved Listings</a>
+        <a class="dropdown-item" href="#">Featured Listings</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="[browse_url]">All Listings</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row m-b-10" *ngIf="(users$ | async).length > 0">
+      <div
+        class="{{row_class}} m-b-10 videolist"
+        [hidden]="item.isdeleted"
+        *ngFor="let item of (users$ | async); trackBy: getKey"
+      >
+        <div class="card-img-top img-responsive">
+          <a
+            *ngIf="isAdmin && !PublicView"
+            [routerLink]="[route_path + 'profile/' + item.id]"
+          >
+            <img
+              class="img-responsive"
+              style="cursor: pointer;"
+              src="{{ item.img_url }}"
+              alt="{{ item.title }}"
+            />
+          </a>
+          <a *ngIf="!isAdmin || PublicView" href="{{item.url}}">
+            <img
+              class="img-responsive"
+              style="cursor: pointer;"
+              src="{{ item.img_url }}"
+              alt="{{ item.title }}"
+            />
+          </a>
+
+          <div class="m-t-10">
+            <p class="title m-b-0 truncate" *ngIf="item.firstname !== ''">
+              {{ item.firstname }} {{ item.lastname }}
+            </p>
+            <p
+              class="title m-b-0 truncate"
+              *ngIf="item.firstname === '' || item.firstname === null"
+            >
+              {{ item.userName }}
+            </p>
+            <p class="light-item">
+              Created: {{ item.created_at | date: "mediumDate" }}
+            </p>
+            <p class="card-text" *ngIf="!PublicView">
+              <span
+                class="badge badge-danger m-r-5 m-b-5"
+                *ngIf="!item.emailConfirmed"
+                >Inactive</span
+              >
+              <span
+                class="badge badge-success m-r-5 m-b-5"
+                *ngIf="item.emailConfirmed"
+                >Active</span
+              >
+              <span
+                class="badge badge-info m-r-5 m-b-5"
+                *ngIf="item.isenabled === 0"
+                >Blocked</span
+              >
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="" *ngIf="(users$ | async).length === 0">
+      {{NoRecordText}}
+    </div>
+  </div>
+</div>

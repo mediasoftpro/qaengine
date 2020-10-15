@@ -165,6 +165,9 @@
   <data name="_account_suspended" xml:space="preserve">
     <value>Your Account Suspended!</value>
   </data>
+  <data name="_activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
   <data name="_added" xml:space="preserve">
     <value>Added</value>
   </data>
@@ -252,8 +255,14 @@
   <data name="_cookies" xml:space="preserve">
     <value>Cookies</value>
   </data>
+  <data name="_country_list" xml:space="preserve">
+    <value>Country List</value>
+  </data>
   <data name="_create_account" xml:space="preserve">
     <value>Create Account</value>
+  </data>
+  <data name="_create_agency" xml:space="preserve">
+    <value>Create Agency</value>
   </data>
   <data name="_create_new_account" xml:space="preserve">
     <value>Create New Account</value>
@@ -306,6 +315,9 @@
   <data name="_enter" xml:space="preserve">
     <value>Enter</value>
   </data>
+  <data name="_enter_company" xml:space="preserve">
+    <value>Enter Company Name</value>
+  </data>
   <data name="_enter_email" xml:space="preserve">
     <value>Enter email address</value>
   </data>
@@ -317,6 +329,9 @@
   </data>
   <data name="_enter_message" xml:space="preserve">
     <value>Enter Message</value>
+  </data>
+  <data name="_enter_mobile_no" xml:space="preserve">
+    <value>Enter Mobile Number</value>
   </data>
   <data name="_enter_password" xml:space="preserve">
     <value>Enter Password</value>
@@ -386,6 +401,9 @@
   </data>
   <data name="_glossary" xml:space="preserve">
     <value>Glossary</value>
+  </data>
+  <data name="_go_to_home" xml:space="preserve">
+    <value>Go To Home</value>
   </data>
   <data name="_highest_price" xml:space="preserve">
     <value>Highest Price</value>
@@ -474,6 +492,12 @@
   <data name="_male" xml:space="preserve">
     <value>Male</value>
   </data>
+  <data name="_marked_as_answer" xml:space="preserve">
+    <value>Marked as Answer</value>
+  </data>
+  <data name="_marked_as_best_answer" xml:space="preserve">
+    <value>Marked as best Answer</value>
+  </data>
   <data name="_message" xml:space="preserve">
     <value>Message</value>
   </data>
@@ -494,6 +518,9 @@
   </data>
   <data name="_meta_adult_warning" xml:space="preserve">
     <value>Adult Warning</value>
+  </data>
+  <data name="_meta_agency_signup" xml:space="preserve">
+    <value>Create Agency Account</value>
   </data>
   <data name="_meta_change_email" xml:space="preserve">
     <value>Change Email</value>
@@ -520,7 +547,7 @@
     <value>GDPR FAQ</value>
   </data>
   <data name="_meta_home" xml:space="preserve">
-    <value>ASP.NET Knowledgebase (Community Portal)</value>
+    <value>ASP.NET Real-Estate Portal</value>
   </data>
   <data name="_meta_home_desc" xml:space="preserve">
     <value>Demo of VideoEngine, a complete video sharing script and portal writting in asp.net core framework.</value>
@@ -585,6 +612,9 @@
   <data name="_no_profiles_found" xml:space="preserve">
     <value>No Profiles Found</value>
   </data>
+  <data name="_no_record" xml:space="preserve">
+    <value>No Records Found!</value>
+  </data>
   <data name="_no_records" xml:space="preserve">
     <value>No Records Found!</value>
   </data>
@@ -621,8 +651,20 @@
   <data name="_post" xml:space="preserve">
     <value>Post</value>
   </data>
+  <data name="_posted" xml:space="preserve">
+    <value>Posted</value>
+  </data>
   <data name="_posted_topics" xml:space="preserve">
     <value>Posted Topics</value>
+  </data>
+  <data name="_posts" xml:space="preserve">
+    <value>Posts</value>
+  </data>
+  <data name="_post_reply" xml:space="preserve">
+    <value>Post Reply</value>
+  </data>
+  <data name="_post_topic" xml:space="preserve">
+    <value>Post Topic</value>
   </data>
   <data name="_privacy_policy" xml:space="preserve">
     <value>Privacy Policy</value>
@@ -650,6 +692,9 @@
   </data>
   <data name="_questions" xml:space="preserve">
     <value>Questions</value>
+  </data>
+  <data name="_quote" xml:space="preserve">
+    <value>Quote</value>
   </data>
   <data name="_rated" xml:space="preserve">
     <value>Rated</value>
@@ -819,6 +864,9 @@
   </data>
   <data name="_top_voted" xml:space="preserve">
     <value>Top Voted</value>
+  </data>
+  <data name="_unanswered" xml:space="preserve">
+    <value>Undo Answer</value>
   </data>
   <data name="_upload" xml:space="preserve">
     <value>Upload</value>

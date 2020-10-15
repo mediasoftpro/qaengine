@@ -1,0 +1,74 @@
+<app-loader *ngIf="loaddata"></app-loader>
+<div class="card m-b-10" *ngIf="!loaddata && Data.length > 0">
+  <div class="card-body">
+    <h4 class="card-title">
+      {{title}} <span *ngIf="stats > 0">({{stats}})</span>
+    </h4>
+    <div class="row m-b-10" *ngIf="Data.length > 0">
+      <div class="col-md-12 videolist" *ngFor="let item of Data; let i = index">
+        <div>
+          <a
+            class="lg-title"
+            *ngIf="isAdmin"
+            [routerLink]="['/blogs/profile/' + item.enc_id]"
+            >{{ item.title }}</a
+          >
+          <a class="lg-title" *ngIf="!isAdmin" href="{{item.url}}"
+            >{{ item.title }}</a
+          >
+        </div>
+        <p class="light-item">
+          Posted
+          <span class="light"> {{ item.created_at | date: "fullDate" }}</span>
+          <span
+            class="badge badge-danger m-r-5 m-b-5"
+            *ngIf="item.isenabled == 0"
+            >Blocked</span
+          >
+          <span
+            class="badge badge-success m-r-5 m-b-5"
+            *ngIf="item.isenabled == 1"
+            >Active</span
+          >
+          <span
+            class="badge badge-info m-r-5 m-b-5"
+            *ngIf="item.isapproved == 1"
+            >Approved</span
+          >
+          <span
+            class="badge badge-warning m-r-5 m-b-5"
+            *ngIf="item.isapproved == 0"
+            >Under Review</span
+          >
+          <span
+            class="badge badge-primary m-r-5 m-b-5"
+            *ngIf="item.isfeatured == 1"
+            >Featured</span
+          >
+          <span class="badge badge-danger m-r-5 m-b-5" *ngIf="item.isadult == 1"
+            >Adult</span
+          >
+          <a
+            class="m-l-5"
+            *ngIf="type === 0"
+            [routerLink]="[rout_url +'/process/' + item.enc_id]"
+          >
+            <i class="fa fa-pencil text-inverse m-r-10"></i>
+          </a>
+          <a class="m-l-5" (click)="delete(item, i, $event); (false)" href="#">
+            <i class="fa fa-close text-danger"></i>
+          </a>
+        </p>
+      </div>
+    </div>
+    <a [routerLink]="[browse_url]" class="card-link pull-right">View All</a>
+    <div class="clearfix"></div>
+  </div>
+</div>
+<div class="row" *ngIf="Data.length == 0">
+  <div class="col-md-12">
+    <div style="padding:80px 0px;">
+      <h3 style="text-align:center;">No Posts Found!</h3>
+    </div>
+  </div>
+</div>

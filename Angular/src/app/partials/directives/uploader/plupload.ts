@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -66,7 +66,7 @@ export class PlUploadDirective implements OnInit, OnChanges {
       drop_element: "plupload_container", // 'FileUploadContainer',
       multi_selection: true,
       unique_names: _Options.unique_names,
-      chunk_size: "8mb",
+      chunk_size: _Options.chunksize,
       url: _Options.handlerpath,
       flash_swf_url: "../../../../assets/js/plupload/js/Moxie.swf",
       silverlight_xap_url: "../../../../assets/js/plupload/js/Moxie.xap",

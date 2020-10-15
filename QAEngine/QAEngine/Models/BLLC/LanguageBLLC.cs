@@ -210,15 +210,6 @@ namespace Jugnoon.BLL
             return collectionQuery;
         }
 
-        private static IQueryable<JGN_Languages> AddSortOption(IQueryable<JGN_Languages> collectionQuery, string field, string direction)
-        {
-            var reverse = false;
-            if (direction == "desc")
-                reverse = true;
-
-            return (IQueryable<JGN_Languages>)collectionQuery.Sort(field, reverse);
-
-        }
         private static System.Linq.Expressions.Expression<Func<JGN_Languages, bool>> returnWhereClause(LanguageEntity entity)
         {
             var where_clause = PredicateBuilder.New<JGN_Languages>(true);
@@ -311,6 +302,50 @@ namespace Jugnoon.BLL
                     break;
             }
             return css;
+        }
+        public static string returnTwoDigitCultureName(string culturename, List<JGN_Languages> _lst)
+        {
+            var value = "en";
+            switch (culturename)
+            {
+                case "en":
+                    value = "en";
+                    break;
+                case "en-US":
+                    value = "en";
+                    break;
+                case "ar-SA":
+                    value = "ar";
+                    break;
+                case "de-DE":
+                    value = "de";
+                    break;
+                case "es-ES":
+                    value = "es";
+                    break;
+                case "fr-FR":
+                    value = "fr";
+                    break;
+                case "it-IT":
+                    value = "it";
+                    break;
+                case "ja-JP":
+                    value = "ja";
+                    break;
+                case "pt-BR":
+                    value = "br";
+                    break;
+                case "ru-RU":
+                    value = "ru";
+                    break;
+                case "tr-TR":
+                    value = "tr";
+                    break;
+                case "zh-CHS":
+                    value = "zh";
+                    break;
+            }
+            return value;
         }
 
         public static string returnLanguage(string culturename, List<JGN_Languages> _lst)

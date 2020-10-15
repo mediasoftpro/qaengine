@@ -1,0 +1,48 @@
+﻿@inject Jugnoon.Framework.ApplicationDbContext _context
+@model Jugnoon.qa.Models.qaListViewModel
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Features> featureSettings
+@inject Microsoft.Extensions.Options.IOptions<Jugnoon.Settings.Registration> registrationSettings
+@using  Jugnoon.qa
+
+@if (featureSettings.Value.enable_qa)
+{
+
+    var _list = await QABLL.LoadItems(_context, Model.QueryOptions);
+    if (_list.Count > 0)
+    {
+        var PartialPath = "~/Views/themes/" + SiteConfiguration.Theme + "/qa/partials";
+
+        <div class="box">
+            <h3 class="m-b-10">
+                @Model.HeadingTitle
+                @{
+                    if (Model.BrowseUrl != "")
+                    {
+                        <small><a href="@Model.BrowseUrl">@Model.BrowseText</a></small>
+                    }
+                }
+            </h3>
+
+            <hr />
+            <div class="row">
+                @foreach (var Item in _list)
+                {
+                    @await Html.PartialAsync(PartialPath + "/item/Item.cshtml", new Jugnoon.qa.Models.qaItemViewModel()
+                    {
+                        Data = Item,
+                        ListObject = Model.ListObject,
+                        AuthorUrl = UserUrlConfig.ProfileUrl(Item.author, registrationSettings.Value.uniqueFieldOption),
+                        ProfileUrl = QAUrls.Prepare_QA_Url(Item, "")
+                    });
+                }
+            </div>
+
+        </div>
+
+    }
+    else
+    {
+        @await Html.PartialAsync("~/Views/partials/utility/_norecord.cshtml", new NoRecordModelView() { Message = Model.NoRecordFoundText })
+    }
+}
+

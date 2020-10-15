@@ -19,23 +19,25 @@
 
   <body>
     <script>
-      var URL = "https://localhost:44316/";
-      var Ang_UID = "d56b9e6f-d2aa-49c9-b19b-bbc8dbc5846f";
-      var Ang_UserName = "administrator"; // demouser
+      var URL = "https://localhost:44304/";
+      var Ang_UID = "a3efce04-7fea-47d5-8eb7-7950d53bba9c"; // admin: "62051f98-e1e3-4e50-a165-d7466ae81d2a"; // agency user: "a3efce04-7fea-47d5-8eb7-7950d53bba9c";
+      var UserType = 0; // 0: normal user
+      //var Ang_UserName = "mediasoftpro"; // demouser
       var Ang_AppMessage = "";
       var Ang_Culture = "en-US";
-      var Ang_VideoUploaderOption = 0; // 0: ffmpeg upload, 1: youtube, 2: direct, 3: aws
+      //var Ang_VideoUploaderOption = 0; // 0: ffmpeg upload, 1: youtube, 2: direct, 3: aws
       var AppType = "account"; // account, admin, setup, search, create [upload / add / create etc]
       var CreateType = "aws"; // general, youtube, direct, ffmpeg, aws
       var setupType = 1; // 0: database setup, 1: user, data & configuration setup,
       var ImageDirectory = "/assets/images/";
-      var AppTitle = "jMedia Core Framework";
+      var AppTitle = "Forum Engine";
       // search parameters
       var SearchParams = {
         term: "",
-        type: "blogs"
+        type: "forums"
       };
       var SerachContentType = 0; // 0: videos etc...
+      var themeName = 'default'; // add multi themplate support
     </script>
     <app-root>
       <div id="loader">
@@ -51,3 +53,4 @@
     ></app-root>
   </body>
 </html>
+

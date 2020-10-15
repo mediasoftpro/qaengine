@@ -1,7 +1,7 @@
 
 /* -------------------------------------------------------------------------- */
-/*                          Product Name: VideoEngine                         */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -17,8 +17,10 @@ import {
   ThemeCSS
 } from "../../../../configs/themeSettings";
 
-import { Observable } from "rxjs/Observable";
-import { select } from "@angular-redux/store";
+
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../../../reducers/store/model";
+import * as configSelectors from "../../../../reducers/configs/selectors";
 
 @Injectable()
 export class SettingsService {
@@ -28,12 +30,10 @@ export class SettingsService {
   private toolbarOptions: any;
   private searchOptions: any;
 
-  // Application Configuration Data
-  @select(["configuration", "configs"])
-  readonly configs$: Observable<any>;
+  readonly configs$ = this._store.pipe(select(configSelectors.configs));
 
   Configs: any = {};
-  constructor(private coreService: CoreService, public config: AppConfig) {
+  constructor(private _store: Store<IAppState>, private coreService: CoreService, public config: AppConfig) {
     const APIURL = config.getConfig("host");
     this.apiOptions = {
       load: APIURL + "api/categories/load",
@@ -45,7 +45,7 @@ export class SettingsService {
 
     this.configs$.subscribe((configs: any) => {
         if (configs.general !== undefined) {
-            console.log('configs defined');
+            
             this.Configs = configs.general.category;
             this.init_toolbar_options();
             this.init_search_options();

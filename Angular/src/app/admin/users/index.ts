@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------- */
-/*                           Product Name: QAEngine                           */
-/*                            Author: Mediasoftpro                            */
+/*                          Product Name: ForumEngine                         */
+/*                      Author: Mediasoftpro (Muhammad Irfan)                 */
 /*                       Email: support@mediasoftpro.com                      */
 /*       License: Read license.txt located on root of your application.       */
 /*                     Copyright 2007 - 2020 @Mediasoftpro                    */
@@ -13,8 +13,8 @@ import {
   AfterViewInit
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { select } from "@angular-redux/store";
-import { Observable } from "rxjs/Observable";
+import { Store, select } from "@ngrx/store";
+import { IAppState } from "../../reducers/store/model";
 /* modal popup */
 import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
 
@@ -25,10 +25,26 @@ import { DataService } from "./services/data.service";
 // modal popup
 import { ViewComponent } from "./partials/modal";
 
+
+// reducer actions
+import * as selectors from "../../reducers/users/selectors";
+import {
+  applyFilter,
+  updateItemsSelectionStatus,
+  selectAll,
+  updateFilterOptions,
+  refresh_pagination,
+} from "../../reducers/users/actions";
+
+import { Notify, refreshListStats } from "../../reducers/core/actions";
+import { auth } from "../../reducers/users/selectors";
+import * as configSelectors from "../../reducers/configs/selectors";
+
+
 // shared services
-import { CoreAPIActions } from "../../reducers/core/actions";
+//import { CoreAPIActions } from "../../reducers/core/actions";
 import { fadeInAnimation } from "../../animations/core";
-import { UserAPIActions } from "../../reducers/users/actions";
+//import { UserAPIActions } from "../../reducers/users/actions";
 import { PermissionService } from "../../admin/users/services/permission.service";
 
 @Component({
@@ -39,16 +55,27 @@ import { PermissionService } from "../../admin/users/services/permission.service
 })
 export class UsersComponent implements OnInit, AfterViewInit {
   constructor(
+    private _store: Store<IAppState>,
     private settingService: SettingsService,
     private dataService: DataService,
     private modalService: NgbModal,
-    private coreActions: CoreAPIActions,
     public permission: PermissionService,
-    private actions: UserAPIActions,
     private router: Router,
   ) {}
 
-  @select(["users", "filteroptions"])
+  readonly filteroptions$ = this._store.pipe(
+    select(selectors.filteroptions)
+  );
+  readonly isloaded$ = this._store.pipe(select(selectors.isloaded));
+  readonly isItemSelected$ = this._store.pipe(
+    select(selectors.itemsselected)
+  );
+  readonly records$ = this._store.pipe(select(selectors.records));
+  readonly pagination$ = this._store.pipe(select(selectors.pagination));
+  readonly auth$ = this._store.pipe(select(auth));
+  // readonly configs$ = this._store.pipe(select(configSelectors.configs));
+
+  /*@select(["users", "filteroptions"])
   readonly filteroptions$: Observable<any>;
 
   @select(["users", "categories"])
@@ -60,8 +87,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @select(["users", "isloaded"])
   readonly isloaded$: Observable<any>;
 
-  @select(["users", "auth"])
-  readonly auth$: Observable<any>;
+ readonly auth$ = this._store.pipe(select(auth));*/
 
   // permission logic
   isAccessGranted = false; // Granc access on resource that can be full access or read only access with no action rights
@@ -99,12 +125,12 @@ export class UsersComponent implements OnInit, AfterViewInit {
     });
 
     this.filteroptions$.subscribe(options => {
-      this.FilterOptions = options;
+      this.FilterOptions = Object.assign({}, options);
       if (options.track_filter) {
         this.dataService.LoadRecords(options);
         // reset track filter to false again
-        options.track_filter = false;
-        this.actions.updateFilterOptions(options);
+        this.FilterOptions.track_filter = false;
+         this._store.dispatch(new updateFilterOptions(this.FilterOptions));
       }
     });
     this.isloaded$.subscribe((loaded: boolean) => {
@@ -122,16 +148,17 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   selectAll(selectall: boolean) {
-    this.actions.selectAll(selectall);
+    this._store.dispatch(new selectAll(selectall));
+
   }
   /* toolbar actions */
   toolbaraction(selection: any) {
     if (!this.isActionGranded) {
-      this.coreActions.Notify({
-        title: "Permission Denied",
-        text: "",
-        css: "bg-danger"
-      });
+      this._store.dispatch(new Notify({
+            title:  "Permission Denied",
+            text: "",
+            css: "bg-danger"
+          }));
       return;
     }
     switch (selection.action) {
@@ -149,13 +176,16 @@ export class UsersComponent implements OnInit, AfterViewInit {
         this.ProcessActions(selection.value);
         return;
       case "m_filter":
-        this.actions.applyFilter({
+        this._store.dispatch(new applyFilter({
           attr: "datefilter",
           value: selection.value
-        });
+        }));
         break;
       case "sort":
-        this.actions.applyFilter({ attr: "direction", value: selection.value });
+        this._store.dispatch(new applyFilter({
+          attr: "direction",
+          value: selection.value
+        }));
         break;
     }
   }
@@ -170,7 +200,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
       _filterOptions.categoryname !== ""
     )
       _filterOptions.accounttype = _filterOptions.categoryname;
-    this.actions.updateFilterOptions(_filterOptions);
+      this._store.dispatch(new updateFilterOptions(_filterOptions));
   }
 
   Trigger_Modal(InstanceInfo: any) {
